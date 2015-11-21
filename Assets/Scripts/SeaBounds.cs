@@ -29,6 +29,8 @@ public class SeaBounds : MonoBehaviour {
 		if(instance) {
 			Destroy(instance);
 		}
+		instance = this;
+
 		fishLayerZ = fishLayerRef.position.z;
 
 		edgeMargin = rightRef.position.x-marginFromRightEdgeRef.transform.position.x;
@@ -37,14 +39,35 @@ public class SeaBounds : MonoBehaviour {
 		left = leftRef.position.x+edgeMargin;
 		right = rightRef.position.x-edgeMargin;
 		bottom = bottomRef.position.y+edgeMargin;
-
-		instance = this;
 	}
 
 	public Vector3 randPos() {
 		Vector3 toRet = Vector3.zero;
 		toRet.x = Random.Range(left, right);
 		toRet.y = Random.Range(bottom, top);
+		toRet.z = fishLayerZ;
+		return toRet;
+	}
+
+	public Vector3 randEdgePos() {
+		Vector3 tempRand = randPos();
+		if( Random.Range(0.0f,1.0f) < 0.5f) {
+			tempRand.x = left;
+		} else {
+			tempRand.x = right;
+		}
+		return tempRand;
+	}
+
+	public Vector3 randPosBandBias(float depthBiasOdds, float shallowPerc, float deepPerc) {
+		Vector3 toRet = Vector3.zero;
+		toRet.x = Random.Range(left, right);
+		if(Random.Range(0.0f, 1.0f) <= depthBiasOdds ) {
+			float range = top - bottom;
+			toRet.y = bottom + range * (1.0f-Random.Range(shallowPerc,deepPerc));
+		} else {
+			toRet.y = Random.Range(bottom, top);
+		}
 		toRet.z = fishLayerZ;
 		return toRet;
 	}
@@ -63,9 +86,13 @@ public class SeaBounds : MonoBehaviour {
 		        someVect.y < bottom-edgeMargin*2);
 	}
 
-	public Vector3 randPosWithinMinMaxRange(Vector3 startFrom, float minDist, float maxDist) {
+	public Vector3 randPosWithinMinMaxRange(Vector3 startFrom, float minDist, float maxDist,
+	                                        FishMoverBasic fmb = null) {
 		// this approaches bias motion away from edges where boundaries affect motion
-		Vector3 randGoal = randPos();
+		Vector3 randGoal = ( fmb == null ? randPos() : 
+		                    randPosBandBias(fmb.depthBiasOdds,
+		                fmb.shallowPerc,
+		                fmb.deepPerc) );
 		Vector3 normToward = (randGoal - startFrom).normalized;
 		Vector3 inRange = startFrom+normToward*Random.Range(minDist,maxDist);
 		return constrain(inRange);

@@ -6,7 +6,11 @@ public class RespawnIfSunkBelow : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		if(SeaBounds.instance.outOfBounds(transform.position)) {
-			GameObject.Instantiate(prefabOfMe, SeaBounds.instance.randPos(), Quaternion.identity);
+			GameObject GOFish = (GameObject)GameObject.Instantiate(
+				prefabOfMe, SeaBounds.instance.randEdgePos(), Quaternion.identity);
+			Collider fishColl = GOFish.GetComponent<Collider>();
+			fishColl.enabled = true;
+			GOFish.name = "Respanwed " + gameObject.name;
 			Destroy(gameObject);
 		}
 	}

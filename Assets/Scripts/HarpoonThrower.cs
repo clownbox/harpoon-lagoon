@@ -13,6 +13,7 @@ public class HarpoonThrower : MonoBehaviour {
 		Quaternion throwRot = Quaternion.LookRotation(targetPoint-throwFrom,Vector3.up);
 		throwRot *= Quaternion.AngleAxis(90.0f,Vector3.right);
 
-		GameObject.Instantiate(harpoonPrefab,throwFrom,throwRot);
+		GameObject harpoonGO = (GameObject)GameObject.Instantiate(harpoonPrefab,throwFrom,throwRot);
+		ScoreManager.instance.NewSpearThrown( harpoonGO.GetComponent<HarpoonDrag>() );
 	}
 }

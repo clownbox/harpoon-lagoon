@@ -8,11 +8,19 @@ public class FishMoverBasic : MonoBehaviour {
 	float swimTimeEnd;
 	bool seekingGoal;
 	bool isDead;
+	public int scoreValue;
+
 	public float timePerSprint = 3.9f;
 	public float minDriftTime = 0.7f;
 	public float maxDriftTime = 1.7f;
 	public float driftX = 0.3f;
 	public float driftY = 0.2f;
+
+	public float depthBiasOdds = 0.5f;
+	public float shallowPerc = 0.3f;
+	public float deepPerc = 0.85f;
+
+	float randPhaseOffset;
 
 	IEnumerator WaitBeforeNewGoal() {
 		yield return new WaitForSeconds( Random.Range(minDriftTime, maxDriftTime) );
@@ -26,7 +34,7 @@ public class FishMoverBasic : MonoBehaviour {
 
 		seekingGoal = true;
 		swimmingFrom = transform.position;
-		swimmingTo = SeaBounds.instance.randPosWithinMinMaxRange(swimmingFrom,1.3f,2.9f);
+		swimmingTo = SeaBounds.instance.randPosWithinMinMaxRange(swimmingFrom,1.3f,2.9f,this);
 		swimTimeStarted = Time.time;
 		swimTimeEnd = swimTimeStarted + timePerSprint;
 	}
@@ -42,6 +50,7 @@ public class FishMoverBasic : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		isDead = false;
+		randPhaseOffset = Random.Range(0.0f,Mathf.PI*2.0f);
 		PickNewGoal();
 	}
 	
@@ -61,8 +70,8 @@ public class FishMoverBasic : MonoBehaviour {
 			}
 		} else { // no goal, drift
 			Vector3 driftPos = transform.position +
-				Mathf.Cos (Time.time/1.3f) * transform.right * driftX * Time.deltaTime +
-					Mathf.Cos (Time.time/4.1f) * transform.up * driftY * Time.deltaTime;
+				Mathf.Cos (Time.time/1.3f+randPhaseOffset) * transform.right * driftX * Time.deltaTime +
+					Mathf.Cos (Time.time/4.1f+randPhaseOffset) * transform.up * driftY * Time.deltaTime;
 			transform.position = SeaBounds.instance.constrain( driftPos );
 		} // end of else/drift
 	} // end of Update()
