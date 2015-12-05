@@ -18,8 +18,8 @@ public class ScoreManager : MonoBehaviour {
 
 	public void NewSpearThrown(HarpoonDrag newOne) {
 		lastThrownSpear = newOne;
-		lastThrowScore = 0;
 		lastThrowScoreText.text = ""+lastThrowScore;
+		lastThrowScore = 0;
 	}
 	
 	public void ScorePop(FishMoverBasic fmbScored, HarpoonDrag thrownSpear) {
@@ -29,6 +29,8 @@ public class ScoreManager : MonoBehaviour {
 		totalScore += scoreAdded;
 		totalScoreText.text = ""+totalScore+"   ";
 
+		Debug.Log(thrownSpear.name);
+		Debug.Log(lastThrownSpear.name);
 		if(thrownSpear == lastThrownSpear) {
 			lastThrowScore += scoreAdded;
 			lastThrowScoreText.text = ""+lastThrowScore;
