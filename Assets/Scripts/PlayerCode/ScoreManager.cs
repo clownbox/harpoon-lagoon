@@ -14,7 +14,13 @@ public class ScoreManager : MonoBehaviour {
 	private int totalScore;
 	private int lastThrowScore;
 
-	private Canvas uiCanvas;
+	public Canvas uiCanvas;
+
+	public void ResetScore() {
+		totalScore = lastThrowScore = 0;
+		totalScoreText.text = "0"+"   ";
+		lastThrowScoreText.text = "0";
+	}
 
 	public void NewSpearThrown(HarpoonDrag newOne) {
 		lastThrownSpear = newOne;
@@ -29,8 +35,6 @@ public class ScoreManager : MonoBehaviour {
 		totalScore += scoreAdded;
 		totalScoreText.text = ""+totalScore+"   ";
 
-		Debug.Log(thrownSpear.name);
-		Debug.Log(lastThrownSpear.name);
 		if(thrownSpear == lastThrownSpear) {
 			lastThrowScore += scoreAdded;
 			lastThrowScoreText.text = ""+lastThrowScore;
@@ -52,7 +56,6 @@ public class ScoreManager : MonoBehaviour {
 			Destroy(instance);
 		}
 		instance = this;
-		
-		uiCanvas = GameObject.Find("Canvas").GetComponent<Canvas>();
+		ResetScore();
 	}
 }

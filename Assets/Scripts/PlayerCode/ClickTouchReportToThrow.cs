@@ -5,6 +5,11 @@ public class ClickTouchReportToThrow : MonoBehaviour {
 	public HarpoonThrower htScript;
 
 	void Update () {
+		if(MenuStateMachine.instance.MenuAllowsInput() == false ||
+		   MenuStateMachine.instance.MenuBlocksAction()) {
+			return;
+		}
+
 		if (Input.GetButtonDown("Fire1")) {
 			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 			RaycastHit rhInfo;

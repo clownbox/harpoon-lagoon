@@ -13,7 +13,7 @@ public class FishSpawnAtStart : MonoBehaviour {
 	public FishTypeAndNum[] fishSpawnList;
 
 	// Use this for initialization
-	void Start () {
+	void Start() {
 		for(int i=0;i<fishSpawnList.Length;i++) {
 			for(int ii=0;ii<fishSpawnList[i].fishCount;ii++) {
 				GameObject GOFish = (GameObject)GameObject.Instantiate(fishSpawnList[i].fishTypePrefab);

@@ -56,6 +56,10 @@ public class FishMoverBasic : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+		if(MenuStateMachine.instance.MenuBlocksAction()) {
+			return;
+		}
+
 		if(isDead) {
 			return;
 		}

@@ -16,7 +16,7 @@ public class RespawnIfSunkBelow : MonoBehaviour {
 	void Update () {
 		if(alreadyCounted == false && SeaBounds.instance.outOfBounds(transform.position)) {
 			if(reportKillsTo) {
-				reportKillsTo.SendMessage("FishKilledAndOffScreen");
+				reportKillsTo.SendMessage("FishKilledAndOffScreen",gameObject);
 			}
 			alreadyCounted = true;
 		}

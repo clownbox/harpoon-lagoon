@@ -21,6 +21,10 @@ public class HarpoonDrag : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+		if(MenuStateMachine.instance.MenuBlocksAction()) {
+			return;
+		}
+
 		transform.position += motion * Time.deltaTime;
 		if(hitTarget) {
 			transform.Rotate(Time.deltaTime * Mathf.Cos (Time.time*2.13f)*10.0f,
@@ -43,6 +47,10 @@ public class HarpoonDrag : MonoBehaviour {
 
 		for(int i=0;i<fishStack.Count;i++) {
 			GameObject eachFish = fishStack[i];
+			if(eachFish == null) { // broken reference, assume game has been reset, bail out!
+				Destroy(gameObject);
+				return;
+			}
 			Vector3 fishOffset = stackOffsets[i];
 			slideTo = stackSpot * stackPoint.transform.position +
 				(1.0f-stackSpot) * stackSlideEnd.transform.position;
@@ -70,6 +78,10 @@ public class HarpoonDrag : MonoBehaviour {
 	}
 
 	void FixedUpdate() {
+		if(MenuStateMachine.instance.MenuBlocksAction()) {
+			return;
+		}
+
 		motion *= 0.96f;
 		motion += 0.8f * Vector3.down * Time.fixedDeltaTime;
 	}

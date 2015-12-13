@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System;
 using System.Reflection;
+using System.Collections.Generic;
 
 [Serializable]
 public class FishTypeAndBaseAndMult
@@ -16,7 +17,22 @@ public class FishSpawnInfinite : MonoBehaviour {
 
 	private int totalFishTillRespawn = 0;
 
-	public void FishKilledAndOffScreen() {
+	List<GameObject> fishList;
+	
+	public void Restart() {
+		foreach(GameObject GOFish in fishList) {
+			if(GOFish) {
+				Destroy(GOFish);
+			}
+		}
+		levelNow = 0;
+		totalFishTillRespawn = 0;
+		SpawnForLevel();
+	}
+
+	public void FishKilledAndOffScreen(GameObject whichFish) {
+		fishList.Remove(whichFish);
+
 		totalFishTillRespawn--;
 		if(totalFishTillRespawn<=0) {
 			levelNow++;
@@ -37,6 +53,7 @@ public class FishSpawnInfinite : MonoBehaviour {
 					                                   fmbScript.shallowPerc,
 					                                   fmbScript.deepPerc);
 				GOFish.name = "Fish"+ fishScalingList[i].fishTypePrefab.name +" " + (ii+1);
+				fishList.Add(GOFish);
 				totalFishTillRespawn++;
 			}
 		}
@@ -44,6 +61,7 @@ public class FishSpawnInfinite : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+		fishList = new List<GameObject>();
 		SpawnForLevel();
 	}
 	
