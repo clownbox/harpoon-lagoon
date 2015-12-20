@@ -15,7 +15,7 @@ public class HarpoonDrag : MonoBehaviour {
 	void Start () {
 		fishStack = new List<GameObject>();
 		stackOffsets = new List<Vector3>();
-		GameObject.Destroy(gameObject,12.0f); // self destruct
+		GameObject.Destroy(gameObject,24.0f); // self destruct
 		motion = transform.up * 16.75f;
 	}
 	

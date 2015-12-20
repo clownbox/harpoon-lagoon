@@ -15,6 +15,8 @@ public class HarpoonThrower : MonoBehaviour {
 
 		GameObject harpoonGO = (GameObject)GameObject.Instantiate(harpoonPrefab,throwFrom,throwRot);
 		HarpoonDrag hdScript = harpoonGO.GetComponentInChildren<HarpoonDrag>();
-		ScoreManager.instance.NewSpearThrown( hdScript );
+		if(ScoreManager.instance.NewSpearThrown(hdScript) == false) {
+			Destroy(harpoonGO);
+		}
 	}
 }

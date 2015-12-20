@@ -4,6 +4,8 @@ using System.Collections;
 public class SeaBounds : MonoBehaviour {
 	public static SeaBounds instance;
 
+	public Transform spearTopRef;
+
 	public Transform topRef;
 	public Transform leftRef;
 	public Transform rightRef;
@@ -13,6 +15,8 @@ public class SeaBounds : MonoBehaviour {
 
 	private float edgeMargin;
 
+	[HideInInspector]
+	public float spearTop;
 	[HideInInspector]
 	public float top;
 	[HideInInspector]
@@ -35,6 +39,7 @@ public class SeaBounds : MonoBehaviour {
 
 		edgeMargin = rightRef.position.x-marginFromRightEdgeRef.transform.position.x;
 
+		spearTop = spearTopRef.position.y-edgeMargin;
 		top = topRef.position.y-edgeMargin;
 		left = leftRef.position.x+edgeMargin;
 		right = rightRef.position.x-edgeMargin;
@@ -84,6 +89,13 @@ public class SeaBounds : MonoBehaviour {
 		        someVect.x < left-edgeMargin*2 ||
 		        someVect.y > top+edgeMargin*2 ||
 		        someVect.y < bottom-edgeMargin*2);
+	}
+
+	public bool spearOutOfBounds(Vector3 someVect) {
+		return (someVect.x > right+edgeMargin*2 ||
+			someVect.x < left-edgeMargin*2 ||
+			someVect.y > spearTop+edgeMargin*2 ||
+			someVect.y < bottom-edgeMargin*2);
 	}
 
 	public Vector3 randPosWithinMinMaxRange(Vector3 startFrom, float minDist, float maxDist,

@@ -34,9 +34,12 @@ public class FishSpawnInfinite : MonoBehaviour {
 		fishList.Remove(whichFish);
 
 		totalFishTillRespawn--;
-		if(totalFishTillRespawn<=0) {
-			levelNow++;
-			SpawnForLevel();
+
+		if(ScoreManager.instance.ShowGameOverIfNeeded() == false) {
+			if(totalFishTillRespawn <= 0) {
+				levelNow++;
+				SpawnForLevel();
+			}
 		}
 	}
 
