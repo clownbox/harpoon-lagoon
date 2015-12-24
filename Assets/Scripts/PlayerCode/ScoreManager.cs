@@ -5,9 +5,13 @@ using System.Collections;
 public class ScoreManager : MonoBehaviour {
 	public int startSpears = 12;
 
+	public int extraHarpoonThreshold = 400;
+	public bool extraHarpoonEarnedSinceLastThrow = false;
+
 	public static ScoreManager instance;
 	public GameObject scorePopPrefab;
 
+	public Text harpoonAwardMessage;
 	public Text totalScoreText;
 	public Text lastThrowScoreText;
 	public Text spearsLeftText;
@@ -25,10 +29,16 @@ public class ScoreManager : MonoBehaviour {
 
 	public Canvas uiCanvas;
 
+	public void ClearSpearText() {
+		harpoonAwardMessage.text=extraHarpoonThreshold + " pt throw to gain harpoon";
+	}
+
 	public void ResetScore() {
 		spearsOut = 0;
 		spearsLeft = startSpears;
 		totalScore = lastThrowScore = 0;
+		extraHarpoonEarnedSinceLastThrow = false;
+		ClearSpearText();
 		totalScoreText.text = "0"+"   ";
 		lastThrowScoreText.text = "0";
 		UpdateSpearCount();
@@ -68,7 +78,9 @@ public class ScoreManager : MonoBehaviour {
 			lastThrownSpear = newOne;
 			lastThrowScoreText.text = "" + lastThrowScore;
 			lastThrowScore = 0;
+			extraHarpoonEarnedSinceLastThrow = false;
 			spearsLeft--;
+			ClearSpearText();
 			UpdateSpearCount();
 			return true;
 		}
@@ -85,6 +97,14 @@ public class ScoreManager : MonoBehaviour {
 		if(thrownSpear == lastThrownSpear) {
 			lastThrowScore += scoreAdded;
 			lastThrowScoreText.text = ""+lastThrowScore;
+			if(lastThrowScore >= extraHarpoonThreshold &&
+				extraHarpoonEarnedSinceLastThrow == false) {
+
+				spearsLeft++;
+				harpoonAwardMessage.text="You earned an extra harpoon!";
+				extraHarpoonEarnedSinceLastThrow = true;
+				UpdateSpearCount();
+			}
 		}
 
 		GameObject scoreGO = GameObject.Instantiate(scorePopPrefab);
