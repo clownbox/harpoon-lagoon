@@ -27,6 +27,8 @@ public class ScoreManager : MonoBehaviour {
 
 	private int spearsOut;
 
+	public bool waitingForGameOver = false;
+
 	public Canvas uiCanvas;
 
 	public void ClearSpearText() {
@@ -42,6 +44,7 @@ public class ScoreManager : MonoBehaviour {
 		totalScoreText.text = "0"+"   ";
 		lastThrowScoreText.text = "0";
 		UpdateSpearCount();
+		waitingForGameOver = false;
 	}
 
 	public void UpdateSpearCount() {
@@ -49,14 +52,21 @@ public class ScoreManager : MonoBehaviour {
 	}
 
 	public bool ShowGameOverIfNeeded() {
-		if(spearsLeft <= 0) {
-			if(gameOverPanel.activeSelf == false) {
-				MenuStateMachine.instance.AllMenusOffExcept(gameOverPanel);
-				endScoreText.text = "congrats you earned " + totalScore;
+		if(waitingForGameOver == false) {
+			if(spearsLeft <= 0) {
+				if(gameOverPanel.activeSelf == false) {
+					StartCoroutine(ShowGameOverSoon());
+				}
 			}
-			return true;
 		}
-		return false;
+		return waitingForGameOver;
+	}
+
+	IEnumerator ShowGameOverSoon() {
+		waitingForGameOver = true;
+		yield return new WaitForSeconds(0.5f);
+		MenuStateMachine.instance.AllMenusOffExcept(gameOverPanel);
+		endScoreText.text = "congrats you earned " + totalScore;
 	}
 
 	public void SpearOffScreen(GameObject whichSpear) {

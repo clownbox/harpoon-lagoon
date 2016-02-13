@@ -8,6 +8,9 @@ public class HarpoonDrag : MonoBehaviour {
 	List<GameObject> fishStack;
 	List<Vector3> stackOffsets;
 
+	public static float MAX_FORCE = 16.75f;
+	public static float throwForce;
+
 	Vector3 motion;
 	bool hitTarget = false;
 
@@ -16,7 +19,8 @@ public class HarpoonDrag : MonoBehaviour {
 		fishStack = new List<GameObject>();
 		stackOffsets = new List<Vector3>();
 		GameObject.Destroy(gameObject,24.0f); // self destruct
-		motion = transform.up * 16.75f;
+
+		motion = transform.up * throwForce;
 	}
 	
 	// Update is called once per frame
