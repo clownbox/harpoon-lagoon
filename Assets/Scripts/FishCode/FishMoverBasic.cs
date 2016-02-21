@@ -2,8 +2,12 @@
 using System.Collections;
 
 public class FishMoverBasic : MonoBehaviour {
+	public enum FishBreed {STANDARD,SHIFTY,TINYFAST,GOLDEN,FISH_KINDS,NONE};
+
+	public FishBreed myKind; // simpler test for uniqueness when matching
 	Vector3 swimmingFrom;
 	Vector3 swimmingTo;
+
 	float swimTimeStarted;
 	float swimTimeEnd;
 	bool seekingGoal;
@@ -35,7 +39,7 @@ public class FishMoverBasic : MonoBehaviour {
 		seekingGoal = true;
 		swimmingFrom = transform.position;
 		swimmingTo = SeaBounds.instance.randPosWithinMinMaxRange(swimmingFrom,1.3f,2.9f,this);
-		swimTimeStarted = Time.time;
+		swimTimeStarted = FishTime.time;
 		swimTimeEnd = swimTimeStarted + timePerSprint;
 	}
 
@@ -64,18 +68,18 @@ public class FishMoverBasic : MonoBehaviour {
 			return;
 		}
 		if(seekingGoal) {
-			if(Time.time > swimTimeEnd) {
+			if(FishTime.time > swimTimeEnd) {
 				seekingGoal = false;
 				StartCoroutine( WaitBeforeNewGoal() );
 			} else { // not out of time, still seeking goal
-				float percProgress = (Time.time-swimTimeStarted)/timePerSprint;
+				float percProgress = (FishTime.time-swimTimeStarted)/timePerSprint;
 				float invSq = 1.0f-(1.0f-percProgress)*(1.0f-percProgress); // sprint then smooth slowdown
 				transform.position = Vector3.Lerp(swimmingFrom,swimmingTo, invSq);
 			}
 		} else { // no goal, drift
 			Vector3 driftPos = transform.position +
-				Mathf.Cos (Time.time/1.3f+randPhaseOffset) * transform.right * driftX * Time.deltaTime +
-					Mathf.Cos (Time.time/4.1f+randPhaseOffset) * transform.up * driftY * Time.deltaTime;
+				Mathf.Cos (FishTime.time/1.3f+randPhaseOffset) * transform.right * driftX * FishTime.deltaTime +
+				Mathf.Cos (FishTime.time/4.1f+randPhaseOffset) * transform.up * driftY * FishTime.deltaTime;
 			transform.position = SeaBounds.instance.constrain( driftPos );
 		} // end of else/drift
 	} // end of Update()

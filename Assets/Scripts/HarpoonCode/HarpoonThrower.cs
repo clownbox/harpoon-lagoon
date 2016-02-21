@@ -4,6 +4,7 @@ using System.Collections;
 
 public class HarpoonThrower : MonoBehaviour {
 	public GameObject harpoonPrefab;
+
 	public enum THROW_INTERACTION
 	{
 		Tap,
@@ -13,7 +14,17 @@ public class HarpoonThrower : MonoBehaviour {
 	};
 	public THROW_INTERACTION throwInteraction = THROW_INTERACTION.Tap; 
 	THROW_INTERACTION wasTI = THROW_INTERACTION.NotInitializedYet; // to detect change from inspector or outside of class
-		
+
+	public enum THROW_NINJAMODE
+	{
+		Normal,
+		FastLine,
+		SlowFish,
+		NotInitializedYet
+	};
+	public THROW_NINJAMODE throwNinjaMode = THROW_NINJAMODE.Normal; 
+	THROW_NINJAMODE wasNM = THROW_NINJAMODE.NotInitializedYet; // to detect change from inspector or outside of class
+
 	public BoxCollider skyTouch;
 	public BoxCollider waterTouch;
 
@@ -24,10 +35,10 @@ public class HarpoonThrower : MonoBehaviour {
 		if((int)throwInteraction >= (int)THROW_INTERACTION.NotInitializedYet) {
 			throwInteraction = (THROW_INTERACTION)0;
 		}
-		enforceThrowInteraction();
+		enforceThrowInteraction(true);
 	}
 
-	void enforceThrowInteraction() {
+	void enforceThrowInteraction(bool showOnButtonText) {
 		if(wasTI != throwInteraction) {
 			wasTI = throwInteraction;
 			DashedLine.enableHoldLine = (throwInteraction != THROW_INTERACTION.Tap);
@@ -38,12 +49,36 @@ public class HarpoonThrower : MonoBehaviour {
 			skyTouch.enabled = (throwInteraction == THROW_INTERACTION.PullBack);
 			waterTouch.enabled = !skyTouch.enabled;
 
-			cycleInteractionText.text = ""+throwInteraction; // debug display
+			if(showOnButtonText) {
+				cycleInteractionText.text = ""+throwInteraction; // debug display
+			}
+		}
+	}
+
+	public void CycleNinjaMode() {
+		throwNinjaMode++;
+		if((int)throwNinjaMode >= (int)THROW_NINJAMODE.NotInitializedYet) {
+			throwNinjaMode = (THROW_NINJAMODE)0;
+		}
+		enforceNinjaThrowMode(true);
+	}
+
+	void enforceNinjaThrowMode(bool showOnButtonText) {
+		if(wasNM != throwNinjaMode) {
+			wasNM = throwNinjaMode;
+
+			HarpoonDrag.fishTorquesSpear = (throwNinjaMode != THROW_NINJAMODE.FastLine);
+			FishTime.useBulletTime = (throwNinjaMode == THROW_NINJAMODE.SlowFish);
+
+			if(showOnButtonText) {
+				cycleInteractionText.text = ""+throwNinjaMode; // debug display
+			}
 		}
 	}
 
 	void Update() {
-		enforceThrowInteraction();
+		enforceThrowInteraction(false);
+		enforceNinjaThrowMode(true);
 	}
 
 	public void ThrowAt (Vector3 targetPoint) {
@@ -63,7 +98,11 @@ public class HarpoonThrower : MonoBehaviour {
 
 			HarpoonDrag.throwForce = HarpoonDrag.MAX_FORCE * bowPull;
 		} else {
-			HarpoonDrag.throwForce = HarpoonDrag.MAX_FORCE;
+			if(throwNinjaMode == THROW_NINJAMODE.FastLine) {
+				HarpoonDrag.throwForce = HarpoonDrag.MAX_FORCE * 2.0f;
+			} else {
+				HarpoonDrag.throwForce = HarpoonDrag.MAX_FORCE;
+			}
 		}
 
 		throwFrom.z = SeaBounds.instance.fishLayerZ;

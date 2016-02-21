@@ -10,7 +10,7 @@ public class runLaps : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
-		transform.position += Time.deltaTime * moveRate * Vector3.right;
+		transform.position += FishTime.deltaTime * moveRate * Vector3.right;
 		if(transform.position.x < SeaBounds.instance.left - distOffScreenToAvoidPop) {
 			Vector3 copyVec = transform.position;
 			copyVec.x = SeaBounds.instance.right + distOffScreenToAvoidPop;

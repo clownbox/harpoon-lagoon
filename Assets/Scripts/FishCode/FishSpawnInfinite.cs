@@ -19,7 +19,7 @@ public class FishSpawnInfinite : MonoBehaviour {
 
 	List<GameObject> fishList;
 	
-	public void Restart() {
+	/*public void Restart() { // if wanting to use this again need to revisit how it gets called instead of FishKilledAndOffScreen_Refill
 		foreach(GameObject GOFish in fishList) {
 			if(GOFish) {
 				Destroy(GOFish);
@@ -28,7 +28,7 @@ public class FishSpawnInfinite : MonoBehaviour {
 		levelNow = 0;
 		totalFishTillRespawn = 0;
 		SpawnForLevel();
-	}
+	}*/
 
 	public void FishKilledAndOffScreen(GameObject whichFish) {
 		fishList.Remove(whichFish);
