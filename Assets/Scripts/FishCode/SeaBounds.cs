@@ -66,7 +66,12 @@ public class SeaBounds : MonoBehaviour {
 
 	public Vector3 randPosBandBias(float depthBiasOdds, float shallowPerc, float deepPerc) {
 		Vector3 toRet = Vector3.zero;
-		toRet.x = Random.Range(left, right);
+		if(Random.Range(0,100) < 50) {
+			toRet.x = left;
+		} else  {
+			toRet.x = right;
+		}
+		// toRet.x = Random.Range(left, right);
 		if(Random.Range(0.0f, 1.0f) <= depthBiasOdds ) {
 			float range = top - bottom;
 			toRet.y = bottom + range * (1.0f-Random.Range(shallowPerc,deepPerc));
