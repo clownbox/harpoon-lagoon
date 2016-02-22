@@ -98,7 +98,8 @@ public class HarpoonDrag : MonoBehaviour {
 
 	void OnTriggerEnter(Collider other) {
 		FishMoverBasic fmbScript = other.gameObject.GetComponent<FishMoverBasic>();
-		if(fmbScript && fmbScript.IsAlive() && motion.magnitude >= 1.0f) {
+		if(fmbScript && fmbScript.IsAlive() && motion.magnitude >= 1.0f &&
+			fishStack.Count < 3) { // limiting to 3 fish on pole at a time
 
 			ScoreManager.instance.ScorePop(fmbScript,
 			                               this);
