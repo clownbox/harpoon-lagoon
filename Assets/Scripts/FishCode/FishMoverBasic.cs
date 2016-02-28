@@ -46,9 +46,11 @@ public class FishMoverBasic : MonoBehaviour {
 
 		seekingGoal = true;
 		swimmingFrom = transform.position;
-		swimmingTo = SeaBounds.instance.randPosWithinMinMaxRange(swimmingFrom,1.3f,2.9f,this);
+		swimmingTo = SeaBounds.instance.randPosWithinMinMaxRange(swimmingFrom,
+			1.3f*WeatherController.weatherSprintDistMult,
+			2.9f*WeatherController.weatherSprintDistMult,this);
 		swimTimeStarted = FishTime.time;
-		swimTimeEnd = swimTimeStarted + timePerSprint;
+		swimTimeEnd = swimTimeStarted + timePerSprint* WeatherController.weatherSprintDelayMult;
 	}
 
 	public bool IsAlive() {
@@ -82,6 +84,7 @@ public class FishMoverBasic : MonoBehaviour {
 		isDead = false;
 		randPhaseOffset = Random.Range(0.0f,Mathf.PI*2.0f);
 		PickNewGoal();
+		// swimmingTo = SeaBounds.instance.randPos();
 	}
 	
 	// Update is called once per frame
@@ -113,8 +116,11 @@ public class FishMoverBasic : MonoBehaviour {
 			}
 		} else { // no goal, drift
 			Vector3 driftPos = transform.position +
-				Mathf.Cos (FishTime.time/1.3f+randPhaseOffset) * transform.right * driftX * FishTime.deltaTime +
-				Mathf.Cos (FishTime.time/4.1f+randPhaseOffset) * transform.up * driftY * FishTime.deltaTime;
+				Mathf.Cos (FishTime.time/1.3f+randPhaseOffset) * transform.right * driftX * FishTime.deltaTime
+				*WeatherController.weatherDriftMult
+				+
+				Mathf.Cos (FishTime.time/4.1f+randPhaseOffset) * transform.up * driftY * FishTime.deltaTime
+				*WeatherController.weatherDriftMult;
 			transform.position = SeaBounds.instance.constrain( driftPos );
 		} // end of else/drift
 	} // end of Update()

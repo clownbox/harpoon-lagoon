@@ -64,12 +64,16 @@ public class SeaBounds : MonoBehaviour {
 		return tempRand;
 	}
 
-	public Vector3 randPosBandBias(float depthBiasOdds, float shallowPerc, float deepPerc) {
+	public Vector3 randPosBandBias(float depthBiasOdds, float shallowPerc, float deepPerc, bool anyHoriz = false) {
 		Vector3 toRet = Vector3.zero;
-		if(Random.Range(0,100) < 50) {
-			toRet.x = left;
-		} else  {
-			toRet.x = right;
+		if(anyHoriz) {
+			toRet.x = Random.Range(left, right);
+		} else {
+			if(Random.Range(0, 100) < 50) {
+				toRet.x = left;
+			} else {
+				toRet.x = right;
+			}
 		}
 		// toRet.x = Random.Range(left, right);
 		if(Random.Range(0.0f, 1.0f) <= depthBiasOdds ) {
@@ -83,7 +87,16 @@ public class SeaBounds : MonoBehaviour {
 	}
 
 	public Vector3 constrain(Vector3 rawVect) {
+		// first trying to "reflect" overshot goal off edge to avoid congregating near edge
+		if(rawVect.x < left) {
+			rawVect.x = left + (left-rawVect.x);
+		}
+		if(rawVect.x > right) {
+			rawVect.x = right + (right - rawVect.x);
+		}
+		// clamping as a sanity measure in case goal projected far outside edge
 		rawVect.x = Mathf.Clamp(rawVect.x,left,right);
+
 		rawVect.y = Mathf.Clamp(rawVect.y,bottom, top);
 		return rawVect;
 	}
@@ -110,6 +123,10 @@ public class SeaBounds : MonoBehaviour {
 		                    randPosBandBias(fmb.depthBiasOdds,
 		                fmb.shallowPerc,
 		                fmb.deepPerc) );
+		// this next bit helps reduce bunching near edges
+		if(Random.Range(0.0f,1.0f) < 0.65f) { // X% of the time, average halfway toward center
+			randGoal.x = (randGoal.x + (left + right) * 0.5f) * 0.5f; // weight toward middle
+		}
 		Vector3 normToward = (randGoal - startFrom).normalized;
 		Vector3 inRange = startFrom+normToward*Random.Range(minDist,maxDist);
 		return constrain(inRange);

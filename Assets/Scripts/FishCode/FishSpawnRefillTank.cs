@@ -18,6 +18,7 @@ public class FishSpawnRefillTank : MonoBehaviour {
 	public FishTypeAndProbability[] fishScalingList;
 	public int howManyToKeep = 5;
 	float totalWeight = 0.0f;
+	private bool firstTimeFillingTank = true;
 
 	public bool debugOutput = false;
 
@@ -29,7 +30,7 @@ public class FishSpawnRefillTank : MonoBehaviour {
 				Destroy(GOFish);
 			}
 		}
-		SpawnUpToCap();
+		SpawnUpToCap(true);
 	}
 
 	public void FishKilledAndOffScreen_Refill(GameObject whichFish) {
@@ -63,7 +64,7 @@ public class FishSpawnRefillTank : MonoBehaviour {
 		}
 	}
 
-	void SpawnUpToCap() {
+	void SpawnUpToCap(bool isFirstFillingSoGoAnywhere = false) {
 		int[] typesCount = new int[(int)FishMoverBasic.FishBreed.FISH_KINDS];
 
 		for(int iii = 0; iii < (int)FishMoverBasic.FishBreed.FISH_KINDS; iii++) {
@@ -126,7 +127,8 @@ public class FishSpawnRefillTank : MonoBehaviour {
 			GOFish.transform.position =
 				SeaBounds.instance.randPosBandBias(fmbScript.depthBiasOdds,
 					fmbScript.shallowPerc,
-					fmbScript.deepPerc);
+					fmbScript.deepPerc,
+					isFirstFillingSoGoAnywhere);
 			GOFish.name = "Fish"+ fishScalingList[spawnType].fishTypePrefab.name +" " + (ii+1);
 			fishList.Add(GOFish);
 		}
@@ -136,6 +138,6 @@ public class FishSpawnRefillTank : MonoBehaviour {
 	void Start () {
 		fishList = new List<GameObject>();
 		FishListWeightsSetup();
-		SpawnUpToCap();
+		SpawnUpToCap(true);
 	}
 }
