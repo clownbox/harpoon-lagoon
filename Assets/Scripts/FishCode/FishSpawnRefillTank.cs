@@ -64,7 +64,6 @@ public class FishSpawnRefillTank : MonoBehaviour {
 	}
 
 	void SpawnUpToCap() {
-		GameObject forceTypeToMeetMin;
 		int[] typesCount = new int[(int)FishMoverBasic.FishBreed.FISH_KINDS];
 
 		for(int iii = 0; iii < (int)FishMoverBasic.FishBreed.FISH_KINDS; iii++) {

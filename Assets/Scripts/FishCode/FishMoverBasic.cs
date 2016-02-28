@@ -12,6 +12,9 @@ public class FishMoverBasic : MonoBehaviour {
 	float swimTimeEnd;
 	bool seekingGoal;
 	bool isDead;
+
+	Transform modelVis;
+
 	public int scoreValue;
 
 	public float timePerSprint = 3.9f;
@@ -24,7 +27,12 @@ public class FishMoverBasic : MonoBehaviour {
 	public float shallowPerc = 0.3f;
 	public float deepPerc = 0.85f;
 
+	float sideToSideFacingFloat = 0.0f;
+	float wiggleOscFakeTime = 0.0f;
+
 	float randPhaseOffset;
+	float lastTurnX;
+	float enoughXToTurn = 0.15f;
 
 	IEnumerator WaitBeforeNewGoal() {
 		yield return new WaitForSeconds( Random.Range(minDriftTime, maxDriftTime) );
@@ -51,8 +59,26 @@ public class FishMoverBasic : MonoBehaviour {
 		isDead = true;
 	}
 
+	void updateFacingTarget() {
+		float diffX = transform.position.x - lastTurnX;
+		if(Mathf.Abs(diffX) > enoughXToTurn) {
+			if(diffX > 0.0f) {
+				sideToSideFacingFloat = 0.0f;
+			} else {
+				sideToSideFacingFloat = 180.0f;
+			}
+			lastTurnX = transform.position.x;
+		}
+	}
+
 	// Use this for initialization
 	void Start () {
+		Renderer rendChild = gameObject.GetComponentInChildren<Renderer>();
+		modelVis = rendChild.transform;
+
+		updateFacingTarget();
+		modelVis.rotation = Quaternion.Euler(270.0f, 90.0f + sideToSideFacingFloat, 0.0f);
+
 		isDead = false;
 		randPhaseOffset = Random.Range(0.0f,Mathf.PI*2.0f);
 		PickNewGoal();
@@ -60,9 +86,18 @@ public class FishMoverBasic : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if(MenuStateMachine.instance.MenuBlocksAction()) {
+		if(MenuStateMachine.instance.MenuBlocksAction() || isDead) {
 			return;
 		}
+
+		updateFacingTarget();
+
+		float wigglePower = Vector3.Distance(swimmingFrom, swimmingTo);
+		wiggleOscFakeTime += Time.deltaTime * wigglePower * 1.2f;
+		float wiggleOsc = Mathf.Cos( wiggleOscFakeTime ) * 20.0f;
+		modelVis.rotation = Quaternion.Slerp(modelVis.rotation,
+			Quaternion.Euler(270.0f, 90.0f + sideToSideFacingFloat + wiggleOsc, 0.0f),
+			Time.deltaTime * 2.3f);
 
 		if(isDead) {
 			return;

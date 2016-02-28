@@ -14,6 +14,7 @@ public class HarpoonDrag : MonoBehaviour {
 	public static float RETRACTED_CLOSE_ENOUGH_TO_VANISH = 0.2f;
 	public static int MAX_FISH_PER_HARPOON = 3;
 	public static int MAX_FISH_TO_SCORE = 3;
+	public static float MIN_KILL_MOTION = 1.0f;
 
 	public static float MAX_FORCE = 16.75f;
 	public static float throwForce;
@@ -74,14 +75,22 @@ public class HarpoonDrag : MonoBehaviour {
 		}
 
 		transform.position += motion * Time.deltaTime;
+
+		if(pausingBeforeReturn) {
+			return;
+		}
+
 		if(hitTarget && fishTorquesSpear) {
 			transform.Rotate(Time.deltaTime * Mathf.Cos (Time.time*2.13f)*10.0f,
 			                 Time.deltaTime * Mathf.Cos (Time.time*1.2f)*10.0f,
 			                 Time.deltaTime * Mathf.Cos (Time.time*3.28f)*10.0f);
 		}
 
-		if(motion.magnitude < 1.0f && ScoreManager.instance.spearsOut <= 1) {
-			FishTime.fishPacing = 1.0f; // restore in case previously using FishTime.useBulletTime
+		if(motion.magnitude < MIN_KILL_MOTION) {
+			StartCoroutine( DelayThenRetract() );
+			if(ScoreManager.instance.spearsOut <= 1) {
+				FishTime.fishPacing = 1.0f; // restore in case previously using FishTime.useBulletTime
+			}
 		}
 
 		fishPoleSlide();
@@ -147,8 +156,8 @@ public class HarpoonDrag : MonoBehaviour {
 			return;
 		}
 
-		FishMoverBasic fmbScript = other.gameObject.GetComponent<FishMoverBasic>();
-		if(fmbScript && fmbScript.IsAlive() && motion.magnitude >= 1.0f &&
+		FishMoverBasic fmbScript = other.gameObject.GetComponentInParent<FishMoverBasic>();
+		if(fmbScript && fmbScript.IsAlive() && motion.magnitude >= MIN_KILL_MOTION &&
 			fishStack.Count < MAX_FISH_PER_HARPOON) { // limiting to 3 fish on pole at a time
 
 			ScoreManager.instance.ScorePop(fmbScript,
@@ -230,17 +239,17 @@ public class HarpoonDrag : MonoBehaviour {
 			}
 
 			other.enabled = false;
-			other.transform.parent = transform;
+			other.transform.parent.parent = transform;
 			hitTarget = true;
 		}
 		if(fishStack.Count >= MAX_FISH_PER_HARPOON) {
 			motion = Vector3.zero; // snap to halt
-			pausingBeforeReturn = true;
 			StartCoroutine( DelayThenRetract() );
 		}
 	}
 
 	IEnumerator DelayThenRetract() {
+		pausingBeforeReturn = true;
 		yield return new WaitForSeconds(0.75f);
 		isRopeReturning = true;
 	}

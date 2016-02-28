@@ -52,7 +52,7 @@ public class ScoreManager : MonoBehaviour {
 	}
 
 	public void UpdateSpearCount() {
-		spearsLeftText.text = "Spears: "+spearsLeft;
+		spearsLeftText.text = "Harpoon"+(spearsLeft==1 ? "" : "s")+": "+spearsLeft;
 	}
 
 	public bool ShowGameOverIfNeeded() {
