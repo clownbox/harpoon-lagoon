@@ -8,10 +8,19 @@ public class HarpoonDrag : MonoBehaviour {
 	List<GameObject> fishStack;
 	List<Vector3> stackOffsets;
 
+	public Transform myRopeSource;
+
+	public static float RETRACT_SPEED = 8.0f;
+	public static float RETRACTED_CLOSE_ENOUGH_TO_VANISH = 0.2f;
+	public static int MAX_FISH_PER_HARPOON = 3;
+	public static int MAX_FISH_TO_SCORE = 3;
+
 	public static float MAX_FORCE = 16.75f;
 	public static float throwForce;
 
 	public static bool fishTorquesSpear = true;
+	public bool pausingBeforeReturn = false;
+	public bool isRopeReturning = false;
 
 	Vector3 motion;
 	bool hitTarget = false;
@@ -20,7 +29,6 @@ public class HarpoonDrag : MonoBehaviour {
 	void Start () {
 		fishStack = new List<GameObject>();
 		stackOffsets = new List<Vector3>();
-		GameObject.Destroy(gameObject,50.0f); // self destruct in case it somehow misses edge boundary triggers
 
 		motion = transform.up * throwForce;
 	}
@@ -28,6 +36,40 @@ public class HarpoonDrag : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		if(MenuStateMachine.instance.MenuBlocksAction()) {
+			return;
+		}
+
+		if(isRopeReturning) {
+
+			if(myRopeSource == null) {
+				Debug.Log("myRopeSource missing on harpoon");
+				return;
+			}
+
+			Vector3 diffBack = myRopeSource.position - transform.position;
+			transform.position += diffBack.normalized * Time.deltaTime * RETRACT_SPEED;
+			if(diffBack.magnitude < RETRACTED_CLOSE_ENOUGH_TO_VANISH) {
+				ScoreManager.instance.TallyHookedScore();
+
+				for(int i = 0; i < transform.childCount; i++) {
+					GameObject eachKid = transform.GetChild(i).gameObject;
+					RespawnIfSunkBelow risb = eachKid.GetComponent<RespawnIfSunkBelow>();
+					if(risb) {
+						risb.CountFish();
+					}
+				}
+
+				ScoreManager.instance.SpearReturned(gameObject);
+
+				Destroy(gameObject);
+				Destroy(myRopeSource.parent.gameObject);
+				string harpoonIDToClear = myRopeSource.name.Replace("rope_", "");
+				string tubeRendToClear = "TubeRenderer_" + harpoonIDToClear;
+
+				// Debug.Log(tubeRendToClear);
+				GameObject ropeRendToRemove = GameObject.Find(tubeRendToClear);
+				Destroy(ropeRendToRemove);
+			}
 			return;
 		}
 
@@ -96,10 +138,18 @@ public class HarpoonDrag : MonoBehaviour {
 		motion += 0.8f * Vector3.down * Time.fixedDeltaTime;
 	}
 
+	public void retractRope() {
+		isRopeReturning = true;
+	}
+
 	void OnTriggerEnter(Collider other) {
+		if(pausingBeforeReturn) {
+			return;
+		}
+
 		FishMoverBasic fmbScript = other.gameObject.GetComponent<FishMoverBasic>();
 		if(fmbScript && fmbScript.IsAlive() && motion.magnitude >= 1.0f &&
-			fishStack.Count < 3) { // limiting to 3 fish on pole at a time
+			fishStack.Count < MAX_FISH_PER_HARPOON) { // limiting to 3 fish on pole at a time
 
 			ScoreManager.instance.ScorePop(fmbScript,
 			                               this);
@@ -119,7 +169,7 @@ public class HarpoonDrag : MonoBehaviour {
 			stackOffsets.Add ( tempVect );
 			fishStack.Add(fmbScript.gameObject);
 
-			if(fishStack.Count >= 3) {
+			if(fishStack.Count >= MAX_FISH_TO_SCORE) {
 				// look at the string passed to NewMessage() for indication of which rule it's testing for
 
 				float scaleWas = 0.0f;
@@ -183,5 +233,16 @@ public class HarpoonDrag : MonoBehaviour {
 			other.transform.parent = transform;
 			hitTarget = true;
 		}
+		if(fishStack.Count >= MAX_FISH_PER_HARPOON) {
+			motion = Vector3.zero; // snap to halt
+			pausingBeforeReturn = true;
+			StartCoroutine( DelayThenRetract() );
+		}
 	}
+
+	IEnumerator DelayThenRetract() {
+		yield return new WaitForSeconds(0.75f);
+		isRopeReturning = true;
+	}
+
 }

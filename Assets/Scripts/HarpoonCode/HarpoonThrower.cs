@@ -3,7 +3,11 @@ using UnityEngine.UI; // for debug interaction-style cycle button
 using System.Collections;
 
 public class HarpoonThrower : MonoBehaviour {
+	public GameObject ropeStart;
+
 	public GameObject harpoonPrefab;
+
+	public static bool limitOneHarpoonAtTime = true; // (confirmed 9pm Feb 27 via Slack)
 
 	public enum THROW_INTERACTION
 	{
@@ -57,7 +61,7 @@ public class HarpoonThrower : MonoBehaviour {
 
 	public void CycleNinjaMode() {
 		throwNinjaMode++;
-		if((int)throwNinjaMode >= (int)THROW_NINJAMODE.NotInitializedYet) {
+		if((int)throwNinjaMode >= (int)THROW_NINJAMODE.SlowFish) { // currently skipping slow fish mode, rope not supported
 			throwNinjaMode = (THROW_NINJAMODE)0;
 		}
 		enforceNinjaThrowMode(true);
@@ -83,6 +87,12 @@ public class HarpoonThrower : MonoBehaviour {
 
 	public void ThrowAt (Vector3 targetPoint) {
 		Vector3 throwFrom = transform.position;
+
+		if(limitOneHarpoonAtTime) {
+			if(ScoreManager.instance.spearsOut > 0) { // no throw until prev throw returns
+				return;
+			}
+		}
 
 		if(throwInteraction == THROW_INTERACTION.PullBack) {
 			Vector3 ptDiff = targetPoint - throwFrom;
@@ -111,8 +121,25 @@ public class HarpoonThrower : MonoBehaviour {
 		Quaternion throwRot = Quaternion.LookRotation(targetPoint-throwFrom,Vector3.up);
 		throwRot *= Quaternion.AngleAxis(90.0f,Vector3.right);
 
+		GameObject ropeBoth = (GameObject)GameObject.Instantiate(ropeStart,throwFrom,throwRot);
+		GameObject ropeSource = ropeBoth.transform.Find("Rope Start").gameObject;
+		ropeSource.name = "rope_"+CurrentHarpoonID.harpoonID;
+
+		ropeSource.transform.position = transform.position - Vector3.forward * 2.0f;
+
+		GameObject ropeDest = GameObject.Find("Rope End");
+		ropeDest.name = "Rope Live End";
+
 		GameObject harpoonGO = (GameObject)GameObject.Instantiate(harpoonPrefab,throwFrom,throwRot);
+		TrackObj trackingScript = ropeDest.GetComponent<TrackObj>();
+
+		trackingScript.matchLoc = harpoonGO.transform.GetChild(0).Find("HarpoonRopeEnd");
+
 		HarpoonDrag hdScript = harpoonGO.GetComponentInChildren<HarpoonDrag>();
+		hdScript.myRopeSource = ropeSource.transform;
+
+		CurrentHarpoonID.harpoonID++;
+
 		if(ScoreManager.instance.NewSpearThrown(hdScript) == false) {
 			Destroy(harpoonGO);
 		}

@@ -28,7 +28,7 @@ public class RespawnIfSunkBelow : MonoBehaviour {
 
 		if(isSpearNotFish) {
 			if(SeaBounds.instance.spearOutOfBounds(transform.position)) {
-				ScoreManager.instance.SpearOffScreen(gameObject);
+				ScoreManager.instance.SpearStartReturning(gameObject);
 				alreadyCounted = true;
 			}
 		} else {

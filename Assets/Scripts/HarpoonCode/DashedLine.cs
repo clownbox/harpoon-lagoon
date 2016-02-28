@@ -29,6 +29,11 @@ public class DashedLine : MonoBehaviour {
 	}
 
 	void Update() {
+		if(ScoreManager.instance.spearsOut > 0 && HarpoonThrower.limitOneHarpoonAtTime) {
+			drawingLine = false;
+			return;
+		}
+
 		if(Input.GetMouseButtonDown(0)) {
 			drawingLine = true;
 		}

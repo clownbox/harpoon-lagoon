@@ -20,6 +20,10 @@ public class ClickTouchReportToThrow : MonoBehaviour {
 				return; // avoids double throw from sky and water mouse detection areas both running same throw code
 			}
 
+			if(ScoreManager.instance.spearsOut > 0 && HarpoonThrower.limitOneHarpoonAtTime) {
+				return;
+			}
+
 			if( (throwUponReleaseNotPress == true && Input.GetButtonUp("Fire1")) ||
 				(throwUponReleaseNotPress == false && Input.GetButtonDown("Fire1"))) {
 

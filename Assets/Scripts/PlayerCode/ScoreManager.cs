@@ -16,12 +16,15 @@ public class ScoreManager : MonoBehaviour {
 	public Text lastThrowScoreText;
 	public Text spearsLeftText;
 
+	public Text nextScoreText;
+
 	public GameObject gameOverPanel;
 	public Text endScoreText;
 
 	public HarpoonDrag lastThrownSpear;
 
 	private int totalScore;
+	private int nextScore;
 	private int lastThrowScore;
 	private int spearsLeft;
 
@@ -38,10 +41,11 @@ public class ScoreManager : MonoBehaviour {
 	public void ResetScore() {
 		spearsOut = 0;
 		spearsLeft = startSpears;
-		totalScore = lastThrowScore = 0;
+		totalScore = lastThrowScore = nextScore = 0;
 		extraHarpoonEarnedSinceLastThrow = false;
 		ClearSpearText();
 		totalScoreText.text = "0"+"   ";
+		nextScoreText.text = "";
 		lastThrowScoreText.text = "0";
 		UpdateSpearCount();
 		waitingForGameOver = false;
@@ -69,20 +73,27 @@ public class ScoreManager : MonoBehaviour {
 		endScoreText.text = "congrats you earned " + totalScore;
 	}
 
-	public void SpearOffScreen(GameObject whichSpear) {
+	public void SpearStartReturning(GameObject whichSpear)
+	{
+		// Destroy(whichSpear.transform.parent.gameObject);
+		HarpoonDrag hdScript = whichSpear.GetComponent<HarpoonDrag>();
+		hdScript.retractRope();
+	}
+
+	public void SpearReturned(GameObject whichSpear) {
 		spearsOut--;
 		if(spearsOut <= 0) {
 			FishTime.fishPacing = 1.0f; // restore in case previously using FishTime.useBulletTime
 		}
 		ShowGameOverIfNeeded();
-		for(int i = 0; i < whichSpear.transform.childCount; i++) {
-			GameObject eachKid = whichSpear.transform.GetChild(i).gameObject;
-			RespawnIfSunkBelow risb = eachKid.GetComponent<RespawnIfSunkBelow>();
-			if(risb) {
-				risb.CountFish();
-			}
-		}
-		Destroy(whichSpear.transform.parent.gameObject);
+	}
+
+	public void TallyHookedScore() {
+		totalScore += nextScore;
+		totalScoreText.text = "" + totalScore + "   ";
+
+		nextScore = 0;
+		nextScoreText.text = "";
 	}
 
 	public bool NewSpearThrown(HarpoonDrag newOne) {
@@ -91,6 +102,7 @@ public class ScoreManager : MonoBehaviour {
 			spearsOut++;
 			lastThrownSpear = newOne;
 			lastThrowScoreText.text = "" + lastThrowScore;
+			nextScoreText.text = "";
 			lastThrowScore = 0;
 			extraHarpoonEarnedSinceLastThrow = false;
 			spearsLeft--;
@@ -138,8 +150,8 @@ public class ScoreManager : MonoBehaviour {
 		Vector3 textPos = fmbScored.transform.position;
 		int scoreAdded = (scoreAmt == -1 ? fmbScored.scoreValue : scoreAmt);
 
-		totalScore += scoreAdded;
-		totalScoreText.text = "" + totalScore + "   ";
+		nextScore += scoreAdded;
+		// nextScoreText.text = "+"+nextScore; //// since only allowing one harpoon at a time can use Last Score as same val
 
 		if(thrownSpear == lastThrownSpear) {
 			lastThrowScore += scoreAdded;
