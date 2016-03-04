@@ -8,12 +8,15 @@ public class FishMoverBasic : MonoBehaviour {
 	Vector3 swimmingFrom;
 	Vector3 swimmingTo;
 
+	public MeshRenderer preStabbedFish;
+	public MeshRenderer postStabbedFish;
+
 	float swimTimeStarted;
 	float swimTimeEnd;
 	bool seekingGoal;
 	bool isDead;
 
-	Transform modelVis;
+	Transform[] modelVis;
 
 	public int scoreValue;
 
@@ -32,7 +35,7 @@ public class FishMoverBasic : MonoBehaviour {
 
 	float randPhaseOffset;
 	float lastTurnX;
-	float enoughXToTurn = 0.15f;
+	float enoughXToTurn = 0.05f;
 
 	IEnumerator WaitBeforeNewGoal() {
 		yield return new WaitForSeconds( Random.Range(minDriftTime, maxDriftTime) );
@@ -58,7 +61,12 @@ public class FishMoverBasic : MonoBehaviour {
 	}
 
 	public void Die() {
-		isDead = true;
+		if(isDead == false) {
+			isDead = true;
+
+			preStabbedFish.enabled = false;
+			postStabbedFish.enabled = true;
+		}
 	}
 
 	void updateFacingTarget() {
@@ -75,15 +83,22 @@ public class FishMoverBasic : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		Renderer rendChild = gameObject.GetComponentInChildren<Renderer>();
-		modelVis = rendChild.transform;
-
+		Renderer[] rendChild = gameObject.GetComponentsInChildren<Renderer>();
 		updateFacingTarget();
-		modelVis.rotation = Quaternion.Euler(270.0f, 90.0f + sideToSideFacingFloat, 0.0f);
+
+		modelVis = new Transform[rendChild.Length];
+
+		for(int i = 0; i < rendChild.Length; i++) {
+			modelVis[i] = rendChild[i].transform;
+			modelVis[i].rotation = Quaternion.Euler(270.0f, 90.0f + sideToSideFacingFloat, 0.0f);
+		}
 
 		isDead = false;
 		randPhaseOffset = Random.Range(0.0f,Mathf.PI*2.0f);
 		PickNewGoal();
+
+		preStabbedFish.enabled = true;
+		postStabbedFish.enabled = false;
 		// swimmingTo = SeaBounds.instance.randPos();
 	}
 	
@@ -98,9 +113,11 @@ public class FishMoverBasic : MonoBehaviour {
 		float wigglePower = Vector3.Distance(swimmingFrom, swimmingTo);
 		wiggleOscFakeTime += Time.deltaTime * wigglePower * 1.2f;
 		float wiggleOsc = Mathf.Cos( wiggleOscFakeTime ) * 20.0f;
-		modelVis.rotation = Quaternion.Slerp(modelVis.rotation,
-			Quaternion.Euler(270.0f, 90.0f + sideToSideFacingFloat + wiggleOsc, 0.0f),
-			Time.deltaTime * 2.3f);
+		for(int i = 0; i < modelVis.Length; i++) {
+			modelVis[i].rotation = Quaternion.Slerp(modelVis[i].rotation,
+				Quaternion.Euler(270.0f, 90.0f + sideToSideFacingFloat + wiggleOsc, 0.0f),
+				Time.deltaTime * 3.3f);
+		}
 
 		if(isDead) {
 			return;

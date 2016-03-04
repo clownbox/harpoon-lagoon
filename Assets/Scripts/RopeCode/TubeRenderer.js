@@ -88,8 +88,10 @@ function LateUpdate () {
 		if(p<vertices.length-1)
 			rotation = Quaternion.FromToRotation(Vector3.forward,vertices[p+1].point-vertices[p].point);
 
-		if(vertices[p].point.y > startHeight) { // skip rope above ship -cdeleon
-			vertices[p].point = vertices[0].point;
+		if(vertices[p].point.y > startHeight + 1.5f) { // absolute ceiling, avoids showing up overhead
+			vertices[p].point = (vertices[0].point);
+		} else if(vertices[p].point.y > startHeight) { // skip rope above ship -cdeleon
+			vertices[p].point = (vertices[0].point + vertices[p].point * 3.0f) / 4.0f;
 			//continue;
 		}
 
