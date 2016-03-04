@@ -9,6 +9,16 @@ public class HarpoonThrower : MonoBehaviour {
 
 	public static bool limitOneHarpoonAtTime = true; // (confirmed 9pm Feb 27 via Slack)
 
+	public enum YANK_INTERACTION
+	{
+		Swipe,
+		Tap,
+		Auto,
+		NotInitializedYet
+	};
+	public YANK_INTERACTION yankInteraction = YANK_INTERACTION.Swipe; 
+	YANK_INTERACTION wasYI = YANK_INTERACTION.NotInitializedYet; // to detect change from inspector or outside of class
+
 	public enum THROW_INTERACTION
 	{
 		Tap,
@@ -32,14 +42,29 @@ public class HarpoonThrower : MonoBehaviour {
 	public BoxCollider skyTouch;
 	public BoxCollider waterTouch;
 
+	public static HarpoonThrower instance;
+
 	public Text cycleInteractionText;
 
-	public void CycleInteraction() {
-		throwInteraction++;
-		if((int)throwInteraction >= (int)THROW_INTERACTION.NotInitializedYet) {
-			throwInteraction = (THROW_INTERACTION)0;
+	void Start() {
+		instance = this;
+	}
+
+	public void CycleYankInteraction() {
+		yankInteraction++;
+		if((int)yankInteraction >= (int)YANK_INTERACTION.NotInitializedYet) {
+			yankInteraction = (YANK_INTERACTION)0;
 		}
-		enforceThrowInteraction(true);
+		enforceYankInteraction(true);
+	}
+
+	void enforceYankInteraction(bool showOnButtonText) {
+		if(wasYI != yankInteraction) {
+			wasYI = yankInteraction;
+			if(showOnButtonText) {
+				cycleInteractionText.text = ""+yankInteraction; // debug display
+			}
+		}
 	}
 
 	void enforceThrowInteraction(bool showOnButtonText) {
@@ -82,7 +107,8 @@ public class HarpoonThrower : MonoBehaviour {
 
 	void Update() {
 		enforceThrowInteraction(false);
-		enforceNinjaThrowMode(true);
+		enforceNinjaThrowMode(false);
+		enforceYankInteraction(true);
 	}
 
 	public void ThrowAt (Vector3 targetPoint) {

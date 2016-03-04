@@ -42,7 +42,10 @@ private var lastRebuildTime = 0.00;
 private var mesh : Mesh;
 private var colliderExists = false;
 private var usingBumpmap = false;
- 
+
+private var startPos : Vector3;
+private var startHeight : float = -1.0f;
+
 function Reset() {
 	vertices = [TubeVertex(Vector3.zero, 1.0, Color.white), TubeVertex(Vector3(1,0,0), 1.0, Color.white)];
 }
@@ -82,16 +85,25 @@ function LateUpdate () {
 	var theseVertices : int[] = new int[crossSegments];
 	var rotation : Quaternion;
 
-	var startHeight = vertices[0].point.y;
+	if(startHeight == -1.0f) {
+		startPos = vertices[0].point;
+		startHeight = vertices[0].point.y;
+	}
 
 	for (var p:int=0;p<vertices.length;p++) {
 		if(p<vertices.length-1)
 			rotation = Quaternion.FromToRotation(Vector3.forward,vertices[p+1].point-vertices[p].point);
 
-		if(vertices[p].point.y > startHeight + 1.5f) { // absolute ceiling, avoids showing up overhead
-			vertices[p].point = (vertices[0].point);
-		} else if(vertices[p].point.y > startHeight) { // skip rope above ship -cdeleon
-			vertices[p].point = (vertices[0].point + vertices[p].point * 3.0f) / 4.0f;
+		var relativeStartHeight:float = startHeight;
+		if(vertices[p].point.y > relativeStartHeight + 1.5f) { // absolute ceiling, avoids showing up overhead
+			if(p==0) {
+				vertices[p].point = startPos;
+			} else {
+				vertices[p].point = (49.0f*vertices[p-1].point + vertices[p].point) / 50.0f + Vector3.forward * 0.1f;
+			}
+
+		} else if(vertices[p].point.y > relativeStartHeight) { // skip rope above ship -cdeleon
+			vertices[p].point = (startPos + vertices[p].point * 3.0f) / 4.0f;
 			//continue;
 		}
 
@@ -160,13 +172,13 @@ function CalculateTangents(verts : Vector3[])
 //sets all the points to points of a Vector3 array, as well as capping the ends.
 function SetPoints(points : Vector3[], radius : float, col : Color) {
 	if (points.length < 2) return;
-		vertices = new TubeVertex[points.length+2];
- 
-		var v0offset : Vector3 = (points[0]-points[1])*0.01;
-		vertices[0] = TubeVertex(v0offset+points[0], 0.0, col);
-		var v1offset : Vector3 = (points[points.length-1] - points[points.length-2])*0.01;
-		vertices[vertices.length-1] = TubeVertex(v1offset+points[points.length-1], 0.0, col);
- 
+	vertices = new TubeVertex[points.length+2];
+
+	var v0offset : Vector3 = (points[0]-points[1])*0.01;
+	vertices[0] = TubeVertex(v0offset+points[0], 0.0, col);
+	var v1offset : Vector3 = (points[points.length-1] - points[points.length-2])*0.01;
+	vertices[vertices.length-1] = TubeVertex(v1offset+points[points.length-1], 0.0, col);
+
 	for (var p:int=0;p<points.length;p++) {
 		vertices[p+1] = TubeVertex(points[p], radius, col);
 	}

@@ -27,6 +27,7 @@ public class WeatherController : MonoBehaviour {
 		Storm,
 		NotInitializedYet
 	};
+	public float weatherFade = 0.0f;
 	public WEATHER_MODE weatherInteraction = WEATHER_MODE.Nice; 
 	WEATHER_MODE wasTI = WEATHER_MODE.NotInitializedYet; // to detect change from inspector or outside of class
 
@@ -49,6 +50,15 @@ public class WeatherController : MonoBehaviour {
 		enforceWeatherMode();
 	}
 
+	public void WeatherSliderUpdated(Slider theSlider) {
+		weatherFade = theSlider.value;
+		weatherInteraction = (WEATHER_MODE)((int)weatherFade);
+		if((int)weatherInteraction >= (int)WEATHER_MODE.NotInitializedYet) {
+			weatherInteraction = (WEATHER_MODE)0;
+		}
+		enforceWeatherMode();
+	}
+
 	// Use this for initialization
 	void Start () {
 		playerDefBobDampen = playerBoat.dampen;
@@ -58,23 +68,37 @@ public class WeatherController : MonoBehaviour {
 	}
 
 	void enforceWeatherMode() {
-		if(wasTI != weatherInteraction) {
-			for(int i = 0; i < weatherDefs.Length; i++) {
-				weatherDefs[i].cloudTypeSet.SetActive(false);
-			}
-			cycleInteractionText.text = ""+weatherInteraction;
-			WeatherImpacts weatherEffectNow = weatherDefs[(int)weatherInteraction];
+		for(int i = 0; i < weatherDefs.Length; i++) {
+			weatherDefs[i].cloudTypeSet.SetActive(false);
+		}
+		cycleInteractionText.text = ""+weatherInteraction;
+		WeatherImpacts weatherEffectNow = weatherDefs[(int)weatherInteraction];
+		if((int)weatherInteraction < (int)(weatherDefs.Length - 1)) {
+			WeatherImpacts weatherEffectNext = weatherDefs[(int)(weatherInteraction + 1)];
+			float relativeWeight = 1.0f - Mathf.Repeat(weatherFade, 1.0f);
+			float otherWeight = 1.0f - relativeWeight;
+			Camera.main.backgroundColor = 	weatherEffectNow.skyTint * relativeWeight +
+									 		weatherEffectNext.skyTint * otherWeight;
+			playerBoat.dampen = playerDefBobDampen * (weatherEffectNow.waveIntensity * relativeWeight +
+													weatherEffectNext.waveIntensity * otherWeight);
+			waterBob.dampen = waterDefBobDampen * (weatherEffectNow.waveIntensity * relativeWeight +
+													weatherEffectNext.waveIntensity * otherWeight);
+			weatherEffectNow.cloudTypeSet.SetActive(relativeWeight >= 0.5f);
+			weatherEffectNext.cloudTypeSet.SetActive(relativeWeight < 0.5f);
+		} else { // no fade, snapped to top end weather case
+		
 			Camera.main.backgroundColor = weatherEffectNow.skyTint;
 			playerBoat.dampen = playerDefBobDampen * weatherEffectNow.waveIntensity;
 			waterBob.dampen = waterDefBobDampen * weatherEffectNow.waveIntensity;
 			weatherEffectNow.cloudTypeSet.SetActive(true);
-
-			weatherSprintDelayMult = weatherEffectNow.fishSprintDelayMult;
-			weatherSprintDistMult = weatherEffectNow.fishSprintDistMult;
-			weatherDriftMult = weatherEffectNow.fishDriftMult;
-
-			wasTI = weatherInteraction;
 		}
+
+
+		weatherSprintDelayMult = weatherEffectNow.fishSprintDelayMult;
+		weatherSprintDistMult = weatherEffectNow.fishSprintDistMult;
+		weatherDriftMult = weatherEffectNow.fishDriftMult;
+
+		wasTI = weatherInteraction;
 	}
 	
 	// Update is called once per frame

@@ -9,8 +9,9 @@ public class HarpoonDrag : MonoBehaviour {
 	List<Vector3> stackOffsets;
 
 	public Transform myRopeSource;
+	public Vector3 myRopeSourceStartPos; // changed while retracting
 
-	public static float RETRACT_SPEED = 8.0f;
+	public static float RETRACT_SPEED = 15.0f;
 	public static float RETRACTED_CLOSE_ENOUGH_TO_VANISH = 0.2f;
 	public static int MAX_FISH_PER_HARPOON = 3;
 	public static int MAX_FISH_TO_SCORE = 3;
@@ -22,6 +23,8 @@ public class HarpoonDrag : MonoBehaviour {
 	public static bool fishTorquesSpear = true;
 	public bool pausingBeforeReturn = false;
 	public bool isRopeReturning = false;
+	private bool freezeAfterKillDontSink = true; // requested on Mar 4 on slack
+	private float swipeTouchDownY = 0.0f;
 
 	Vector3 motion;
 	bool hitTarget = false;
@@ -32,6 +35,7 @@ public class HarpoonDrag : MonoBehaviour {
 		stackOffsets = new List<Vector3>();
 
 		motion = transform.up * throwForce;
+		myRopeSourceStartPos = myRopeSource.position;
 	}
 		
 	// Update is called once per frame
@@ -47,8 +51,11 @@ public class HarpoonDrag : MonoBehaviour {
 				return;
 			}
 
-			Vector3 diffBack = myRopeSource.position - transform.position;
+			Vector3 diffBack = myRopeSourceStartPos - transform.position;
 			transform.position += diffBack.normalized * Time.deltaTime * RETRACT_SPEED;
+			// by pulling the whole rope back it doesn't look like the harpoon is self propelled
+			myRopeSource.parent.position += diffBack.normalized * Time.deltaTime * RETRACT_SPEED;
+
 			if(diffBack.magnitude < RETRACTED_CLOSE_ENOUGH_TO_VANISH) {
 				ScoreManager.instance.TallyHookedScore();
 
@@ -74,9 +81,32 @@ public class HarpoonDrag : MonoBehaviour {
 			return;
 		}
 
-		transform.position += motion * Time.deltaTime;
+		if(freezeAfterKillDontSink && pausingBeforeReturn) {
+			transform.position += Mathf.Cos(Time.time * 1.5f) * 0.15f * Time.deltaTime * Vector3.up;
+		} else {
+			transform.position += motion * Time.deltaTime;
+		}
 
 		if(pausingBeforeReturn) {
+			if(HarpoonThrower.instance.yankInteraction != HarpoonThrower.YANK_INTERACTION.Auto) {
+
+				if(Input.GetMouseButtonDown(0)) {
+					if(HarpoonThrower.instance.yankInteraction == HarpoonThrower.YANK_INTERACTION.Tap) {
+						retractRope();
+					} else if(HarpoonThrower.instance.yankInteraction == HarpoonThrower.YANK_INTERACTION.Swipe) {
+						swipeTouchDownY = Input.mousePosition.y;
+					}
+				}
+
+				if(HarpoonThrower.instance.yankInteraction == HarpoonThrower.YANK_INTERACTION.Swipe) {
+					if(Input.GetMouseButtonUp(0)) {
+						if(Input.mousePosition.y > swipeTouchDownY) {
+							retractRope();
+						}
+					}
+				}
+			}
+
 			return;
 		}
 
@@ -87,7 +117,11 @@ public class HarpoonDrag : MonoBehaviour {
 		}
 
 		if(motion.magnitude < MIN_KILL_MOTION) {
-			StartCoroutine( DelayThenRetract() );
+			if(HarpoonThrower.instance.yankInteraction == HarpoonThrower.YANK_INTERACTION.Auto) {
+				StartCoroutine(DelayThenRetract());
+			} else {
+				pausingBeforeReturn = true;
+			}
 			if(ScoreManager.instance.spearsOut <= 1) {
 				FishTime.fishPacing = 1.0f; // restore in case previously using FishTime.useBulletTime
 			}
@@ -143,8 +177,12 @@ public class HarpoonDrag : MonoBehaviour {
 			return;
 		}
 
-		motion *= 0.96f;
-		motion += 0.8f * Vector3.down * Time.fixedDeltaTime;
+		if(pausingBeforeReturn && freezeAfterKillDontSink) {
+			motion = Vector3.zero;
+		} else {
+			motion *= 0.96f;
+			motion += 0.8f * Vector3.down * Time.fixedDeltaTime;
+		}
 	}
 
 	public void retractRope() {
@@ -152,7 +190,7 @@ public class HarpoonDrag : MonoBehaviour {
 	}
 
 	void OnTriggerEnter(Collider other) {
-		if(pausingBeforeReturn) {
+		if(pausingBeforeReturn || isRopeReturning) {
 			return;
 		}
 
@@ -244,8 +282,16 @@ public class HarpoonDrag : MonoBehaviour {
 		}
 		if(fishStack.Count >= MAX_FISH_PER_HARPOON) {
 			motion = Vector3.zero; // snap to halt
-			StartCoroutine( DelayThenRetract() );
+			if(HarpoonThrower.instance.yankInteraction == HarpoonThrower.YANK_INTERACTION.Auto) {
+				WaitThenRetract();
+			} else {
+				pausingBeforeReturn = true;
+			}
 		}
+	}
+
+	public void WaitThenRetract() {
+		StartCoroutine(DelayThenRetract());
 	}
 
 	IEnumerator DelayThenRetract() {

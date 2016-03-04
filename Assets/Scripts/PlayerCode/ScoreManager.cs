@@ -77,7 +77,11 @@ public class ScoreManager : MonoBehaviour {
 	{
 		// Destroy(whichSpear.transform.parent.gameObject);
 		HarpoonDrag hdScript = whichSpear.GetComponent<HarpoonDrag>();
-		hdScript.retractRope();
+		if(HarpoonThrower.instance.yankInteraction == HarpoonThrower.YANK_INTERACTION.Auto) {
+			hdScript.WaitThenRetract();
+		} else {
+			hdScript.pausingBeforeReturn = true;
+		}
 	}
 
 	public void SpearReturned(GameObject whichSpear) {
