@@ -110,10 +110,10 @@ public class SeaBounds : MonoBehaviour {
 	}
 
 	public bool spearOutOfBounds(Vector3 someVect) {
-		return (someVect.x > right+edgeMargin*2 ||
-			someVect.x < left-edgeMargin*2 ||
-			someVect.y > spearTop+edgeMargin*2 ||
-			someVect.y < bottom-edgeMargin*2);
+		return (someVect.x > right+edgeMargin*0.1 ||
+			someVect.x < left-edgeMargin*0.1 ||
+			someVect.y > spearTop+edgeMargin*0.1 ||
+			someVect.y < bottom-edgeMargin*0.1);
 	}
 
 	public Vector3 randPosWithinMinMaxRange(Vector3 startFrom, float minDist, float maxDist,

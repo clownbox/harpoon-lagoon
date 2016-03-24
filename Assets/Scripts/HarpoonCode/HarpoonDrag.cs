@@ -56,7 +56,7 @@ public class HarpoonDrag : MonoBehaviour {
 			// by pulling the whole rope back it doesn't look like the harpoon is self propelled
 			myRopeSource.parent.position += diffBack.normalized * Time.deltaTime * RETRACT_SPEED;
 
-			if(diffBack.magnitude < RETRACTED_CLOSE_ENOUGH_TO_VANISH) {
+			if(diffBack.magnitude < RETRACTED_CLOSE_ENOUGH_TO_VANISH || transform.position.y > myRopeSourceStartPos.y) {
 				ScoreManager.instance.TallyHookedScore();
 
 				for(int i = 0; i < transform.childCount; i++) {
