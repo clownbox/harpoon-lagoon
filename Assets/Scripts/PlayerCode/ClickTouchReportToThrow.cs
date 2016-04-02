@@ -7,16 +7,22 @@ public class ClickTouchReportToThrow : MonoBehaviour {
 	public static bool pullbackNotAimDown;
 	public static bool fixedLength = false;
 
+	public GameObject playerBoat;
+
 	void Update () {
 		if(MenuStateMachine.instance.MenuAllowsInput() == false ||
 		   MenuStateMachine.instance.MenuBlocksAction()) {
 			return;
 		}
-
 		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
 		RaycastHit rhInfo;
 		if(Physics.Raycast(ray, out rhInfo)) {
+
+			if(FishTime.isMovingBetweenThrows && FishTime.timeState != FishTime.TIME_MODE.RealTime) {
+				return;
+			}
+
 			if(rhInfo.collider.gameObject != gameObject) {
 				return; // avoids double throw from sky and water mouse detection areas both running same throw code
 			}

@@ -89,10 +89,12 @@ public class SeaBounds : MonoBehaviour {
 	public Vector3 constrain(Vector3 rawVect) {
 		// first trying to "reflect" overshot goal off edge to avoid congregating near edge
 		if(rawVect.x < left) {
-			rawVect.x = left + (left-rawVect.x);
+			rawVect.x = Random.Range(left + edgeMargin, right - edgeMargin);
+			// rawVect.x = left + (left-rawVect.x);
 		}
 		if(rawVect.x > right) {
-			rawVect.x = right + (right - rawVect.x);
+			// rawVect.x = right + (right - rawVect.x);
+			rawVect.x = Random.Range(left + edgeMargin, right - edgeMargin);
 		}
 		// clamping as a sanity measure in case goal projected far outside edge
 		rawVect.x = Mathf.Clamp(rawVect.x,left,right);
@@ -122,10 +124,13 @@ public class SeaBounds : MonoBehaviour {
 		Vector3 randGoal = ( fmb == null ? randPos() : 
 		                    randPosBandBias(fmb.depthBiasOdds,
 		                fmb.shallowPerc,
-		                fmb.deepPerc) );
+		                fmb.deepPerc, true) );
 		// this next bit helps reduce bunching near edges
-		if(Random.Range(0.0f,1.0f) < 0.65f) { // X% of the time, average halfway toward center
-			randGoal.x = (randGoal.x + (left + right) * 0.5f) * 0.5f; // weight toward middle
+		if(Random.Range(0.0f,1.0f) < 0.4f) { // X% of the time, average halfway to center
+			float centerX = (left + right) * 0.5f;
+			randGoal.x = (randGoal.x + centerX) * 0.5f; // weight toward middle
+			float diffX = randGoal.x - centerX;
+			randGoal.x -= diffX * 1.5f; // encourage crossing over
 		}
 		Vector3 normToward = (randGoal - startFrom).normalized;
 		Vector3 inRange = startFrom+normToward*Random.Range(minDist,maxDist);

@@ -40,7 +40,7 @@ public class WeatherController : MonoBehaviour {
 	public BobInWater waterBob;
 	float waterDefBobDampen;
 
-	public Text cycleInteractionText;
+	// public Text cycleInteractionText;
 
 	public void CycleInteraction() {
 		weatherInteraction++;
@@ -71,7 +71,7 @@ public class WeatherController : MonoBehaviour {
 		for(int i = 0; i < weatherDefs.Length; i++) {
 			weatherDefs[i].cloudTypeSet.SetActive(false);
 		}
-		cycleInteractionText.text = ""+weatherInteraction;
+		// cycleInteractionText.text = ""+weatherInteraction;
 		WeatherImpacts weatherEffectNow = weatherDefs[(int)weatherInteraction];
 		if((int)weatherInteraction < (int)(weatherDefs.Length - 1)) {
 			WeatherImpacts weatherEffectNext = weatherDefs[(int)(weatherInteraction + 1)];

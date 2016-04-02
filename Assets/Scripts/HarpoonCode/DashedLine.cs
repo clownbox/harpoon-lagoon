@@ -34,10 +34,18 @@ public class DashedLine : MonoBehaviour {
 			return;
 		}
 
-		if(Input.GetMouseButtonDown(0)) {
-			drawingLine = true;
+		if(Input.GetButton("Fire1")) {
+			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+			RaycastHit rhInfo;
+			if(Physics.Raycast(ray, out rhInfo) &&
+				rhInfo.collider.gameObject.layer == LayerMask.NameToLayer("WaterTouch")) {
+
+				drawingLine = true;
+
+			}
 		}
-		if(Input.GetMouseButtonUp(0)) {
+		if(Input.GetButtonUp("Fire1")) {
 			drawingLine = false;
 		}
 	}

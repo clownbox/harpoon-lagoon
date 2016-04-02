@@ -51,7 +51,7 @@ public class FishMoverBasic : MonoBehaviour {
 		swimmingFrom = transform.position;
 		swimmingTo = SeaBounds.instance.randPosWithinMinMaxRange(swimmingFrom,
 			1.3f*WeatherController.weatherSprintDistMult,
-			2.9f*WeatherController.weatherSprintDistMult,this);
+			2.9f*WeatherController.weatherSprintDistMult);
 		swimTimeStarted = FishTime.time;
 		swimTimeEnd = swimTimeStarted + timePerSprint* WeatherController.weatherSprintDelayMult;
 	}
@@ -116,7 +116,7 @@ public class FishMoverBasic : MonoBehaviour {
 		for(int i = 0; i < modelVis.Length; i++) {
 			modelVis[i].rotation = Quaternion.Slerp(modelVis[i].rotation,
 				Quaternion.Euler(270.0f, 90.0f + sideToSideFacingFloat + wiggleOsc, 0.0f),
-				Time.deltaTime * 3.3f);
+				((Time.deltaTime + FishTime.deltaTime * 2.0f) / 3.0f) * 3.3f);
 		}
 
 		if(isDead) {
