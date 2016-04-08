@@ -26,7 +26,7 @@ public class HarpoonDrag : MonoBehaviour {
 	private bool freezeAfterKillDontSink = true; // requested on Mar 4 on slack
 	private float swipeTouchDownY = 0.0f;
 
-	Vector3 motion;
+	public Vector3 motion;
 	bool hitTarget = false;
 
 	// Use this for initialization

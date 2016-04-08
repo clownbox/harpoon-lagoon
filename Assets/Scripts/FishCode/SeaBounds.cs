@@ -111,9 +111,9 @@ public class SeaBounds : MonoBehaviour {
 		        someVect.y < bottom-edgeMargin*2);
 	}
 
-	public bool spearOutOfBounds(Vector3 someVect) {
-		return (someVect.x > right+edgeMargin*0.1 ||
-			someVect.x < left-edgeMargin*0.1 ||
+	public bool spearOutOfBounds(Vector3 someVect, HarpoonDrag spearRef) {
+		return ( (someVect.x > right+edgeMargin*0.1 && spearRef.motion.x > 0.0f) ||
+			(someVect.x < left-edgeMargin*0.1 && spearRef.motion.x < 0.0f) ||
 			someVect.y > spearTop+edgeMargin*0.1 ||
 			someVect.y < bottom-edgeMargin*0.1);
 	}

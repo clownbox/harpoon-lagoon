@@ -5,11 +5,13 @@ public class RespawnIfSunkBelow : MonoBehaviour {
 	public static GameObject reportKillsTo;
 	public bool alreadyCounted = false;
 	public bool isSpearNotFish = false;
+	HarpoonDrag harpoonRefIfIAmOne;
 
 	void Start() {
 		if(reportKillsTo == null) {
 			reportKillsTo = GameObject.Find("LevelFishSpawner");
 		}
+		harpoonRefIfIAmOne = GetComponent<HarpoonDrag>();
 	}
 
 	public void CountFish() {
@@ -27,7 +29,7 @@ public class RespawnIfSunkBelow : MonoBehaviour {
 		}
 
 		if(isSpearNotFish) {
-			if(SeaBounds.instance.spearOutOfBounds(transform.position)) {
+			if(SeaBounds.instance.spearOutOfBounds(transform.position,harpoonRefIfIAmOne)) {
 				ScoreManager.instance.SpearStartReturning(gameObject);
 				alreadyCounted = true;
 			}
