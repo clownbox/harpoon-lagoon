@@ -34,6 +34,7 @@ public class WeatherController : MonoBehaviour {
 	public static float weatherSprintDelayMult;
 	public static float weatherSprintDistMult;
 	public static float weatherDriftMult;
+	public static float weatherDriftMultSmoothed;
 
 	public BobInWater playerBoat;
 	float playerDefBobDampen;
@@ -83,6 +84,8 @@ public class WeatherController : MonoBehaviour {
 													weatherEffectNext.waveIntensity * otherWeight);
 			waterBob.dampen = waterDefBobDampen * (weatherEffectNow.waveIntensity * relativeWeight +
 													weatherEffectNext.waveIntensity * otherWeight);
+			weatherDriftMultSmoothed = (weatherEffectNow.fishDriftMult * relativeWeight +
+										weatherEffectNext.fishDriftMult * otherWeight);
 			weatherEffectNow.cloudTypeSet.SetActive(relativeWeight >= 0.5f);
 			weatherEffectNext.cloudTypeSet.SetActive(relativeWeight < 0.5f);
 		} else { // no fade, snapped to top end weather case
@@ -90,6 +93,7 @@ public class WeatherController : MonoBehaviour {
 			Camera.main.backgroundColor = weatherEffectNow.skyTint;
 			playerBoat.dampen = playerDefBobDampen * weatherEffectNow.waveIntensity;
 			waterBob.dampen = waterDefBobDampen * weatherEffectNow.waveIntensity;
+			weatherDriftMultSmoothed = weatherEffectNow.fishDriftMult;
 			weatherEffectNow.cloudTypeSet.SetActive(true);
 		}
 

@@ -7,6 +7,7 @@ public class FishMoverBasic : MonoBehaviour {
 	public FishBreed myKind; // simpler test for uniqueness when matching
 	Vector3 swimmingFrom;
 	Vector3 swimmingTo;
+	Vector3 rootPos;
 
 	public MeshRenderer preStabbedFish;
 	public MeshRenderer postStabbedFish;
@@ -37,6 +38,9 @@ public class FishMoverBasic : MonoBehaviour {
 	float lastTurnX;
 	float enoughXToTurn = 0.05f;
 
+	Vector3 recentPushFrom;
+	Vector3 recentPushTo;
+
 	IEnumerator WaitBeforeNewGoal() {
 		yield return new WaitForSeconds( Random.Range(minDriftTime, maxDriftTime) );
 		PickNewGoal();
@@ -48,7 +52,7 @@ public class FishMoverBasic : MonoBehaviour {
 		}
 
 		seekingGoal = true;
-		swimmingFrom = transform.position;
+		swimmingFrom = rootPos;
 		swimmingTo = SeaBounds.instance.randPosWithinMinMaxRange(swimmingFrom,
 			1.3f*WeatherController.weatherSprintDistMult,
 			2.9f*WeatherController.weatherSprintDistMult);
@@ -99,6 +103,8 @@ public class FishMoverBasic : MonoBehaviour {
 
 		preStabbedFish.enabled = true;
 		postStabbedFish.enabled = false;
+
+		rootPos = transform.position;
 		// swimmingTo = SeaBounds.instance.randPos();
 	}
 	
@@ -106,6 +112,35 @@ public class FishMoverBasic : MonoBehaviour {
 	void Update () {
 		if(MenuStateMachine.instance.MenuBlocksAction() || isDead) {
 			return;
+		}
+
+		float pushRange = 1.5f;
+		float pushForce = 1.0f;
+		Collider[] nearbyFish = Physics.OverlapSphere(rootPos, pushRange);
+		for(int i = 0; i < nearbyFish.Length; i++) {
+			FishMoverBasic otherFMB = nearbyFish[i].GetComponentInParent<FishMoverBasic>();
+			if(otherFMB == null) {
+				continue;
+			}
+			Vector3 posDiff = transform.position - otherFMB.transform.position;
+			posDiff.z = 0.0f;
+			float posDist = posDiff.magnitude;
+			if(posDist > 0.01f) { // skip self
+				float invDistPercForPushForce = (pushRange - posDist) / pushRange;
+				invDistPercForPushForce *= invDistPercForPushForce; // sq effect
+				Vector3 pushBack = posDiff.normalized * FishTime.deltaTime *
+					invDistPercForPushForce * pushForce;
+
+				recentPushFrom = transform.position;
+				recentPushTo = otherFMB.transform.position;
+
+				rootPos = SeaBounds.instance.constrainTrunc(rootPos+pushBack);
+				swimmingFrom = rootPos;
+				float timeLeft = swimTimeEnd - FishTime.time;
+				swimTimeStarted = FishTime.time;
+				swimTimeEnd = swimTimeStarted + timeLeft;
+				swimmingTo = SeaBounds.instance.constrainTrunc(swimmingTo+pushBack);
+			}
 		}
 
 		updateFacingTarget();
@@ -128,18 +163,27 @@ public class FishMoverBasic : MonoBehaviour {
 				StartCoroutine( WaitBeforeNewGoal() );
 			} else { // not out of time, still seeking goal
 				float percProgress = (FishTime.time-swimTimeStarted)/timePerSprint;
-				float invSq = 1.0f-(1.0f-percProgress)*(1.0f-percProgress); // sprint then smooth slowdown
-				transform.position = Vector3.Lerp(swimmingFrom,swimmingTo, invSq);
+				//float invSq = 1.0f-(1.0f-percProgress)*(1.0f-percProgress); // sprint then smooth slowdown
+				float invSq = percProgress; // sprint then smooth slowdown
+				rootPos = Vector3.Lerp(swimmingFrom,swimmingTo, invSq);
 			}
-		} else { // no goal, drift
-			Vector3 driftPos = transform.position +
-				Mathf.Cos (FishTime.time/1.3f+randPhaseOffset) * transform.right * driftX * FishTime.deltaTime
-				*WeatherController.weatherDriftMult
-				+
-				Mathf.Cos (FishTime.time/4.1f+randPhaseOffset) * transform.up * driftY * FishTime.deltaTime
-				*WeatherController.weatherDriftMult;
-			transform.position = SeaBounds.instance.constrain( driftPos );
-		} // end of else/drift
+		} 
+		// drift
+		Vector3 driftPos = rootPos +
+		     Mathf.Cos(FishTime.time / 1.3f + randPhaseOffset) * transform.right * driftX * 10.0f
+		      * WeatherController.weatherDriftMultSmoothed
+			+
+			Mathf.Sin (FishTime.time/4.1f+randPhaseOffset) * transform.up * driftY * 10.0f
+			*WeatherController.weatherDriftMultSmoothed;
+		transform.position = SeaBounds.instance.constrainTrunc( driftPos );
+
+		if(seekingGoal) {
+			Debug.DrawLine(swimmingFrom, swimmingTo, Color.red);
+		}
+		Debug.DrawLine(transform.position, rootPos, Color.green);
+
+		Debug.DrawLine(recentPushFrom, recentPushTo, Color.cyan);
+
 	} // end of Update()
 
 } // end of class

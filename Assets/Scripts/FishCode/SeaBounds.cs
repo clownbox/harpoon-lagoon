@@ -87,18 +87,21 @@ public class SeaBounds : MonoBehaviour {
 	}
 
 	public Vector3 constrain(Vector3 rawVect) {
-		// first trying to "reflect" overshot goal off edge to avoid congregating near edge
 		if(rawVect.x < left) {
-			rawVect.x = Random.Range(left + edgeMargin, right - edgeMargin);
-			// rawVect.x = left + (left-rawVect.x);
+			rawVect.x = Random.Range(left, right);
 		}
 		if(rawVect.x > right) {
-			// rawVect.x = right + (right - rawVect.x);
-			rawVect.x = Random.Range(left + edgeMargin, right - edgeMargin);
+			rawVect.x = Random.Range(left, right);
 		}
 		// clamping as a sanity measure in case goal projected far outside edge
 		rawVect.x = Mathf.Clamp(rawVect.x,left,right);
 
+		rawVect.y = Mathf.Clamp(rawVect.y,bottom, top);
+		return rawVect;
+	}
+
+	public Vector3 constrainTrunc(Vector3 rawVect) {
+		rawVect.x = Mathf.Clamp(rawVect.x,left,right);
 		rawVect.y = Mathf.Clamp(rawVect.y,bottom, top);
 		return rawVect;
 	}
@@ -126,7 +129,7 @@ public class SeaBounds : MonoBehaviour {
 		                fmb.shallowPerc,
 		                fmb.deepPerc, true) );
 		// this next bit helps reduce bunching near edges
-		if(Random.Range(0.0f,1.0f) < 0.4f) { // X% of the time, average halfway to center
+		if(Random.Range(0.0f,1.0f) < 0.6f) { // X% of the time, average halfway to center
 			float centerX = (left + right) * 0.5f;
 			randGoal.x = (randGoal.x + centerX) * 0.5f; // weight toward middle
 			float diffX = randGoal.x - centerX;
@@ -134,6 +137,6 @@ public class SeaBounds : MonoBehaviour {
 		}
 		Vector3 normToward = (randGoal - startFrom).normalized;
 		Vector3 inRange = startFrom+normToward*Random.Range(minDist,maxDist);
-		return constrain(inRange);
+		return constrainTrunc(inRange);
 	}
 }
