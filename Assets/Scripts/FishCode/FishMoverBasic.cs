@@ -46,6 +46,14 @@ public class FishMoverBasic : MonoBehaviour {
 		PickNewGoal();
 	}
 
+	void PutSwimToOnTargetLine() {
+		if(FishSpawnRefillTank.instance.lineUpFish) {
+			swimmingTo = HarpoonDrag.getProjectedPointOnLine(swimmingTo,
+				FishSpawnRefillTank.instance.alignTop.position,
+				FishSpawnRefillTank.instance.alignBot.position);
+		}
+	}
+
 	void PickNewGoal() {
 		if(isDead) { // checking here too in case WaitBeforeNewGoal timer was running when speared
 			return;
@@ -56,6 +64,9 @@ public class FishMoverBasic : MonoBehaviour {
 		swimmingTo = SeaBounds.instance.randPosWithinMinMaxRange(swimmingFrom,
 			1.3f*WeatherController.weatherSprintDistMult,
 			2.9f*WeatherController.weatherSprintDistMult);
+
+		PutSwimToOnTargetLine();
+
 		swimTimeStarted = FishTime.time;
 		swimTimeEnd = swimTimeStarted + timePerSprint* WeatherController.weatherSprintDelayMult;
 	}
@@ -104,7 +115,9 @@ public class FishMoverBasic : MonoBehaviour {
 		preStabbedFish.enabled = true;
 		postStabbedFish.enabled = false;
 
-		rootPos = transform.position;
+		swimmingFrom = swimmingTo = rootPos = transform.position;
+		PutSwimToOnTargetLine();
+
 		// swimmingTo = SeaBounds.instance.randPos();
 	}
 	
@@ -116,6 +129,12 @@ public class FishMoverBasic : MonoBehaviour {
 
 		float pushRange = 1.5f;
 		float pushForce = 1.0f;
+
+		if(FishSpawnRefillTank.instance.lineUpFish) {
+			pushRange = 0.2f;
+			pushForce = 0.5f;
+		}
+
 		Collider[] nearbyFish = Physics.OverlapSphere(rootPos, pushRange);
 		for(int i = 0; i < nearbyFish.Length; i++) {
 			FishMoverBasic otherFMB = nearbyFish[i].GetComponentInParent<FishMoverBasic>();
@@ -129,17 +148,18 @@ public class FishMoverBasic : MonoBehaviour {
 				float invDistPercForPushForce = (pushRange - posDist) / pushRange;
 				invDistPercForPushForce *= invDistPercForPushForce; // sq effect
 				Vector3 pushBack = posDiff.normalized * FishTime.deltaTime *
-					invDistPercForPushForce * pushForce;
+				                  invDistPercForPushForce * pushForce;
 
 				recentPushFrom = transform.position;
 				recentPushTo = otherFMB.transform.position;
 
-				rootPos = SeaBounds.instance.constrainTrunc(rootPos+pushBack);
+				rootPos = SeaBounds.instance.constrainTrunc(rootPos + pushBack);
 				swimmingFrom = rootPos;
 				float timeLeft = swimTimeEnd - FishTime.time;
 				swimTimeStarted = FishTime.time;
 				swimTimeEnd = swimTimeStarted + timeLeft;
-				swimmingTo = SeaBounds.instance.constrainTrunc(swimmingTo+pushBack);
+				swimmingTo = SeaBounds.instance.constrainTrunc(swimmingTo + pushBack);
+				PutSwimToOnTargetLine();
 			}
 		}
 
@@ -170,10 +190,10 @@ public class FishMoverBasic : MonoBehaviour {
 		} 
 		// drift
 		Vector3 driftPos = rootPos +
-		     Mathf.Cos(FishTime.time / 1.3f + randPhaseOffset) * transform.right * driftX * 10.0f
+		     Mathf.Cos(FishTime.time / 1.3f + randPhaseOffset) * transform.right * driftX * 5.0f
 		      * WeatherController.weatherDriftMultSmoothed
 			+
-			Mathf.Sin (FishTime.time/4.1f+randPhaseOffset) * transform.up * driftY * 10.0f
+			Mathf.Sin (FishTime.time/4.1f+randPhaseOffset) * transform.up * driftY * 5.0f
 			*WeatherController.weatherDriftMultSmoothed;
 		transform.position = SeaBounds.instance.constrainTrunc( driftPos );
 

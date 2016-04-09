@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System;
 using System.Reflection;
 using System.Collections.Generic;
@@ -16,9 +17,15 @@ public class FishTypeAndProbability
 
 public class FishSpawnRefillTank : MonoBehaviour {
 	public FishTypeAndProbability[] fishScalingList;
+	public Transform alignTop;
+	public Transform alignBot;
+	public bool lineUpFish = true;
+	public Text lineUpFishText;
 	public int howManyToKeep = 5;
 	float totalWeight = 0.0f;
 	private bool firstTimeFillingTank = true;
+
+	public static FishSpawnRefillTank instance;
 
 	public bool debugOutput = false;
 
@@ -31,6 +38,11 @@ public class FishSpawnRefillTank : MonoBehaviour {
 			}
 		}
 		SpawnUpToCap(true);
+	}
+
+	public void toggleFishLines() {
+		lineUpFish = !lineUpFish;
+		lineUpFishText.text = (lineUpFish ? "lines" : "spread"); 
 	}
 
 	public void FishKilledAndOffScreen_Refill(GameObject whichFish) {
@@ -136,8 +148,17 @@ public class FishSpawnRefillTank : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+		instance = this;
 		fishList = new List<GameObject>();
 		FishListWeightsSetup();
 		SpawnUpToCap(true);
+
+		// calling twice as lazy way to just keep state + update text
+		toggleFishLines();
+		toggleFishLines();
+	}
+
+	void Update () {
+		Debug.DrawLine(alignTop.transform.position, alignBot.transform.position, Color.white);
 	}
 }

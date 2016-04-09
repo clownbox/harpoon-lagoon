@@ -159,7 +159,7 @@ public class HarpoonDrag : MonoBehaviour {
 		}
 	}
 
-	public Vector3 getProjectedPointOnLine(Vector3 p, Vector3 v1, Vector3 v2)
+	public static Vector3 getProjectedPointOnLine(Vector3 p, Vector3 v1, Vector3 v2)
 	{
 		Vector2 e1 = new Vector2(v2.x - v1.x, v2.y - v1.y);
 		Vector2 e2 = new Vector2(p.x - v1.x, p.y - v1.y);
