@@ -26,6 +26,8 @@ public class SeaBounds : MonoBehaviour {
 	[HideInInspector]
 	public float middleX;
 	[HideInInspector]
+	public float centerY;
+	[HideInInspector]
 	public float bottom;
 	[HideInInspector]
 	public float fishLayerZ;
@@ -48,6 +50,7 @@ public class SeaBounds : MonoBehaviour {
 		bottom = bottomRef.position.y+edgeMargin;
 
 		middleX = (left + right)/2;
+		centerY = (top + bottom)/2;
 	}
 
 	public Vector3 randPos() {
@@ -56,6 +59,23 @@ public class SeaBounds : MonoBehaviour {
 		toRet.y = Random.Range(bottom, top);
 		toRet.z = fishLayerZ;
 		return toRet;
+	}
+
+	public float leftish() {
+		float perc = Random.Range(0.65f,1.0f);
+		return left * perc + middleX * (1.0f - perc);
+	}
+	public float rightish() {
+		float perc = Random.Range(0.65f,1.0f);
+		return right * perc + middleX * (1.0f - perc);
+	}
+	public float topish() {
+		float perc = Random.Range(0.65f,1.0f);
+		return top * perc + centerY * (1.0f - perc);
+	}
+	public float bottomish() {
+		float perc = Random.Range(0.65f,1.0f);
+		return bottom * perc + centerY * (1.0f - perc);
 	}
 
 	public Vector3 randEdgePos() {

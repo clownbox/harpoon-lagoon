@@ -20,12 +20,14 @@ public class FishSpawnRefillTank : MonoBehaviour {
 	public Transform alignTop;
 	public Transform alignBot;
 	public bool lineUpFish = true;
-	// public Text lineUpFishText;
+	public Text aiFishText;
 	public int howManyToKeep = 5;
 	float totalWeight = 0.0f;
 	private bool firstTimeFillingTank = true;
 
 	public static FishSpawnRefillTank instance;
+
+	public static FishMoverBasic.FishMove defaultAI = FishMoverBasic.FishMove.HORIZONTAL_LINE;
 
 	public bool debugOutput = false;
 
@@ -40,9 +42,21 @@ public class FishSpawnRefillTank : MonoBehaviour {
 		SpawnUpToCap(true);
 	}
 
+	public void cycleFishAIDefault() {
+		defaultAI++;
+		if((int)defaultAI >= (int)FishMoverBasic.FishMove.FISH_AI_TYPES) {
+			defaultAI = (FishMoverBasic.FishMove)0;
+		}
+
+		for(int iii = 0; iii < fishList.Count; iii++) {
+			fishList[iii].GetComponent<FishMoverBasic>().setAIMode(defaultAI);
+		}
+
+		aiFishText.text = ""+defaultAI;
+	}
+
 	public void toggleFishLines() {
 		lineUpFish = !lineUpFish;
-		// lineUpFishText.text = (lineUpFish ? "lines" : "spread"); 
 	}
 
 	public void FishKilledAndOffScreen_Refill(GameObject whichFish) {
@@ -153,9 +167,7 @@ public class FishSpawnRefillTank : MonoBehaviour {
 		FishListWeightsSetup();
 		SpawnUpToCap(true);
 
-		// calling twice as lazy way to just keep state + update text
-		toggleFishLines();
-		toggleFishLines();
+		aiFishText.text = ""+defaultAI;
 	}
 
 	void Update () {
