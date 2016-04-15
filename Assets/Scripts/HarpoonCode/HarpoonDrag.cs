@@ -87,6 +87,8 @@ public class HarpoonDrag : MonoBehaviour {
 			transform.position += motion * Time.deltaTime;
 		}
 
+		fishPoleSlide();
+
 		if(pausingBeforeReturn) {
 			if(HarpoonThrower.instance.yankInteraction != HarpoonThrower.YANK_INTERACTION.Auto) {
 
@@ -126,16 +128,14 @@ public class HarpoonDrag : MonoBehaviour {
 				FishTime.fishPacing = 1.0f; // restore in case previously using FishTime.useBulletTime
 			}
 		}
-
-		fishPoleSlide();
 	}
 
 	public void fishPoleSlide() {
 		float stackSpot = 0.0f;
-		float slideK = 0.95f;
+		float slideK = 0.9f;
 		Vector3 slideTo;
 		float packingAmt = 0.33f;
-		
+
 		if(fishStack.Count > 3) {
 			packingAmt = 1.0f/fishStack.Count;
 		}
@@ -215,8 +215,11 @@ public class HarpoonDrag : MonoBehaviour {
 			                                           stackSlideEnd.transform.position);
 			stackOffsets.Add ( tempVect );
 			fishStack.Add(fmbScript.gameObject);
+			Debug.Log("Added fish: " + fmbScript.name);
+			Debug.Log("Number on spear: " + fishStack.Count);
 
 			if(fishStack.Count >= MAX_FISH_TO_SCORE) {
+				Debug.Log("reached MAX_FISH_TO_SCORE on pole");
 				// look at the string passed to NewMessage() for indication of which rule it's testing for
 
 				float scaleWas = 0.0f;
@@ -281,6 +284,7 @@ public class HarpoonDrag : MonoBehaviour {
 			hitTarget = true;
 		}
 		if(fishStack.Count >= MAX_FISH_PER_HARPOON) {
+			Debug.Log("Spear halted");
 			motion = Vector3.zero; // snap to halt
 			if(HarpoonThrower.instance.yankInteraction == HarpoonThrower.YANK_INTERACTION.Auto) {
 				WaitThenRetract();
