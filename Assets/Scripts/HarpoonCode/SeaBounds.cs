@@ -24,6 +24,8 @@ public class SeaBounds : MonoBehaviour {
 	[HideInInspector]
 	public float right;
 	[HideInInspector]
+	public float middleX;
+	[HideInInspector]
 	public float bottom;
 	[HideInInspector]
 	public float fishLayerZ;
@@ -44,6 +46,8 @@ public class SeaBounds : MonoBehaviour {
 		left = leftRef.position.x+edgeMargin;
 		right = rightRef.position.x-edgeMargin;
 		bottom = bottomRef.position.y+edgeMargin;
+
+		middleX = (left + right)/2;
 	}
 
 	public Vector3 randPos() {

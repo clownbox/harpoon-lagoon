@@ -38,7 +38,7 @@ public class FishTime : MonoBehaviour {
 	}
 
 	void showTimeMode() {
-		cycleModeText.text = ""+timeState;
+		// cycleModeText.text = ""+timeState;
 	}
 
 	void Start() {

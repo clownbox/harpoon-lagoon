@@ -16,7 +16,7 @@ public class HarpoonThrower : MonoBehaviour {
 		Auto,
 		NotInitializedYet
 	};
-	public YANK_INTERACTION yankInteraction = YANK_INTERACTION.Swipe; 
+	public YANK_INTERACTION yankInteraction = YANK_INTERACTION.Auto; 
 	YANK_INTERACTION wasYI = YANK_INTERACTION.NotInitializedYet; // to detect change from inspector or outside of class
 
 	public enum THROW_INTERACTION
@@ -26,7 +26,7 @@ public class HarpoonThrower : MonoBehaviour {
 		PullBack,
 		NotInitializedYet
 	};
-	public THROW_INTERACTION throwInteraction = THROW_INTERACTION.Tap; 
+	public THROW_INTERACTION throwInteraction = THROW_INTERACTION.Hold; 
 	THROW_INTERACTION wasTI = THROW_INTERACTION.NotInitializedYet; // to detect change from inspector or outside of class
 
 	public enum THROW_NINJAMODE
@@ -62,7 +62,7 @@ public class HarpoonThrower : MonoBehaviour {
 		if(wasYI != yankInteraction) {
 			wasYI = yankInteraction;
 			if(showOnButtonText) {
-				cycleInteractionText.text = ""+yankInteraction; // debug display
+				// cycleInteractionText.text = ""+yankInteraction; // debug display
 			}
 		}
 	}

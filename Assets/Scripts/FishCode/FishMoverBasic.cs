@@ -4,6 +4,18 @@ using System.Collections;
 public class FishMoverBasic : MonoBehaviour {
 	public enum FishBreed {STANDARD,SHIFTY,TINYFAST,GOLDEN,FISH_KINDS,NONE};
 
+	public enum FishMove
+	{
+		STANDARD_LINE_OR_SPREAD,
+		HORIZONTAL_LINE,
+		VERTICAL_LINE,
+		CIRCLE_CW,
+		CIRCLE_CCW,
+		FISH_AI_TYPES
+	};
+
+	private FishMove aiMode = FishMove.HORIZONTAL_LINE;
+
 	public FishBreed myKind; // simpler test for uniqueness when matching
 	Vector3 swimmingFrom;
 	Vector3 swimmingTo;
@@ -42,7 +54,11 @@ public class FishMoverBasic : MonoBehaviour {
 	Vector3 recentPushTo;
 
 	IEnumerator WaitBeforeNewGoal() {
-		yield return new WaitForSeconds( Random.Range(minDriftTime, maxDriftTime) );
+		if(aiMode == FishMove.STANDARD_LINE_OR_SPREAD) {
+			yield return new WaitForSeconds(Random.Range(minDriftTime, maxDriftTime));
+		} else {
+			yield return new WaitForSeconds(0.1f);
+		}
 		PickNewGoal();
 	}
 
@@ -61,11 +77,30 @@ public class FishMoverBasic : MonoBehaviour {
 
 		seekingGoal = true;
 		swimmingFrom = rootPos;
-		swimmingTo = SeaBounds.instance.randPosWithinMinMaxRange(swimmingFrom,
-			1.3f*WeatherController.weatherSprintDistMult,
-			2.9f*WeatherController.weatherSprintDistMult);
 
-		PutSwimToOnTargetLine();
+		switch(aiMode) {
+		case FishMove.STANDARD_LINE_OR_SPREAD:
+			swimmingTo = SeaBounds.instance.randPosWithinMinMaxRange(swimmingFrom,
+				1.3f*WeatherController.weatherSprintDistMult,
+				2.9f*WeatherController.weatherSprintDistMult);
+			PutSwimToOnTargetLine();
+			break;
+		case FishMove.HORIZONTAL_LINE:
+			swimmingTo = rootPos;
+			if(swimmingFrom.x > SeaBounds.instance.middleX) {
+				swimmingTo.x = SeaBounds.instance.left;
+			} else {
+				swimmingTo.x = SeaBounds.instance.right;
+			}
+			break;
+		case FishMove.VERTICAL_LINE:
+			break;
+		case FishMove.CIRCLE_CW:
+			break;
+		case FishMove.CIRCLE_CCW:
+			break;
+
+		}
 
 		swimTimeStarted = FishTime.time;
 		swimTimeEnd = swimTimeStarted + timePerSprint* WeatherController.weatherSprintDelayMult;
@@ -108,14 +143,20 @@ public class FishMoverBasic : MonoBehaviour {
 			modelVis[i].rotation = Quaternion.Euler(270.0f, 90.0f + sideToSideFacingFloat, 0.0f);
 		}
 
+		if(aiMode != FishMove.STANDARD_LINE_OR_SPREAD) {
+			timePerSprint *= 5.0f;
+		}
+
 		isDead = false;
 		randPhaseOffset = Random.Range(0.0f,Mathf.PI*2.0f);
-		PickNewGoal();
 
 		preStabbedFish.enabled = true;
 		postStabbedFish.enabled = false;
 
 		swimmingFrom = swimmingTo = rootPos = transform.position;
+
+		PickNewGoal();
+
 		PutSwimToOnTargetLine();
 
 		// swimmingTo = SeaBounds.instance.randPos();
@@ -130,7 +171,10 @@ public class FishMoverBasic : MonoBehaviour {
 		float pushRange = 1.5f;
 		float pushForce = 1.0f;
 
-		if(FishSpawnRefillTank.instance.lineUpFish) {
+		if(aiMode != FishMove.STANDARD_LINE_OR_SPREAD) {
+			pushRange = 0.1f;
+			pushForce = 0.1f;
+		} else if(FishSpawnRefillTank.instance.lineUpFish) {
 			pushRange = 0.2f;
 			pushForce = 0.5f;
 		}
@@ -178,6 +222,7 @@ public class FishMoverBasic : MonoBehaviour {
 			return;
 		}
 		if(seekingGoal) {
+
 			if(FishTime.time > swimTimeEnd) {
 				seekingGoal = false;
 				StartCoroutine( WaitBeforeNewGoal() );
@@ -187,6 +232,15 @@ public class FishMoverBasic : MonoBehaviour {
 				float invSq = percProgress; // sprint then smooth slowdown
 				rootPos = Vector3.Lerp(swimmingFrom,swimmingTo, invSq);
 			}
+
+			if(aiMode != FishMove.STANDARD_LINE_OR_SPREAD) {
+				float distToGoal = Vector3.Distance(swimmingTo, rootPos);
+				if(distToGoal < 0.01f) {
+					seekingGoal = false;
+					StartCoroutine( WaitBeforeNewGoal() );
+				}
+			}
+
 		} 
 		// drift
 		Vector3 driftPos = rootPos +

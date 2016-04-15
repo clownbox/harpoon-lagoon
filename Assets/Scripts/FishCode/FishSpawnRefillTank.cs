@@ -20,7 +20,7 @@ public class FishSpawnRefillTank : MonoBehaviour {
 	public Transform alignTop;
 	public Transform alignBot;
 	public bool lineUpFish = true;
-	public Text lineUpFishText;
+	// public Text lineUpFishText;
 	public int howManyToKeep = 5;
 	float totalWeight = 0.0f;
 	private bool firstTimeFillingTank = true;
@@ -42,7 +42,7 @@ public class FishSpawnRefillTank : MonoBehaviour {
 
 	public void toggleFishLines() {
 		lineUpFish = !lineUpFish;
-		lineUpFishText.text = (lineUpFish ? "lines" : "spread"); 
+		// lineUpFishText.text = (lineUpFish ? "lines" : "spread"); 
 	}
 
 	public void FishKilledAndOffScreen_Refill(GameObject whichFish) {
