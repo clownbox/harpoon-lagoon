@@ -63,11 +63,11 @@ public class FishMoverBasic : MonoBehaviour {
 	}
 
 	void PutSwimToOnTargetLine() {
-		if(FishSpawnRefillTank.instance.lineUpFish) {
+		/*if(FishSpawnRefillTank.instance.lineUpFish) {
 			swimmingTo = HarpoonDrag.getProjectedPointOnLine(swimmingTo,
 				FishSpawnRefillTank.instance.alignTop.position,
 				FishSpawnRefillTank.instance.alignBot.position);
-		}
+		}*/
 	}
 
 	void PickNewGoal() {
@@ -142,7 +142,7 @@ public class FishMoverBasic : MonoBehaviour {
 
 	private float timePerSprintBasedOnAIMode() {
 		if(aiMode != FishMove.STANDARD_SPREAD) {
-			return timePerSprint * 3.5f;
+			return timePerSprint * 4.5f;
 		} else {
 			return timePerSprint;
 		}
@@ -180,7 +180,7 @@ public class FishMoverBasic : MonoBehaviour {
 
 		modelVis = new Transform[rendChild.Length];
 
-		aiMode = FishSpawnRefillTank.defaultAI;
+		// aiMode = FishSpawnRefillTank.defaultAI;
 
 		for(int i = 0; i < rendChild.Length; i++) {
 			modelVis[i] = rendChild[i].transform;
@@ -226,8 +226,8 @@ public class FishMoverBasic : MonoBehaviour {
 			pushRange = 0.1f;
 			pushForce = 0.1f;
 		} else if(FishSpawnRefillTank.instance.lineUpFish) {
-			pushRange = 0.2f;
-			pushForce = 0.5f;
+			pushRange = 0.15f;
+			pushForce = 0.35f;
 		}
 
 		Collider[] nearbyFish = Physics.OverlapSphere(rootPos, pushRange);

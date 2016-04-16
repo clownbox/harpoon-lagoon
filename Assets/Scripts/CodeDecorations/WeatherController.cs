@@ -29,7 +29,6 @@ public class WeatherController : MonoBehaviour {
 	};
 	public float weatherFade = 0.0f;
 	public WEATHER_MODE weatherInteraction = WEATHER_MODE.Nice; 
-	WEATHER_MODE wasTI = WEATHER_MODE.NotInitializedYet; // to detect change from inspector or outside of class
 
 	public static float weatherSprintDelayMult;
 	public static float weatherSprintDistMult;
@@ -101,8 +100,6 @@ public class WeatherController : MonoBehaviour {
 		weatherSprintDelayMult = weatherEffectNow.fishSprintDelayMult;
 		weatherSprintDistMult = weatherEffectNow.fishSprintDistMult;
 		weatherDriftMult = weatherEffectNow.fishDriftMult;
-
-		wasTI = weatherInteraction;
 	}
 	
 	// Update is called once per frame
