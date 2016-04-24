@@ -194,6 +194,16 @@ public class HarpoonDrag : MonoBehaviour {
 			return;
 		}
 
+		HarpoonablePassingMonster hpmScript = other.gameObject.GetComponentInParent<HarpoonablePassingMonster>();
+		if(hpmScript && hpmScript.IsAlive() && motion.magnitude >= MIN_KILL_MOTION &&
+		   fishStack.Count < MAX_FISH_PER_HARPOON) { // limiting to 3 fish on pole at a time
+
+			/*ScoreManager.instance.ScorePop(fmbScript,
+				this);*/
+			
+			hpmScript.Die();
+		}
+
 		FishMoverBasic fmbScript = other.gameObject.GetComponentInParent<FishMoverBasic>();
 		if(fmbScript && fmbScript.IsAlive() && motion.magnitude >= MIN_KILL_MOTION &&
 			fishStack.Count < MAX_FISH_PER_HARPOON) { // limiting to 3 fish on pole at a time
