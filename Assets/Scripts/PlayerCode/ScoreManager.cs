@@ -118,7 +118,7 @@ public class ScoreManager : MonoBehaviour {
 	}
 
 	public void ScoreAddMegaPop(FishMoverBasic fmbScored, HarpoonDrag thrownSpear, int scoreAmt) {
-		ScorePop(fmbScored,thrownSpear,scoreAmt);
+		ScorePop(fmbScored.gameObject,thrownSpear,scoreAmt);
 		/*Vector3 textPos = fmbScored.transform.position;
 		int scoreAdded = fmbScored.scoreValue;
 
@@ -150,9 +150,15 @@ public class ScoreManager : MonoBehaviour {
 		scoreGO.transform.localScale = Vector3.one * 0.8f;*/
 	}
 	
-	public void ScorePop(FishMoverBasic fmbScored, HarpoonDrag thrownSpear, int scoreAmt = -1) {
-		Vector3 textPos = fmbScored.transform.position;
-		int scoreAdded = (scoreAmt == -1 ? fmbScored.scoreValue : scoreAmt);
+	public void ScorePop(GameObject enemyScored, HarpoonDrag thrownSpear, int scoreAmt = -1) {
+		Vector3 textPos = enemyScored.transform.position;
+
+		FishMoverBasic fmbScript = enemyScored.GetComponent<FishMoverBasic>();
+		HarpoonablePassingMonster hpmScript = enemyScored.GetComponent<HarpoonablePassingMonster>();
+
+		int scoreAdded = (scoreAmt == -1 ? 
+			(fmbScript ? fmbScript.scoreValue : hpmScript.scoreValue ) : 
+			scoreAmt);
 
 		nextScore += scoreAdded;
 		// nextScoreText.text = "+"+nextScore; //// since only allowing one harpoon at a time can use Last Score as same val
@@ -172,7 +178,7 @@ public class ScoreManager : MonoBehaviour {
 
 		GameObject scoreGO = GameObject.Instantiate(scorePopPrefab);
 		Text textScript = scoreGO.GetComponent<Text>();
-		textScript.text = "+" + scoreAdded;
+		textScript.text = (scoreAdded > 0 ? "+" : "") + scoreAdded;
 
 		scoreGO.transform.SetParent(uiCanvas.transform);
 		

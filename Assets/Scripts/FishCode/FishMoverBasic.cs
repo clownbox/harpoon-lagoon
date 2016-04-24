@@ -152,12 +152,17 @@ public class FishMoverBasic : MonoBehaviour {
 		return (isDead == false);
 	}
 
-	public void Die() {
+	public void Die(bool vanishSelf = false) {
 		if(isDead == false) {
 			isDead = true;
 
 			preStabbedFish.enabled = false;
 			postStabbedFish.enabled = true;
+
+			if(vanishSelf) {
+				FishSpawnRefillTank.instance.FishKilledAndOffScreen_Refill(gameObject);
+				Destroy(gameObject);
+			}
 		}
 	}
 

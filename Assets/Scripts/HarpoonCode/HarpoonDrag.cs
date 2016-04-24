@@ -28,6 +28,7 @@ public class HarpoonDrag : MonoBehaviour {
 
 	public Vector3 motion;
 	bool hitTarget = false;
+	private bool forceStop = false;
 
 	// Use this for initialization
 	void Start () {
@@ -198,8 +199,14 @@ public class HarpoonDrag : MonoBehaviour {
 		if(hpmScript && hpmScript.IsAlive() && motion.magnitude >= MIN_KILL_MOTION &&
 		   fishStack.Count < MAX_FISH_PER_HARPOON) { // limiting to 3 fish on pole at a time
 
-			/*ScoreManager.instance.ScorePop(fmbScript,
-				this);*/
+			if(hpmScript.scoreValue != 0) {
+				ScoreManager.instance.ScorePop(hpmScript.gameObject,
+					this, -1);
+			}
+
+			if(hpmScript.stopsHarpoon) {
+				forceStop = true;
+			}
 			
 			hpmScript.Die();
 		}
@@ -208,7 +215,7 @@ public class HarpoonDrag : MonoBehaviour {
 		if(fmbScript && fmbScript.IsAlive() && motion.magnitude >= MIN_KILL_MOTION &&
 			fishStack.Count < MAX_FISH_PER_HARPOON) { // limiting to 3 fish on pole at a time
 
-			ScoreManager.instance.ScorePop(fmbScript,
+			ScoreManager.instance.ScorePop(fmbScript.gameObject,
 			                               this);
 
 			if(fishTorquesSpear) {
@@ -290,7 +297,7 @@ public class HarpoonDrag : MonoBehaviour {
 			other.transform.parent.parent = transform;
 			hitTarget = true;
 		}
-		if(fishStack.Count >= MAX_FISH_PER_HARPOON) {
+		if(fishStack.Count >= MAX_FISH_PER_HARPOON || forceStop) {
 			motion = Vector3.zero; // snap to halt
 			if(HarpoonThrower.instance.yankInteraction == HarpoonThrower.YANK_INTERACTION.Auto) {
 				WaitThenRetract();
