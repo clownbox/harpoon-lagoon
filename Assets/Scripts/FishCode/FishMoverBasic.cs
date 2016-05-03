@@ -244,10 +244,26 @@ public class FishMoverBasic : MonoBehaviour {
 			Vector3 posDiff = transform.position - otherFMB.transform.position;
 			posDiff.z = 0.0f;
 			float posDist = posDiff.magnitude;
+			float pushBackRad = 0.65f;
 			if(posDist > 0.01f) { // skip self
-				float invDistPercForPushForce = (pushRange - posDist) / pushRange;
-				invDistPercForPushForce *= invDistPercForPushForce; // sq effect
-				Vector3 pushBack = posDiff.normalized * FishTime.deltaTime *
+				if(posDist < pushBackRad) {
+					float smoothK = 0.95f;
+					rootPos = SeaBounds.instance.constrainTrunc(otherFMB.transform.position
+						+ posDiff.normalized * pushBackRad) * (1.0f-smoothK) +
+						rootPos * smoothK;
+
+					swimmingFrom = rootPos;
+					float timeLeft = swimTimeEnd - FishTime.time;
+					swimTimeStarted = FishTime.time;
+					swimTimeEnd = swimTimeStarted + timeLeft;
+					swimmingTo = SeaBounds.instance.constrainTrunc(swimmingTo
+						+ posDiff.normalized * pushBackRad) * (1.0f-smoothK) +
+						swimmingTo * smoothK;
+				}
+				/*float invDistPercForPushForce = (pushRange - posDist) / pushRange;
+				// invDistPercForPushForce *= invDistPercForPushForce; // sq effect
+				Vector3 pushBack = Quaternion.AngleAxis(80,Vector3.forward) *
+									posDiff.normalized * FishTime.deltaTime *
 				                  invDistPercForPushForce * pushForce;
 
 				recentPushFrom = transform.position;
@@ -259,7 +275,7 @@ public class FishMoverBasic : MonoBehaviour {
 				swimTimeStarted = FishTime.time;
 				swimTimeEnd = swimTimeStarted + timeLeft;
 				swimmingTo = SeaBounds.instance.constrainTrunc(swimmingTo + pushBack);
-				PutSwimToOnTargetLine();
+				PutSwimToOnTargetLine();*/
 			}
 		}
 
