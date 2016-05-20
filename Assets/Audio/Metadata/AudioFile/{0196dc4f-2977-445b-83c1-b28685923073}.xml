@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.01.08.00">
+    <object class="AudioFile" id="{0196dc4f-2977-445b-83c1-b28685923073}">
+        <property name="assetPath">
+            <value>ocean_14.wav</value>
+        </property>
+        <property name="frequencyInKHz">
+            <value>48</value>
+        </property>
+        <property name="channelCount">
+            <value>2</value>
+        </property>
+        <property name="length">
+            <value>9.1109375000000004</value>
+        </property>
+        <relationship name="masterAssetFolder">
+            <destination>{e8f9f7c6-6a3a-4ff1-945d-e19802b9118d}</destination>
+        </relationship>
+    </object>
+</objects>

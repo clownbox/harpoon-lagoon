@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.01.08.00">
+    <object class="AudioFile" id="{ff6b077c-2281-4811-bdd0-391520c590ef}">
+        <property name="assetPath">
+            <value>thunder_9_mono.wav</value>
+        </property>
+        <property name="isStreaming">
+            <value>true</value>
+        </property>
+        <property name="frequencyInKHz">
+            <value>48</value>
+        </property>
+        <property name="channelCount">
+            <value>1</value>
+        </property>
+        <property name="length">
+            <value>19.393750000000001</value>
+        </property>
+        <relationship name="masterAssetFolder">
+            <destination>{e8f9f7c6-6a3a-4ff1-945d-e19802b9118d}</destination>
+        </relationship>
+    </object>
+</objects>
