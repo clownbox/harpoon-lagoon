@@ -168,6 +168,9 @@ public class HarpoonThrower : MonoBehaviour {
 
 		if(ScoreManager.instance.NewSpearThrown(hdScript) == false) {
 			Destroy(harpoonGO);
+		} else {
+			FMODUnity.RuntimeManager.PlayOneShot("event:/harpoon_throw");
+			FMODUnity.RuntimeManager.PlayOneShot("event:/harpoon_water");
 		}
 	}
 }

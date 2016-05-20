@@ -168,7 +168,7 @@ public class ScoreManager : MonoBehaviour {
 			lastThrowScoreText.text = "" + lastThrowScore;
 			if(lastThrowScore >= extraHarpoonThreshold &&
 			   extraHarpoonEarnedSinceLastThrow == false) {
-
+				FMODUnity.RuntimeManager.PlayOneShot("event:/new_harpoons");
 				spearsLeft++;
 				harpoonAwardMessage.text = "You earned an extra harpoon!";
 				extraHarpoonEarnedSinceLastThrow = true;

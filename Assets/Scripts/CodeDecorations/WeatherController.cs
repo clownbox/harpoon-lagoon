@@ -3,6 +3,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 
+using FMOD.Studio;
+
 [Serializable]
 public class WeatherImpacts
 {
@@ -18,6 +20,8 @@ public class WeatherImpacts
 
 public class WeatherController : MonoBehaviour {
 	public WeatherImpacts[] weatherDefs; // note: define in same order as WEATHER_MODE
+
+	private FMOD.Studio.EventInstance stormSoundEvt;
 
 	public enum WEATHER_MODE
 	{
@@ -52,6 +56,7 @@ public class WeatherController : MonoBehaviour {
 
 	public void WeatherSliderUpdated(Slider theSlider) {
 		weatherFade = theSlider.value;
+		stormSoundEvt.setParameterValue("StormLevel", weatherFade);
 		weatherInteraction = (WEATHER_MODE)((int)weatherFade);
 		if((int)weatherInteraction >= (int)WEATHER_MODE.NotInitializedYet) {
 			weatherInteraction = (WEATHER_MODE)0;
@@ -61,6 +66,10 @@ public class WeatherController : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+		stormSoundEvt = FMODUnity.RuntimeManager.CreateInstance("event:/ocean");
+		stormSoundEvt.setParameterValue("StormLevel", weatherFade);
+		stormSoundEvt.start();
+
 		playerDefBobDampen = playerBoat.dampen;
 		waterDefBobDampen = waterBob.dampen;
 

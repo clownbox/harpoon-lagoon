@@ -206,6 +206,10 @@ public class HarpoonDrag : MonoBehaviour {
 
 			if(hpmScript.stopsHarpoon) {
 				forceStop = true;
+				FMODUnity.RuntimeManager.PlayOneShot("event:/wrong_fish");
+			} else {
+				FMODUnity.RuntimeManager.PlayOneShot("event:/fish_hit");
+				FMODUnity.RuntimeManager.PlayOneShot("event:/fish_dead");
 			}
 			
 			hpmScript.Die();
@@ -232,6 +236,9 @@ public class HarpoonDrag : MonoBehaviour {
 			                                           stackSlideEnd.transform.position);
 			stackOffsets.Add ( tempVect );
 			fishStack.Add(fmbScript.gameObject);
+
+			FMODUnity.RuntimeManager.PlayOneShot("event:/fish_hit");
+			FMODUnity.RuntimeManager.PlayOneShot("event:/fish_dead");
 
 			if(fishStack.Count >= MAX_FISH_TO_SCORE) {
 				// look at the string passed to NewMessage() for indication of which rule it's testing for
@@ -314,6 +321,7 @@ public class HarpoonDrag : MonoBehaviour {
 	IEnumerator DelayThenRetract() {
 		pausingBeforeReturn = true;
 		yield return new WaitForSeconds(0.75f);
+		FMODUnity.RuntimeManager.PlayOneShot("event:/harpoon_retrieve");
 		isRopeReturning = true;
 	}
 
