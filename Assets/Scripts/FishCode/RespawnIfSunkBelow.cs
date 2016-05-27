@@ -16,7 +16,8 @@ public class RespawnIfSunkBelow : MonoBehaviour {
 
 	public void CountFish() {
 		if(alreadyCounted == false) {
-			reportKillsTo.SendMessage("FishKilledAndOffScreen_Refill", gameObject);
+			// _Refill as in FishKilledAndOffScreen_Refill is for FishSpawnRefillTank
+			reportKillsTo.SendMessage("FishKilledAndOffScreen"/*_Refill"*/, gameObject);
 			alreadyCounted = true;
 		}
 	}

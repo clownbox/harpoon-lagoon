@@ -160,7 +160,7 @@ public class FishMoverBasic : MonoBehaviour {
 			postStabbedFish.enabled = true;
 
 			if(vanishSelf) {
-				FishSpawnRefillTank.instance.FishKilledAndOffScreen_Refill(gameObject);
+				FishSpawnInfinite.instance.FishKilledAndOffScreen(gameObject);
 				Destroy(gameObject);
 			}
 		}
@@ -186,6 +186,7 @@ public class FishMoverBasic : MonoBehaviour {
 		modelVis = new Transform[rendChild.Length];
 
 		// aiMode = FishSpawnRefillTank.defaultAI;
+		setAIMode( (FishMove)Mathf.Floor( Random.Range(0,(int)FishMove.FISH_AI_TYPES)) );
 
 		for(int i = 0; i < rendChild.Length; i++) {
 			modelVis[i] = rendChild[i].transform;
@@ -230,10 +231,10 @@ public class FishMoverBasic : MonoBehaviour {
 		if(aiMode != FishMove.STANDARD_SPREAD) {
 			pushRange = 0.1f;
 			pushForce = 0.1f;
-		} else if(FishSpawnRefillTank.instance.lineUpFish) {
+		} /*else if(FishSpawnRefillTank.instance.lineUpFish) {
 			pushRange = 0.15f;
 			pushForce = 0.35f;
-		}
+		}*/
 
 		Collider[] nearbyFish = Physics.OverlapSphere(rootPos, pushRange);
 		for(int i = 0; i < nearbyFish.Length; i++) {

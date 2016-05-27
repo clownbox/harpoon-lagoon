@@ -35,7 +35,7 @@ public class FishSpawnRefillTank : MonoBehaviour {
 	public Text fishSetText;
 	float totalWeight = 0.0f;
 
-	public static FishSpawnRefillTank instance;
+	// public static FishSpawnRefillTank instance;
 
 	public static FishMoverBasic.FishMove defaultAI = FishMoverBasic.FishMove.HORIZONTAL_LINE;
 
@@ -178,7 +178,7 @@ public class FishSpawnRefillTank : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		instance = this;
+		// instance = this;
 		fishList = new List<GameObject>();
 		FishListWeightsSetup();
 		SpawnUpToCap(true);

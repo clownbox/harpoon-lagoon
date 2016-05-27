@@ -13,7 +13,9 @@ public class FishTypeAndBaseAndMult
 
 public class FishSpawnInfinite : MonoBehaviour {
 	public FishTypeAndBaseAndMult[] fishScalingList;
+	public static FishSpawnInfinite instance;
 	private int levelNow = 0;
+	public TextFadeOut showDayText;
 
 	private int totalFishTillRespawn = 0;
 
@@ -30,6 +32,11 @@ public class FishSpawnInfinite : MonoBehaviour {
 		SpawnForLevel();
 	}*/
 
+	void NextLevel() {
+		levelNow++;
+		SpawnForLevel();
+	}
+
 	public void FishKilledAndOffScreen(GameObject whichFish) {
 		fishList.Remove(whichFish);
 
@@ -37,13 +44,13 @@ public class FishSpawnInfinite : MonoBehaviour {
 
 		if(ScoreManager.instance.ShowGameOverIfNeeded() == false) {
 			if(totalFishTillRespawn <= 0) {
-				levelNow++;
-				SpawnForLevel();
+				NextLevel();
 			}
 		}
 	}
 
 	void SpawnForLevel() {
+		showDayText.showDay(levelNow);
 		totalFishTillRespawn = 0;
 		for(int i=0;i<fishScalingList.Length;i++) {
 			int howMany = (int)(fishScalingList[i].fishBaseCount +
@@ -60,6 +67,10 @@ public class FishSpawnInfinite : MonoBehaviour {
 				totalFishTillRespawn++;
 			}
 		}
+	}
+
+	void Awake() {
+		instance = this;
 	}
 
 	// Use this for initialization
