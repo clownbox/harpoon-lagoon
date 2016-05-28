@@ -169,7 +169,7 @@ public class HarpoonThrower : MonoBehaviour {
 	IEnumerator AnimThrow() {
 		for(int i = 0; i < animPoses.Length; i++) {
 			AdvanceAnim();
-			yield return new WaitForSeconds(0.1f);
+			yield return new WaitForSeconds(0.06f);
 		}
 	}
 

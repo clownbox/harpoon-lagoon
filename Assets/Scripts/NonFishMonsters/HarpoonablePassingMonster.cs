@@ -2,7 +2,7 @@
 using System.Collections;
 
 public class HarpoonablePassingMonster : MonoBehaviour {
-	public MeshRenderer preStabbedFish;
+	public GameObject preStabbedFish;
 	public MeshRenderer postStabbedFish;
 	public int scoreValue = 0;
 
@@ -19,7 +19,7 @@ public class HarpoonablePassingMonster : MonoBehaviour {
 	}
 
 	void showShocked(bool isShocked) {
-		preStabbedFish.enabled = (isShocked == false);
+		preStabbedFish.SetActive(isShocked == false);
 		postStabbedFish.enabled = isShocked;
 		isDead = isShocked;
 		rlScript.enabled = (isDead == false);
