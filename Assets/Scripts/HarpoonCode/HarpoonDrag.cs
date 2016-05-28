@@ -320,9 +320,14 @@ public class HarpoonDrag : MonoBehaviour {
 
 	IEnumerator DelayThenRetract() {
 		pausingBeforeReturn = true;
+
+		HarpoonThrower.instance.MidAnim();
+
 		yield return new WaitForSeconds(0.75f);
 		FMODUnity.RuntimeManager.PlayOneShot("event:/harpoon_retrieve");
 		isRopeReturning = true;
+
+		HarpoonThrower.instance.ResetAnim();
 	}
 
 }

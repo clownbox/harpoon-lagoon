@@ -1,11 +1,25 @@
 ﻿using UnityEngine;
 using UnityEngine.UI; // for debug interaction-style cycle button
+using System;
 using System.Collections;
+using System.Reflection;
+
+[Serializable]
+public class FishermanAnimFrame
+{
+	public Renderer body;
+	public Renderer pole;
+}
 
 public class HarpoonThrower : MonoBehaviour {
+	public FishermanAnimFrame[] animPoses;
+	private int animPoseNow = 0;
+	private bool showSpear = true;
+
 	public GameObject ropeStart;
 
 	public GameObject harpoonPrefab;
+	public static HarpoonThrower instance;
 
 	public static bool limitOneHarpoonAtTime = true; // (confirmed 9pm Feb 27 via Slack)
 
@@ -42,12 +56,53 @@ public class HarpoonThrower : MonoBehaviour {
 	public BoxCollider skyTouch;
 	public BoxCollider waterTouch;
 
-	public static HarpoonThrower instance;
-
-	public Text cycleInteractionText;
+	void Awake() {
+		instance = this;
+	}
 
 	void Start() {
-		instance = this;
+		showAnim();
+	}
+
+	public void AdvanceAnim() {
+		if(animPoseNow >= animPoses.Length-1) {
+			showSpear = false;
+			animPoseNow = animPoses.Length - 1;
+		} else {
+			animPoseNow++;
+		}
+		showAnim();
+	}
+
+	public void MidAnim() {
+		animPoseNow = 1;
+		showAnim();
+	}
+
+	public void ResetAnim() {
+		showSpear = true;
+		animPoseNow = 0;
+		showAnim();
+	}
+
+	void showAnim() {
+		for(int i = 0; i < animPoses.Length; i++) {
+			animPoses[i].body.enabled = (i == animPoseNow);
+			animPoses[i].pole.enabled = (i == animPoseNow && showSpear);
+		}
+	}
+
+	public void turnToX(float someX) {
+		Vector3 whatPt = animPoses[0].body.transform.position;
+		whatPt.z = -0.1f;
+		whatPt.x = someX;
+		for(int i = 0; i < animPoses.Length; i++) {
+			animPoses[i].body.transform.LookAt(whatPt);
+			animPoses[i].body.transform.Rotate(270.0f, 22.5f, 0.0f);
+
+			animPoses[i].pole.transform.LookAt(whatPt);
+			animPoses[i].pole.transform.Rotate(270.0f, 22.5f, 0.0f);
+		}
 	}
 
 	public void CycleYankInteraction() {
@@ -79,7 +134,7 @@ public class HarpoonThrower : MonoBehaviour {
 			waterTouch.enabled = !skyTouch.enabled;
 
 			if(showOnButtonText) {
-				cycleInteractionText.text = ""+throwInteraction; // debug display
+				// cycleInteractionText.text = ""+throwInteraction; // debug display
 			}
 		}
 	}
@@ -100,7 +155,7 @@ public class HarpoonThrower : MonoBehaviour {
 			FishTime.useBulletTime = (throwNinjaMode == THROW_NINJAMODE.SlowFish);
 
 			if(showOnButtonText) {
-				cycleInteractionText.text = ""+throwNinjaMode; // debug display
+				// cycleInteractionText.text = ""+throwNinjaMode; // debug display
 			}
 		}
 	}
@@ -111,8 +166,17 @@ public class HarpoonThrower : MonoBehaviour {
 		enforceYankInteraction(true);
 	}
 
+	IEnumerator AnimThrow() {
+		for(int i = 0; i < animPoses.Length; i++) {
+			AdvanceAnim();
+			yield return new WaitForSeconds(0.1f);
+		}
+	}
+
 	public void ThrowAt (Vector3 targetPoint) {
 		Vector3 throwFrom = transform.position;
+
+		StartCoroutine( AnimThrow() );
 
 		if(limitOneHarpoonAtTime) {
 			if(ScoreManager.instance.spearsOut > 0) { // no throw until prev throw returns

@@ -7,8 +7,6 @@ public class ClickTouchReportToThrow : MonoBehaviour {
 	public static bool pullbackNotAimDown;
 	public static bool fixedLength = false;
 
-	public GameObject playerBoat;
-
 	void Update () {
 		if(MenuStateMachine.instance.MenuAllowsInput() == false ||
 		   MenuStateMachine.instance.MenuBlocksAction()) {
@@ -63,6 +61,8 @@ public class ClickTouchReportToThrow : MonoBehaviour {
 			} else {
 				DashedLine.endVertex = atPt;
 			}
+
+			HarpoonThrower.instance.turnToX(rhInfo.point.x);
 
 			if( (throwUponReleaseNotPress == true && Input.GetButtonUp("Fire1")) ||
 				(throwUponReleaseNotPress == false && Input.GetButtonDown("Fire1"))) {

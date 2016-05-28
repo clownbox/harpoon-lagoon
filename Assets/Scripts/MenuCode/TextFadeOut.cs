@@ -7,13 +7,17 @@ public class TextFadeOut : MonoBehaviour {
 	float fadeTime;
 	Color textBaseColor;
 
+	void Awake() {
+		myText = GetComponent<Text>();
+	}
+
 	// Use this for initialization
 	void Start () {
-		myText = GetComponent<Text>();
 		textBaseColor = myText.color;
 	}
 
 	public void showDay(int forLevel) { // reminder: levels start at zero
+		Debug.Log("problem from: " + name);
 		myText.text = "Day " + (forLevel+1);
 		fadeTime = 2.0f;
 	}
