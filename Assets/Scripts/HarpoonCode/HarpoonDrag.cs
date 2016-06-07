@@ -207,6 +207,10 @@ public class HarpoonDrag : MonoBehaviour {
 			if(hpmScript.stopsHarpoon) {
 				forceStop = true;
 				FMODUnity.RuntimeManager.PlayOneShot("event:/wrong_fish");
+
+				if(MenuStateMachine.instance.tutStep == MenuStateMachine.TUTORIAL_PHASE.Monsters) {
+					MenuStateMachine.instance.NextStep();
+				}
 			} else {
 				FMODUnity.RuntimeManager.PlayOneShot("event:/fish_hit");
 				FMODUnity.RuntimeManager.PlayOneShot("event:/fish_dead");
@@ -237,10 +241,19 @@ public class HarpoonDrag : MonoBehaviour {
 			stackOffsets.Add ( tempVect );
 			fishStack.Add(fmbScript.gameObject);
 
+			if(MenuStateMachine.instance.tutStep == MenuStateMachine.TUTORIAL_PHASE.SpearFish) {
+				MenuStateMachine.instance.NextStep();
+			}
+
 			FMODUnity.RuntimeManager.PlayOneShot("event:/fish_hit");
 			FMODUnity.RuntimeManager.PlayOneShot("event:/fish_dead");
 
 			if(fishStack.Count >= MAX_FISH_TO_SCORE) {
+				Debug.Log(fishStack.Count);
+				if(MenuStateMachine.instance.tutStep == MenuStateMachine.TUTORIAL_PHASE.SpearThree) {
+					MenuStateMachine.instance.NextStep();
+				}
+
 				// look at the string passed to NewMessage() for indication of which rule it's testing for
 
 				float scaleWas = 0.0f;
@@ -261,8 +274,6 @@ public class HarpoonDrag : MonoBehaviour {
 				if(rulePassed && sizeChanges>=MIN_DIFF_SIZES) {
 					ComboMessage.instance.NewMessage(fishStack.Count+" small to big!", 1000, fmbScript, this);
 				}
-				// OK: 11223
-				// NOT OK: 1231
 
 
 				scaleWas = 1000.0f;
@@ -282,8 +293,6 @@ public class HarpoonDrag : MonoBehaviour {
 				if(rulePassed && sizeChanges>=MIN_DIFF_SIZES) {
 					ComboMessage.instance.NewMessage(fishStack.Count+" big to small!", 350, fmbScript, this);
 				}
-				// OK: 33211
-				// NOT OK: 2321
 
 				FishMoverBasic.FishBreed fishType = fishStack[0].GetComponent<FishMoverBasic>().myKind;
 				rulePassed = true;
@@ -326,6 +335,10 @@ public class HarpoonDrag : MonoBehaviour {
 		yield return new WaitForSeconds(0.75f);
 		FMODUnity.RuntimeManager.PlayOneShot("event:/harpoon_retrieve");
 		isRopeReturning = true;
+
+		if(MenuStateMachine.instance.tutStep == MenuStateMachine.TUTORIAL_PHASE.ReleaseToThrow) {
+			MenuStateMachine.instance.NextStep();
+		}
 
 		HarpoonThrower.instance.ResetAnim();
 	}

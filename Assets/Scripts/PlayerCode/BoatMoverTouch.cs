@@ -36,6 +36,10 @@ public class BoatMoverTouch : MonoBehaviour {
 				newTouchGetX.y = goToPos.y;
 				newTouchGetX.z = goToPos.z;
 				goToPos = newTouchGetX;
+
+				if(MenuStateMachine.instance.tutStep == MenuStateMachine.TUTORIAL_PHASE.SteerBoat) {
+					MenuStateMachine.instance.NextStep();
+				}
 			}
 		}
 	}

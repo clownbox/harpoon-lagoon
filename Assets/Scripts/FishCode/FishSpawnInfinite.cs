@@ -49,8 +49,27 @@ public class FishSpawnInfinite : MonoBehaviour {
 		}
 	}
 
-	void SpawnForLevel() {
+	public void RemoveAll() {
+		foreach(GameObject eachFish in fishList) {
+			Destroy(eachFish);
+		}
+	}
+
+	public void UpdateText() {
 		showDayText.showDay(levelNow);
+	}
+
+	public void AddOneFish() {
+		GameObject GOFish = (GameObject)GameObject.Instantiate(fishScalingList[2].fishTypePrefab);
+		FishMoverBasic fmbScript = GOFish.GetComponent<FishMoverBasic>();
+		GOFish.transform.position =
+			SeaBounds.instance.randPosBandBias(fmbScript.depthBiasOdds,
+				fmbScript.shallowPerc,
+				fmbScript.deepPerc);
+	}
+
+	void SpawnForLevel() {
+		UpdateText();
 		totalFishTillRespawn = 0;
 		for(int i=0;i<fishScalingList.Length;i++) {
 			int howMany = (int)(fishScalingList[i].fishBaseCount +

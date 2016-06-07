@@ -17,11 +17,19 @@ public class TextFadeOut : MonoBehaviour {
 	}
 
 	public void showDay(int forLevel) { // reminder: levels start at zero
-		Debug.Log("problem from: " + name);
-		myText.text = "Day " + (forLevel+1);
+		if(MenuStateMachine.instance.tutStep == MenuStateMachine.TUTORIAL_PHASE.NormalPlay) {
+			Debug.Log("problem from: " + name);
+			myText.text = "Day " + (forLevel + 1);
+		} else {
+			myText.text = "Tip "+(int)MenuStateMachine.instance.tutStep;
+
+			ScoreManager.instance.PostTutMessage(
+				MenuStateMachine.instance.tutStepLabel()
+			);
+		}
 		fadeTime = 2.0f;
 	}
-	
+		
 	// Update is called once per frame
 	void Update () {
 		if(fadeTime <= 0.0f) {

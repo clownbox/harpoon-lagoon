@@ -22,7 +22,18 @@ public class ClickTouchReportToThrow : MonoBehaviour {
 			}
 
 			if(rhInfo.collider.gameObject != gameObject) {
+				if(Input.GetButtonUp("Fire1")) {
+					if(MenuStateMachine.instance.tutStep == MenuStateMachine.TUTORIAL_PHASE.CancelThrow) {
+						MenuStateMachine.instance.NextStep();
+					}
+				}
 				return; // avoids double throw from sky and water mouse detection areas both running same throw code
+			}
+
+			if(Input.GetButtonDown("Fire1")) {
+				if(MenuStateMachine.instance.tutStep == MenuStateMachine.TUTORIAL_PHASE.HoldToAim) {
+					MenuStateMachine.instance.NextStep();
+				}
 			}
 
 			if(ScoreManager.instance.spearsOut > 0 && HarpoonThrower.limitOneHarpoonAtTime) {
@@ -64,11 +75,11 @@ public class ClickTouchReportToThrow : MonoBehaviour {
 
 			HarpoonThrower.instance.turnToX(rhInfo.point.x);
 
-			if( (throwUponReleaseNotPress == true && Input.GetButtonUp("Fire1")) ||
-				(throwUponReleaseNotPress == false && Input.GetButtonDown("Fire1"))) {
+			if( (throwUponReleaseNotPress == true && Input.GetButtonUp("Fire1")) /* ||
+				(throwUponReleaseNotPress == false && Input.GetButtonDown("Fire1")) */) {
 
-				if( (rhInfo.collider.gameObject.layer == LayerMask.NameToLayer("WaterTouch") && pullbackNotAimDown==false) ||
-					(rhInfo.collider.gameObject.layer == LayerMask.NameToLayer("SkyTouch") && pullbackNotAimDown==true)) {
+				if((rhInfo.collider.gameObject.layer == LayerMask.NameToLayer("WaterTouch") && pullbackNotAimDown == false) ||
+				   (rhInfo.collider.gameObject.layer == LayerMask.NameToLayer("SkyTouch") && pullbackNotAimDown == true)) {
 
 					Vector3 rotatedTarget = rhInfo.point;
 					rotatedTarget -= htScript.transform.position;

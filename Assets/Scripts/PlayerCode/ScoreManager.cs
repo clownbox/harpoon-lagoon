@@ -34,8 +34,14 @@ public class ScoreManager : MonoBehaviour {
 
 	public Canvas uiCanvas;
 
+	public void PostTutMessage(string setTo) {
+		harpoonAwardMessage.text = setTo;
+	}
+
 	public void ClearSpearText() {
-		harpoonAwardMessage.text=extraHarpoonThreshold + " pt throw to gain harpoon";
+		if(MenuStateMachine.instance==null || MenuStateMachine.instance.notInTut()) {
+			harpoonAwardMessage.text = extraHarpoonThreshold + " pt throw to gain harpoon";
+		}
 	}
 
 	public void ResetScore() {
@@ -52,7 +58,11 @@ public class ScoreManager : MonoBehaviour {
 	}
 
 	public void UpdateSpearCount() {
-		spearsLeftText.text = "Harpoon"+(spearsLeft==1 ? "" : "s")+": "+spearsLeft;
+		if(MenuStateMachine.instance.notInTut()) {
+			spearsLeftText.text = "Harpoon" + (spearsLeft == 1 ? "" : "s") + ": " + spearsLeft;
+		} else {
+			spearsLeftText.text = "Tutorial Step " + (int)MenuStateMachine.instance.tutStep;
+		}
 	}
 
 	public bool ShowGameOverIfNeeded() {
@@ -70,7 +80,11 @@ public class ScoreManager : MonoBehaviour {
 		waitingForGameOver = true;
 		yield return new WaitForSeconds(0.5f);
 		MenuStateMachine.instance.AllMenusOffExcept(gameOverPanel);
-		endScoreText.text = "congrats you earned " + totalScore;
+		if(MenuStateMachine.instance.notInTut()) {
+			endScoreText.text = "congrats you earned " + totalScore;
+		} else {
+			endScoreText.text = "you're ready to fish!";
+		}
 	}
 
 	public void SpearStartReturning(GameObject whichSpear)
@@ -109,7 +123,9 @@ public class ScoreManager : MonoBehaviour {
 			nextScoreText.text = "";
 			lastThrowScore = 0;
 			extraHarpoonEarnedSinceLastThrow = false;
-			spearsLeft--;
+			if(MenuStateMachine.instance.notInTut()) {
+				spearsLeft--;
+			}
 			ClearSpearText();
 			UpdateSpearCount();
 			return true;
@@ -169,8 +185,13 @@ public class ScoreManager : MonoBehaviour {
 			if(lastThrowScore >= extraHarpoonThreshold &&
 			   extraHarpoonEarnedSinceLastThrow == false) {
 				FMODUnity.RuntimeManager.PlayOneShot("event:/new_harpoons");
+				if(MenuStateMachine.instance.tutStep == MenuStateMachine.TUTORIAL_PHASE.ExtraSpear) {
+					MenuStateMachine.instance.NextStep();
+				}
 				spearsLeft++;
-				harpoonAwardMessage.text = "You earned an extra harpoon!";
+				if(MenuStateMachine.instance.notInTut()) {
+					harpoonAwardMessage.text = "You earned an extra harpoon!";
+				}
 				extraHarpoonEarnedSinceLastThrow = true;
 				UpdateSpearCount();
 			}

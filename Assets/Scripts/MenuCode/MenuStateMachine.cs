@@ -10,6 +10,91 @@ public class MenuStateMachine : MonoBehaviour {
 	public GameObject[] screens;
 	public static MenuStateMachine instance;
 
+	public GameObject[] beasts;
+
+	public GameObject inGameUI;
+
+	public enum TUTORIAL_PHASE
+	{
+		NormalPlay,
+		SteerBoat,
+		HoldToAim,
+		ReleaseToThrow,
+		CancelThrow,
+		SpearFish,
+		SpearThree,
+		ExtraSpear,
+		Monsters, 
+		TutorialDone
+	}
+
+	public TUTORIAL_PHASE tutStep = TUTORIAL_PHASE.NormalPlay;
+
+	public void AllowBeasts(bool haveThem) {
+		for(int i=0; i<beasts.Length;i++) {
+			beasts[i].SetActive(haveThem);
+		}
+	}
+
+	public void NextStep() {
+		if(tutStep == TUTORIAL_PHASE.NormalPlay) {
+			AllowBeasts(true);
+			return;
+		}
+
+		string str = UnityEngine.StackTraceUtility.ExtractStackTrace ();
+		Debug.Log(str);
+
+		tutStep = (TUTORIAL_PHASE)( (int)tutStep+1 );
+		if(tutStep == TUTORIAL_PHASE.TutorialDone) {
+			AllMenusOffExcept(ScoreManager.instance.gameOverPanel);
+		} else {
+			FishSpawnInfinite.instance.UpdateText();
+
+			AllowBeasts( (int)tutStep >= (int)TUTORIAL_PHASE.Monsters );
+
+			switch(tutStep) {
+			case TUTORIAL_PHASE.SpearFish:
+				FishSpawnInfinite.instance.AddOneFish();
+				break;
+			case TUTORIAL_PHASE.SpearThree:
+				FishSpawnInfinite.instance.AddOneFish();
+				FishSpawnInfinite.instance.AddOneFish();
+				FishSpawnInfinite.instance.AddOneFish();
+				break;
+			}
+
+		}
+	}
+
+	public bool notInTut() {
+		return (tutStep == TUTORIAL_PHASE.NormalPlay);
+	}
+
+	public string tutStepLabel() {
+		switch(tutStep) {
+		case TUTORIAL_PHASE.SteerBoat:
+			return "Tap above water to steer";
+		case TUTORIAL_PHASE.HoldToAim:
+			return "Hold finger on water to aim";
+		case TUTORIAL_PHASE.ReleaseToThrow:
+			return "Release over water to throw";
+		case TUTORIAL_PHASE.CancelThrow:
+			return "Aim but release above water to cancel";
+		case TUTORIAL_PHASE.SpearFish:
+			return "Spear the fish!";
+		case TUTORIAL_PHASE.SpearThree:
+			return "Hit up to 3 fish at once!";
+		case TUTORIAL_PHASE.ExtraSpear:
+			return "Get "+ScoreManager.instance.extraHarpoonThreshold+"+ pt in a throw for an extra spear!";
+		case TUTORIAL_PHASE.Monsters:
+			return "Turtles block spears, sharks eat fish!";
+		case TUTORIAL_PHASE.TutorialDone:
+		default:
+			return "ERROR end";
+		}
+	}
+
 	// caching to avoid need to compare state lists each frame
 	private bool actionAllowed;
 	private bool inputAllowed;
@@ -53,6 +138,19 @@ public class MenuStateMachine : MonoBehaviour {
 		} else  {
 			Time.timeScale = 0.0f;
 		}
+	}
+
+	public void SetupTutorial(bool useTut) {
+		if(useTut) {
+			tutStep = (TUTORIAL_PHASE)( (int)TUTORIAL_PHASE.NormalPlay+1 );
+			FishSpawnInfinite.instance.RemoveAll();
+			AllowBeasts(false);
+		} else {
+			tutStep = TUTORIAL_PHASE.NormalPlay;
+			AllowBeasts(true);
+		}
+		FishSpawnInfinite.instance.UpdateText();
+		AllMenusOffExcept(inGameUI);
 	}
 
 	// Use this for initialization
