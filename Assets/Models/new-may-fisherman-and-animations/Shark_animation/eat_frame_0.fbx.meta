@@ -1,6 +1,6 @@
 fileFormatVersion: 2
-guid: eb424a0e5f3af4024938cff7810c16e7
-timeCreated: 1463779358
+guid: e66134325b3cc40a8891ef66953e597e
+timeCreated: 1465600557
 licenseType: Free
 ModelImporter:
   serializedVersion: 19
@@ -9,8 +9,7 @@ ModelImporter:
     400000: //RootNode
     2300000: //RootNode
     3300000: //RootNode
-    4300000: Octopus.003
-    4300002: Octopus.000
+    4300000: Cube.031
   materials:
     importMaterials: 1
     materialName: 0
