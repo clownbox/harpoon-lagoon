@@ -118,6 +118,7 @@
             <destination>{25e0b96d-fc9d-4219-a916-f8d5ad3f0102}</destination>
             <destination>{fb9a00f7-6ced-4961-b54d-d40a900dbb37}</destination>
             <destination>{683cec91-9bb9-4a9d-96a4-26af67397d21}</destination>
+            <destination>{b12c4e79-ac3d-4dcd-aa82-61d79829d284}</destination>
         </relationship>
         <relationship name="sounds">
             <destination>{a98b9480-a361-48ae-a8c0-3c73914bedc5}</destination>
@@ -164,6 +165,7 @@
             <destination>{d7b8e5b3-bffe-479d-8908-13a76beabf34}</destination>
             <destination>{6d679cc1-0c50-4e71-82c7-461cd6b69f36}</destination>
             <destination>{b870ec1b-5283-47d3-b906-8d020aad4ba9}</destination>
+            <destination>{31324dd8-9cbe-4833-9971-a3e414e67194}</destination>
         </relationship>
         <relationship name="sounds">
             <destination>{7b51e2fd-3202-44be-b0b8-1c5f3b2334e6}</destination>
@@ -220,6 +222,41 @@
         </property>
         <property name="amount">
             <value>2</value>
+        </property>
+    </object>
+    <object class="ADSRModulator" id="{b12c4e79-ac3d-4dcd-aa82-61d79829d284}">
+        <property name="nameOfPropertyBeingModulated">
+            <value>volume</value>
+        </property>
+        <property name="initialValue">
+            <value>-80</value>
+        </property>
+        <property name="attackTime">
+            <value>0</value>
+        </property>
+        <property name="attackShape">
+            <value>0</value>
+        </property>
+        <property name="peakValue">
+            <value>0</value>
+        </property>
+        <property name="holdTime">
+            <value>160</value>
+        </property>
+        <property name="decayTime">
+            <value>3400</value>
+        </property>
+        <property name="decayShape">
+            <value>0</value>
+        </property>
+        <property name="sustainValue">
+            <value>-80</value>
+        </property>
+        <property name="releaseTime">
+            <value>0</value>
+        </property>
+        <property name="releaseShape">
+            <value>0</value>
         </property>
     </object>
     <object class="SingleSound" id="{a98b9480-a361-48ae-a8c0-3c73914bedc5}">
@@ -290,7 +327,42 @@
             <value>startOffset</value>
         </property>
         <property name="amount">
-            <value>2</value>
+            <value>13.5</value>
+        </property>
+    </object>
+    <object class="ADSRModulator" id="{31324dd8-9cbe-4833-9971-a3e414e67194}">
+        <property name="nameOfPropertyBeingModulated">
+            <value>volume</value>
+        </property>
+        <property name="initialValue">
+            <value>-80</value>
+        </property>
+        <property name="attackTime">
+            <value>0</value>
+        </property>
+        <property name="attackShape">
+            <value>0</value>
+        </property>
+        <property name="peakValue">
+            <value>0</value>
+        </property>
+        <property name="holdTime">
+            <value>400</value>
+        </property>
+        <property name="decayTime">
+            <value>940</value>
+        </property>
+        <property name="decayShape">
+            <value>0</value>
+        </property>
+        <property name="sustainValue">
+            <value>-80</value>
+        </property>
+        <property name="releaseTime">
+            <value>0</value>
+        </property>
+        <property name="releaseShape">
+            <value>0</value>
         </property>
     </object>
     <object class="SingleSound" id="{7b51e2fd-3202-44be-b0b8-1c5f3b2334e6}">

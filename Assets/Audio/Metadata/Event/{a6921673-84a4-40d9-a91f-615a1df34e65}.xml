@@ -269,7 +269,7 @@
             <value>100</value>
         </property>
         <property name="releaseTime">
-            <value>60000</value>
+            <value>0</value>
         </property>
         <property name="releaseShape">
             <value>1</value>
@@ -304,7 +304,7 @@
             <value>-80</value>
         </property>
         <property name="releaseTime">
-            <value>1000</value>
+            <value>0</value>
         </property>
         <property name="releaseShape">
             <value>0</value>

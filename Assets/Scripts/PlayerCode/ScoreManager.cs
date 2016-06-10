@@ -82,8 +82,10 @@ public class ScoreManager : MonoBehaviour {
 		MenuStateMachine.instance.AllMenusOffExcept(gameOverPanel);
 		if(MenuStateMachine.instance.notInTut()) {
 			endScoreText.text = "congrats you earned " + totalScore;
+			FMODUnity.RuntimeManager.PlayOneShot("event:/game_over");
 		} else {
 			endScoreText.text = "you're ready to fish!";
+			FMODUnity.RuntimeManager.PlayOneShot("event:/round_end");
 		}
 	}
 

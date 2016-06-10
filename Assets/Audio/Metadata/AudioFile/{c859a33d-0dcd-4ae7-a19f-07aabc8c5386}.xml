@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.01.08.00">
+    <object class="AudioFile" id="{c859a33d-0dcd-4ae7-a19f-07aabc8c5386}">
+        <property name="assetPath">
+            <value>boat_move_14_mono.wav</value>
+        </property>
+        <property name="frequencyInKHz">
+            <value>48</value>
+        </property>
+        <property name="channelCount">
+            <value>1</value>
+        </property>
+        <property name="length">
+            <value>2.4078124999999999</value>
+        </property>
+        <relationship name="masterAssetFolder">
+            <destination>{e8f9f7c6-6a3a-4ff1-945d-e19802b9118d}</destination>
+        </relationship>
+    </object>
+</objects>

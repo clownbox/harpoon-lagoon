@@ -254,6 +254,8 @@ public class HarpoonDrag : MonoBehaviour {
 					MenuStateMachine.instance.NextStep();
 				}
 
+				bool anyCombo = false;
+
 				// look at the string passed to NewMessage() for indication of which rule it's testing for
 
 				float scaleWas = 0.0f;
@@ -273,6 +275,7 @@ public class HarpoonDrag : MonoBehaviour {
 				}
 				if(rulePassed && sizeChanges>=MIN_DIFF_SIZES) {
 					ComboMessage.instance.NewMessage(fishStack.Count+" small to big!", 1000, fmbScript, this);
+					anyCombo = true;
 				}
 
 
@@ -292,6 +295,7 @@ public class HarpoonDrag : MonoBehaviour {
 				}
 				if(rulePassed && sizeChanges>=MIN_DIFF_SIZES) {
 					ComboMessage.instance.NewMessage(fishStack.Count+" big to small!", 350, fmbScript, this);
+					anyCombo = true;
 				}
 
 				FishMoverBasic.FishBreed fishType = fishStack[0].GetComponent<FishMoverBasic>().myKind;
@@ -304,15 +308,21 @@ public class HarpoonDrag : MonoBehaviour {
 				}
 				if(rulePassed) {
 					ComboMessage.instance.NewMessage(fishStack.Count+" all same!", 650, fmbScript, this);
+					anyCombo = true;
 				}
 				// OK: AAAAA
 				// NOT OK: AAABB
+
+				if(anyCombo) {
+					FMODUnity.RuntimeManager.PlayOneShot("event:/combo_score");
+				}
 			}
 
 			other.enabled = false;
 			other.transform.parent.parent = transform;
 			hitTarget = true;
 		}
+
 		if(fishStack.Count >= MAX_FISH_PER_HARPOON || forceStop) {
 			motion = Vector3.zero; // snap to halt
 			if(HarpoonThrower.instance.yankInteraction == HarpoonThrower.YANK_INTERACTION.Auto) {

@@ -146,6 +146,9 @@
         <property name="pitch">
             <value>8.5</value>
         </property>
+        <relationship name="modulators">
+            <destination>{963ba0ef-2b68-4902-9a2d-20c6bfa95e6a}</destination>
+        </relationship>
         <relationship name="sounds">
             <destination>{d8cafe27-9920-44c2-8b81-bc432ce12e66}</destination>
             <destination>{8e863757-7502-4585-9c3e-0d00b7fff4a5}</destination>
@@ -158,6 +161,9 @@
         </relationship>
     </object>
     <object class="EventMixerGroup" id="{560b0ab6-d498-4121-9ae0-0805b17b24c8}">
+        <property name="volume">
+            <value>2.5</value>
+        </property>
         <property name="name">
             <value>Audio 2</value>
         </property>
@@ -226,6 +232,41 @@
         </relationship>
     </object>
     <object class="MixerBusPanner" id="{06ef860b-a218-4309-b0f1-9c3f256b7f26}"/>
+    <object class="ADSRModulator" id="{963ba0ef-2b68-4902-9a2d-20c6bfa95e6a}">
+        <property name="nameOfPropertyBeingModulated">
+            <value>volume</value>
+        </property>
+        <property name="initialValue">
+            <value>-80</value>
+        </property>
+        <property name="attackTime">
+            <value>60</value>
+        </property>
+        <property name="attackShape">
+            <value>0</value>
+        </property>
+        <property name="peakValue">
+            <value>0</value>
+        </property>
+        <property name="holdTime">
+            <value>3000</value>
+        </property>
+        <property name="decayTime">
+            <value>60000</value>
+        </property>
+        <property name="decayShape">
+            <value>0</value>
+        </property>
+        <property name="sustainValue">
+            <value>-80</value>
+        </property>
+        <property name="releaseTime">
+            <value>860</value>
+        </property>
+        <property name="releaseShape">
+            <value>0</value>
+        </property>
+    </object>
     <object class="SingleSound" id="{d8cafe27-9920-44c2-8b81-bc432ce12e66}">
         <relationship name="audioFile">
             <destination>{5ce4d475-56a6-4dfa-ad7f-70ad9c2ed85c}</destination>

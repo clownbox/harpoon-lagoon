@@ -57,6 +57,9 @@ public class FishSpawnInfinite : MonoBehaviour {
 
 	public void UpdateText() {
 		showDayText.showDay(levelNow);
+		if(levelNow >= 1) {
+			FMODUnity.RuntimeManager.PlayOneShot("event:/round_end");
+		}
 	}
 
 	public void AddOneFish() {
