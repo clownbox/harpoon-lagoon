@@ -60,7 +60,6 @@ public class BoatMoverTouch : MonoBehaviour {
 		if(Vector3.Distance(playerBoat.startPos, goToPos) < 0.5f) {
 			moveLoopVolTarget = 0.0f;
 		}
-		Debug.Log(moveLoopVolNow);
 
 		float soundKVal = 0.06f;
 		moveLoopVolNow = moveLoopVolTarget * soundKVal + moveLoopVolNow * (1.0f - soundKVal);

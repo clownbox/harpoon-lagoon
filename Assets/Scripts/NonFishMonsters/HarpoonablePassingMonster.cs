@@ -18,6 +18,14 @@ public class HarpoonablePassingMonster : MonoBehaviour {
 		showShocked(false);
 	}
 
+	public void hideBoth() {
+		preStabbedFish.SetActive(false);
+		postStabbedFish.enabled = false;
+	}
+	public void restore() {
+		showShocked(isDead); // keep state
+	}
+
 	void showShocked(bool isShocked) {
 		preStabbedFish.SetActive(isShocked == false);
 		postStabbedFish.enabled = isShocked;
@@ -40,9 +48,5 @@ public class HarpoonablePassingMonster : MonoBehaviour {
 	public bool IsAlive() {
 		return (isDead == false);
 	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
+
 }
