@@ -58,7 +58,7 @@ public class ScoreManager : MonoBehaviour {
 	}
 
 	public void UpdateSpearCount() {
-		if(MenuStateMachine.instance.notInTut()) {
+		if(MenuStateMachine.instance && MenuStateMachine.instance.notInTut()) {
 			spearsLeftText.text = "Harpoon" + (spearsLeft == 1 ? "" : "s") + ": " + spearsLeft;
 		} else {
 			spearsLeftText.text = "Tutorial Step " + (int)MenuStateMachine.instance.tutStep;
