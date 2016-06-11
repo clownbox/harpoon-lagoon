@@ -21,7 +21,7 @@ public class FishMoverBasic : MonoBehaviour {
 	Vector3 swimmingTo;
 	Vector3 rootPos;
 
-	public MeshRenderer preStabbedFish;
+	public GameObject preStabbedFish;
 	public MeshRenderer postStabbedFish;
 
 	float swimTimeStarted;
@@ -156,7 +156,7 @@ public class FishMoverBasic : MonoBehaviour {
 		if(isDead == false) {
 			isDead = true;
 
-			preStabbedFish.enabled = false;
+			preStabbedFish.SetActive(false);
 			postStabbedFish.enabled = true;
 
 			if(vanishSelf) {
@@ -196,7 +196,7 @@ public class FishMoverBasic : MonoBehaviour {
 		isDead = false;
 		randPhaseOffset = Random.Range(0.0f,Mathf.PI*2.0f);
 
-		preStabbedFish.enabled = true;
+		preStabbedFish.SetActive(true);
 		postStabbedFish.enabled = false;
 
 		if(aiMode == FishMove.VERTICAL_LINE) {
