@@ -19,6 +19,7 @@ public class ScoreManager : MonoBehaviour {
 	public Text nextScoreText;
 
 	public GameObject gameOverPanel;
+	public Text endScoreHeader;
 	public Text endScoreText;
 
 	public HarpoonDrag lastThrownSpear;
@@ -50,10 +51,14 @@ public class ScoreManager : MonoBehaviour {
 		totalScore = lastThrowScore = nextScore = 0;
 		extraHarpoonEarnedSinceLastThrow = false;
 		ClearSpearText();
-		totalScoreText.text = "0"+"   ";
+		totalScoreText.text = "0" + "   ";
 		nextScoreText.text = "";
 		lastThrowScoreText.text = "0";
 		UpdateSpearCount();
+		Debug.Log("ResetScore");
+		if(FishSpawnInfinite.instance) {
+			FishSpawnInfinite.instance.ResetDay();
+		}
 		waitingForGameOver = false;
 	}
 
@@ -66,6 +71,10 @@ public class ScoreManager : MonoBehaviour {
 		} else {
 			spearsLeftText.text = "Tutorial Step " + (int)MenuStateMachine.instance.tutStep;
 		}
+	}
+
+	public void EndOfTutorialMessage() {
+		StartCoroutine(ShowGameOverSoon());
 	}
 
 	public bool ShowGameOverIfNeeded() {
@@ -84,9 +93,11 @@ public class ScoreManager : MonoBehaviour {
 		yield return new WaitForSeconds(0.5f);
 		MenuStateMachine.instance.AllMenusOffExcept(gameOverPanel);
 		if(MenuStateMachine.instance.notInTut()) {
+			endScoreHeader.text = "out of spears!";
 			endScoreText.text = "congrats you earned " + totalScore;
 			FMODUnity.RuntimeManager.PlayOneShot("event:/game_over");
 		} else {
+			endScoreHeader.text = "end of tutorial";
 			endScoreText.text = "you're ready to fish!";
 			FMODUnity.RuntimeManager.PlayOneShot("event:/round_end");
 		}

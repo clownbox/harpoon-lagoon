@@ -47,7 +47,7 @@ public class MenuStateMachine : MonoBehaviour {
 
 		tutStep = (TUTORIAL_PHASE)( (int)tutStep+1 );
 		if(tutStep == TUTORIAL_PHASE.TutorialDone) {
-			AllMenusOffExcept(ScoreManager.instance.gameOverPanel);
+			ScoreManager.instance.EndOfTutorialMessage();
 		} else {
 			FishSpawnInfinite.instance.UpdateText();
 

@@ -32,6 +32,12 @@ public class FishSpawnInfinite : MonoBehaviour {
 		SpawnForLevel();
 	}*/
 
+	public void ResetDay() {
+		levelNow = 0;
+		SpawnForLevel();
+		Debug.Log("ResetDay");
+	}
+
 	void NextLevel() {
 		levelNow++;
 		SpawnForLevel();
@@ -53,6 +59,7 @@ public class FishSpawnInfinite : MonoBehaviour {
 		foreach(GameObject eachFish in fishList) {
 			Destroy(eachFish);
 		}
+		fishList = new List<GameObject>();
 	}
 
 	public void UpdateText() {
@@ -73,6 +80,7 @@ public class FishSpawnInfinite : MonoBehaviour {
 
 	void SpawnForLevel() {
 		UpdateText();
+		RemoveAll();
 		totalFishTillRespawn = 0;
 		for(int i=0;i<fishScalingList.Length;i++) {
 			int howMany = (int)(fishScalingList[i].fishBaseCount +
