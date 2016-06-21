@@ -105,6 +105,11 @@ public class WeatherController : MonoBehaviour {
 			weatherEffectNow.cloudTypeSet.SetActive(true);
 		}
 
+		if((int)weatherInteraction < 2) {
+			MusicBox.instance.SetMusicTone(MusicBox.MusicTone.Calm);
+		} else {
+			MusicBox.instance.SetMusicTone(MusicBox.MusicTone.Storm);
+		}
 
 		weatherSprintDelayMult = weatherEffectNow.fishSprintDelayMult;
 		weatherSprintDistMult = weatherEffectNow.fishSprintDistMult;

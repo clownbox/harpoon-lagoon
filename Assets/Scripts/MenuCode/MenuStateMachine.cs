@@ -98,6 +98,7 @@ public class MenuStateMachine : MonoBehaviour {
 	// caching to avoid need to compare state lists each frame
 	private bool actionAllowed;
 	private bool inputAllowed;
+	private bool timeForInGameMusic;
 
 	private bool blockArrayTest(GameObject[] list) {
 		for(int i=0;i<list.Length;i++) {
@@ -116,8 +117,13 @@ public class MenuStateMachine : MonoBehaviour {
 		return inputAllowed;
 	}
 
+	public bool MenusAllowInGameMusic() {
+		return timeForInGameMusic;
+	}
+
 	IEnumerator DelayedInputAcceptance() {
 		// this delay blocks accidental input upon starting or resuming gameplay from menu
+		timeForInGameMusic = true;
 		yield return new WaitForSeconds(0.1f);
 		inputAllowed = true;
 	}
@@ -132,10 +138,13 @@ public class MenuStateMachine : MonoBehaviour {
 			StartCoroutine( DelayedInputAcceptance() );
 		} else {
 			inputAllowed = false;
+			timeForInGameMusic = false;
 		}
 		if(actionAllowed) {
+			MusicBox.instance.ResumeGameplayWeatherMusic();
 			Time.timeScale = 1.0f;
 		} else  {
+			MusicBox.instance.SetMusicTone(MusicBox.MusicTone.Title);
 			Time.timeScale = 0.0f;
 		}
 	}
@@ -153,9 +162,12 @@ public class MenuStateMachine : MonoBehaviour {
 		AllMenusOffExcept(inGameUI);
 	}
 
+	void Awake() {
+		instance = this;
+	}
+
 	// Use this for initialization
 	void Start () {
-		instance = this;
 		AllMenusOffExcept(firstScreen);
 	}
 }
