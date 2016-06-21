@@ -284,7 +284,7 @@ public class FishMoverBasic : MonoBehaviour {
 
 		float wigglePower = Vector3.Distance(swimmingFrom, swimmingTo);
 		wiggleOscFakeTime += Time.deltaTime * wigglePower * 1.2f;
-		float wiggleOsc = Mathf.Cos( wiggleOscFakeTime ) * 20.0f;
+		float wiggleOsc = Mathf.Cos( wiggleOscFakeTime ) * 20.0f * 0.4f;
 		for(int i = 0; i < modelVis.Length; i++) {
 			modelVis[i].rotation = Quaternion.Slerp(modelVis[i].rotation,
 				Quaternion.Euler(270.0f, 90.0f + sideToSideFacingFloat + wiggleOsc, 0.0f),
