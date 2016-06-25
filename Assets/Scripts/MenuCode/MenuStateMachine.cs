@@ -88,7 +88,7 @@ public class MenuStateMachine : MonoBehaviour {
 		case TUTORIAL_PHASE.ExtraSpear:
 			return "Get "+ScoreManager.instance.extraHarpoonThreshold+"+ pt in a throw for an extra spear!";
 		case TUTORIAL_PHASE.Monsters:
-			return "Turtles block spears, sharks eat fish!";
+			return "Turtles block throws, octopus costs points!";
 		case TUTORIAL_PHASE.TutorialDone:
 		default:
 			return "ERROR end";

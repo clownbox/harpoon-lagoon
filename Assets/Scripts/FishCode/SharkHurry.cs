@@ -44,7 +44,7 @@ public class SharkHurry : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if(Input.GetKeyDown(KeyCode.Y)) {
+		if(MenuStateMachine.instance.notInTut()==false) { // no shark step yet
 			retreating = true;
 		}
 
