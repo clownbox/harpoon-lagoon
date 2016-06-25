@@ -2,22 +2,26 @@
 using System.Collections;
 
 public class RemovesOtherFish : MonoBehaviour {
-	HarpoonablePassingMonster hpmScript;
+	public AnimModelToggle amtScript;
 	AnimModelListOneTime animateToRemove;
 
 	void Start() {
-		hpmScript = GetComponent<HarpoonablePassingMonster>();
 		animateToRemove = GetComponentInChildren<AnimModelListOneTime>();
 	}
 
-	void OnTriggerEnter(Collider other) {
+	public void PlayAttackAnim() {
+		amtScript.hideBoth();
+		animateToRemove.enabled = true;
+		animateToRemove.ForceFrame();
+	}
+
+	/*void OnTriggerEnter(Collider other) {
 		FishMoverBasic fmbScript = other.gameObject.GetComponentInParent<FishMoverBasic>();
-		if(hpmScript.IsAlive() && fmbScript && fmbScript.IsAlive()) {
+		if(fmbScript && fmbScript.IsAlive()) {
 			fmbScript.Die(true);
-			hpmScript.hideBoth();
-			animateToRemove.enabled = true;
+			PlayAttackAnim();
 			FMODUnity.RuntimeManager.PlayOneShot("event:/fish_dead");
 		}
 	
-	}
+	}*/
 }

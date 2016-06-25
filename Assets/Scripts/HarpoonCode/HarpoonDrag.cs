@@ -223,8 +223,8 @@ public class HarpoonDrag : MonoBehaviour {
 		if(fmbScript && fmbScript.IsAlive() && motion.magnitude >= MIN_KILL_MOTION &&
 			fishStack.Count < MAX_FISH_PER_HARPOON) { // limiting to 3 fish on pole at a time
 
-			ScoreManager.instance.ScorePop(fmbScript.gameObject,
-			                               this);
+			/* ScoreManager.instance.ScorePop(fmbScript.gameObject,
+			                               this); */
 
 			if(fishTorquesSpear) {
 				motion *= 0.9f;
@@ -249,7 +249,7 @@ public class HarpoonDrag : MonoBehaviour {
 			FMODUnity.RuntimeManager.PlayOneShot("event:/fish_dead");
 
 			if(fishStack.Count >= MAX_FISH_TO_SCORE) {
-				Debug.Log(fishStack.Count);
+				// Debug.Log(fishStack.Count);
 				if(MenuStateMachine.instance.tutStep == MenuStateMachine.TUTORIAL_PHASE.SpearThree) {
 					MenuStateMachine.instance.NextStep();
 				}
@@ -340,7 +340,58 @@ public class HarpoonDrag : MonoBehaviour {
 	IEnumerator DelayThenRetract() {
 		pausingBeforeReturn = true;
 
+		// Debug.Log("Delay Then Retract");
+
 		HarpoonThrower.instance.MidAnim();
+
+		int remIdx = -1;
+		GameObject remGO = null;
+
+		if(SharkHurry.instance.sharkReady) {
+			if(fishStack.Count > 0) {
+				remIdx = (int)Random.Range(0, fishStack.Count);
+				remGO = fishStack[remIdx];
+				FishMoverBasic fmb = remGO.GetComponent<FishMoverBasic>();
+				fmb.stolenByShark = true;
+			}
+		}			
+
+		foreach(GameObject GOScript in fishStack) {
+			ScoreManager.instance.ScorePop(GOScript, this);
+		}
+
+		if(remIdx >= 0) {
+			Vector3 sharkFrom = SharkHurry.instance.transform.position;
+			Vector3 sharkTo = remGO.transform.position;
+			RemovesOtherFish rofScript = SharkHurry.instance.GetComponent<RemovesOtherFish>();
+			for(float f=0.0f;f<20.0f;f+=1.0f) {
+				float progressPerc = f/20.0f;
+				SharkHurry.instance.transform.position = 
+					sharkFrom*(1.0f-progressPerc)+sharkTo*progressPerc;
+				if(f == 17.0f) {
+					rofScript.PlayAttackAnim();
+				}
+				yield return new WaitForSeconds(0.01f);
+			}
+
+			RespawnIfSunkBelow risb = remGO.GetComponentInChildren<RespawnIfSunkBelow>();
+			fishStack.RemoveAt(remIdx);
+			if(risb) {
+				risb.CountFish(); // tally to see if ready to reset
+			}
+			Destroy(remGO);
+
+			sharkFrom = sharkTo;
+			sharkTo = sharkFrom + Vector3.left * 6.0f;
+			for(float f=0.0f;f<20.0f;f+=1.0f) {
+				float progressPerc = f/20.0f;
+				SharkHurry.instance.transform.position = 
+					sharkFrom*(1.0f-progressPerc)+sharkTo*progressPerc;
+				yield return new WaitForSeconds(0.01f);
+			}
+
+			SharkHurry.instance.RestartWait();
+		}
 
 		yield return new WaitForSeconds(0.75f);
 		FMODUnity.RuntimeManager.PlayOneShot("event:/harpoon_retrieve");

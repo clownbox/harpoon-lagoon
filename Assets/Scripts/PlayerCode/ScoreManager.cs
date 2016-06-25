@@ -55,7 +55,7 @@ public class ScoreManager : MonoBehaviour {
 		nextScoreText.text = "";
 		lastThrowScoreText.text = "0";
 		UpdateSpearCount();
-		Debug.Log("ResetScore");
+		//Debug.Log("ResetScore");
 		if(FishSpawnInfinite.instance) {
 			FishSpawnInfinite.instance.ResetDay();
 		}
@@ -183,14 +183,19 @@ public class ScoreManager : MonoBehaviour {
 	}
 	
 	public void ScorePop(GameObject enemyScored, HarpoonDrag thrownSpear, int scoreAmt = -1) {
-		Vector3 textPos = enemyScored.transform.position;
-
 		FishMoverBasic fmbScript = enemyScored.GetComponent<FishMoverBasic>();
+		Vector3 textPos = fmbScript.diedPos;
 		HarpoonablePassingMonster hpmScript = enemyScored.GetComponent<HarpoonablePassingMonster>();
 
-		int scoreAdded = (scoreAmt == -1 ? 
+		int scoreAdded;
+
+		if(fmbScript && fmbScript.stolenByShark) {
+			scoreAdded = 0;
+		} else {
+			scoreAdded = (scoreAmt == -1 ? 
 			(fmbScript ? fmbScript.scoreValue : hpmScript.scoreValue ) : 
 			scoreAmt);
+		}
 
 		nextScore += scoreAdded;
 		// nextScoreText.text = "+"+nextScore; //// since only allowing one harpoon at a time can use Last Score as same val
@@ -215,7 +220,11 @@ public class ScoreManager : MonoBehaviour {
 
 		GameObject scoreGO = GameObject.Instantiate(scorePopPrefab);
 		Text textScript = scoreGO.GetComponent<Text>();
-		textScript.text = (scoreAdded > 0 ? "+" : "") + scoreAdded;
+		if(fmbScript && fmbScript.stolenByShark) {
+			textScript.text = "STOLEN";
+		} else {
+			textScript.text = (scoreAdded > 0 ? "+" : "") + scoreAdded;
+		}
 
 		scoreGO.transform.SetParent(uiCanvas.transform);
 		

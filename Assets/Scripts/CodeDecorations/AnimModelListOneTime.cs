@@ -3,19 +3,21 @@ using System.Collections;
 
 public class AnimModelListOneTime : MonoBehaviour {
 	public Renderer[] models;
-	private float animDelay = 0.1f;
+	private float animDelay = 0.06f;
 	private float animTimeLeft;
 	private int frameNow = 0;
-	public HarpoonablePassingMonster passBackControlTo;
+	public AnimModelToggle passBackControlTo;
 
-	void ForceFrame () {
+	public void ForceFrame () {
 		for(int i = 0; i < models.Length; i++) {
 			models[i].enabled = (i==frameNow);
 		}
 	}
 
 	void Start () {
+		frameNow = -1;
 		ForceFrame();
+		frameNow++;
 		animTimeLeft = animDelay;
 		enabled = false;
 	}
@@ -26,7 +28,7 @@ public class AnimModelListOneTime : MonoBehaviour {
 			animTimeLeft = animDelay;
 			frameNow++;
 			ForceFrame();
-			if(frameNow==models.Length-1) {
+			if(frameNow==models.Length) {
 				frameNow = 0;
 				passBackControlTo.restore();
 				enabled = false;

@@ -12,6 +12,14 @@ public class AnimModelToggle : MonoBehaviour {
 		model1.enabled = (isFrame1);
 		model2.enabled = (isFrame1==false);
 	}
+
+	public void hideBoth() {
+		model1.enabled = false;
+		model2.enabled = false;
+	}
+	public void restore() {
+		ShowFrame();
+	}
 	
 	void Start () {
 		ShowFrame();

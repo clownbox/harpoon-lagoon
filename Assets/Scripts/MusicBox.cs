@@ -26,7 +26,7 @@ public class MusicBox : MonoBehaviour {
 	}
 
 	public void SetMusicTone(MusicTone newTone) {
-		Debug.Log("Changing music to: " + newTone);
+		// Debug.Log("Changing music to: " + newTone);
 
 		if(newTone != MusicTone.Title) {
 			weatherGameplaySong = newTone;
@@ -34,7 +34,7 @@ public class MusicBox : MonoBehaviour {
 
 		if(MenuStateMachine.instance.MenusAllowInGameMusic() == false) {
 			newTone = MusicTone.Title;
-			Debug.Log("In-menu, overriding music to: " + newTone);
+			// Debug.Log("In-menu, overriding music to: " + newTone);
 		}
 
 		switch(newTone) {

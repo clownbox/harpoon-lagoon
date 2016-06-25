@@ -233,6 +233,7 @@ public class HarpoonThrower : MonoBehaviour {
 		if(ScoreManager.instance.NewSpearThrown(hdScript) == false) {
 			Destroy(harpoonGO);
 		} else {
+			SharkHurry.instance.retreatIfNotReady();
 			FMODUnity.RuntimeManager.PlayOneShot("event:/harpoon_throw");
 			FMODUnity.RuntimeManager.PlayOneShot("event:/harpoon_water");
 		}

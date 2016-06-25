@@ -79,6 +79,7 @@ public class FishSpawnInfinite : MonoBehaviour {
 	}
 
 	void SpawnForLevel() {
+		SharkHurry.instance.retreating = true;
 		UpdateText();
 		RemoveAll();
 		totalFishTillRespawn = 0;

@@ -21,6 +21,8 @@ public class FishMoverBasic : MonoBehaviour {
 	Vector3 swimmingTo;
 	Vector3 rootPos;
 
+	public Vector3 diedPos;
+
 	public GameObject preStabbedFish;
 	public MeshRenderer postStabbedFish;
 
@@ -42,6 +44,8 @@ public class FishMoverBasic : MonoBehaviour {
 	public float depthBiasOdds = 0.5f;
 	public float shallowPerc = 0.3f;
 	public float deepPerc = 0.85f;
+
+	public bool stolenByShark = false;
 
 	float sideToSideFacingFloat = 0.0f;
 	float wiggleOscFakeTime = 0.0f;
@@ -154,6 +158,7 @@ public class FishMoverBasic : MonoBehaviour {
 
 	public void Die(bool vanishSelf = false) {
 		if(isDead == false) {
+			diedPos = transform.position;
 			isDead = true;
 
 			preStabbedFish.SetActive(false);
