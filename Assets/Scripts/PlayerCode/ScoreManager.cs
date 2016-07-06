@@ -69,7 +69,7 @@ public class ScoreManager : MonoBehaviour {
 		if(MenuStateMachine.instance && MenuStateMachine.instance.notInTut()) {
 			spearsLeftText.text = "Harpoon" + (spearsLeft == 1 ? "" : "s") + ": " + spearsLeft;
 		} else {
-			spearsLeftText.text = "Tutorial Step " + (int)MenuStateMachine.instance.tutStep;
+			spearsLeftText.text = "";//"Tutorial Step " + (int)MenuStateMachine.instance.tutStep;
 		}
 	}
 
@@ -184,6 +184,10 @@ public class ScoreManager : MonoBehaviour {
 	
 	public void ScorePop(GameObject enemyScored, HarpoonDrag thrownSpear, int scoreAmt = -1) {
 		FishMoverBasic fmbScript = enemyScored.GetComponent<FishMoverBasic>();
+		if(fmbScript == null) {
+			Debug.Log("fmbScript was null");
+			return;
+		}
 		Vector3 textPos = fmbScript.diedPos;
 		HarpoonablePassingMonster hpmScript = enemyScored.GetComponent<HarpoonablePassingMonster>();
 

@@ -78,6 +78,8 @@ public class HarpoonDrag : MonoBehaviour {
 				// Debug.Log(tubeRendToClear);
 				GameObject ropeRendToRemove = GameObject.Find(tubeRendToClear);
 				Destroy(ropeRendToRemove);
+
+				MenuStateMachine.instance.HarpoonRetractedConsiderNextTutStep();
 			}
 			return;
 		}

@@ -140,6 +140,11 @@ public class FishMoverBasic : MonoBehaviour {
 
 		}
 
+		if(MenuStateMachine.instance.tutStep == MenuStateMachine.TUTORIAL_PHASE.SpearThree) {
+			swimmingFrom.x = SeaBounds.instance.middleX;
+			swimmingTo.x = SeaBounds.instance.middleX;
+		}
+
 		swimTimeStarted = FishTime.time;
 		swimTimeEnd = swimTimeStarted + timePerSprintBasedOnAIMode()* WeatherController.weatherSprintDelayMult;
 	}
@@ -283,6 +288,11 @@ public class FishMoverBasic : MonoBehaviour {
 				swimmingTo = SeaBounds.instance.constrainTrunc(swimmingTo + pushBack);
 				PutSwimToOnTargetLine();*/
 			}
+		}
+
+		if(MenuStateMachine.instance.tutStep == MenuStateMachine.TUTORIAL_PHASE.SpearThree) {
+			swimmingFrom.x = SeaBounds.instance.middleX;
+			swimmingTo.x = SeaBounds.instance.middleX;
 		}
 
 		updateFacingTarget();

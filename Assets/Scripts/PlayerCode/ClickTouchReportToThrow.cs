@@ -24,7 +24,7 @@ public class ClickTouchReportToThrow : MonoBehaviour {
 			if(rhInfo.collider.gameObject != gameObject) {
 				if(Input.GetButtonUp("Fire1")) {
 					if(MenuStateMachine.instance.tutStep == MenuStateMachine.TUTORIAL_PHASE.CancelThrow) {
-						MenuStateMachine.instance.NextStep();
+						MenuStateMachine.instance.NextStep(true);
 					}
 				}
 				return; // avoids double throw from sky and water mouse detection areas both running same throw code
@@ -32,7 +32,7 @@ public class ClickTouchReportToThrow : MonoBehaviour {
 
 			if(Input.GetButtonDown("Fire1")) {
 				if(MenuStateMachine.instance.tutStep == MenuStateMachine.TUTORIAL_PHASE.HoldToAim) {
-					MenuStateMachine.instance.NextStep();
+					MenuStateMachine.instance.NextStep(true);
 				}
 			}
 

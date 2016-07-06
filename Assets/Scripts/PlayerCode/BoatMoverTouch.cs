@@ -47,7 +47,7 @@ public class BoatMoverTouch : MonoBehaviour {
 				moveLoopVolTarget = 1.0f;
 
 				if(MenuStateMachine.instance.tutStep == MenuStateMachine.TUTORIAL_PHASE.SteerBoat) {
-					MenuStateMachine.instance.NextStep();
+					MenuStateMachine.instance.NextStep(true);
 				}
 			}
 		}

@@ -14,6 +14,8 @@ public class MenuStateMachine : MonoBehaviour {
 
 	public GameObject inGameUI;
 
+	private bool readyToAdvance = false;
+
 	public enum TUTORIAL_PHASE
 	{
 		NormalPlay,
@@ -36,7 +38,18 @@ public class MenuStateMachine : MonoBehaviour {
 		}
 	}
 
-	public void NextStep() {
+	public void NextStep(bool instantAdvance = false) {
+		readyToAdvance = true;
+		if(instantAdvance) {
+			HarpoonRetractedConsiderNextTutStep();
+		}
+	}
+
+	public void HarpoonRetractedConsiderNextTutStep() {
+		if(readyToAdvance == false) {
+			return;
+		}
+		readyToAdvance = false;
 		if(tutStep == TUTORIAL_PHASE.NormalPlay) {
 			AllowBeasts(true);
 			return;
@@ -58,9 +71,12 @@ public class MenuStateMachine : MonoBehaviour {
 				FishSpawnInfinite.instance.AddOneFish();
 				break;
 			case TUTORIAL_PHASE.SpearThree:
-				FishSpawnInfinite.instance.AddOneFish();
-				FishSpawnInfinite.instance.AddOneFish();
-				FishSpawnInfinite.instance.AddOneFish();
+				FishSpawnInfinite.instance.AddOneFish(1);
+				FishSpawnInfinite.instance.AddOneFish(2);
+				FishSpawnInfinite.instance.AddOneFish(3);
+				break;
+			case TUTORIAL_PHASE.ExtraSpear:
+				FishSpawnInfinite.instance.NextLevel();
 				break;
 			}
 
@@ -91,7 +107,7 @@ public class MenuStateMachine : MonoBehaviour {
 			return "Turtles block throws, octopus costs points!";
 		case TUTORIAL_PHASE.TutorialDone:
 		default:
-			return "ERROR end";
+			return "";
 		}
 	}
 
@@ -159,6 +175,7 @@ public class MenuStateMachine : MonoBehaviour {
 			AllowBeasts(true);
 		}
 		FishSpawnInfinite.instance.UpdateText();
+		ScoreManager.instance.UpdateSpearCount();
 		AllMenusOffExcept(inGameUI);
 	}
 

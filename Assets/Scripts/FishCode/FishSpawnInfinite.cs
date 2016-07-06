@@ -38,8 +38,16 @@ public class FishSpawnInfinite : MonoBehaviour {
 		Debug.Log("ResetDay");
 	}
 
-	void NextLevel() {
-		levelNow++;
+	public void NextLevel() {
+		if(MenuStateMachine.instance.notInTut()) {
+			levelNow++;
+		} else {
+			if(MenuStateMachine.instance.tutStep < MenuStateMachine.TUTORIAL_PHASE.ExtraSpear) {
+				levelNow = 0;
+			} else {
+				levelNow = 2;
+			}
+		}
 		SpawnForLevel();
 	}
 
@@ -69,8 +77,8 @@ public class FishSpawnInfinite : MonoBehaviour {
 		}
 	}
 
-	public void AddOneFish() {
-		GameObject GOFish = (GameObject)GameObject.Instantiate(fishScalingList[2].fishTypePrefab);
+	public void AddOneFish(int fishKind = 2) {
+		GameObject GOFish = (GameObject)GameObject.Instantiate(fishScalingList[fishKind].fishTypePrefab);
 		FishMoverBasic fmbScript = GOFish.GetComponent<FishMoverBasic>();
 		GOFish.transform.position =
 			SeaBounds.instance.randPosBandBias(fmbScript.depthBiasOdds,
