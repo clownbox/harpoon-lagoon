@@ -36,7 +36,12 @@ public class MenuStateMachine : MonoBehaviour {
 	{
 		bigToSmall,
 		smallToBig,
-		matchThree
+		matchThree,
+		dayTen,
+		dayTwenty,
+		dayThirty,
+		turtleSoup,
+		savingThrow
 	}
 
 	public void DidAchivement(ACHIEVEMENT_ENUM thisAchievement, float totalProgressAmt) {
@@ -49,6 +54,7 @@ public class MenuStateMachine : MonoBehaviour {
 			false // Game Center bug workaround
 			);
 		if(isCompleteNotification) {
+			Debug.Log("Achievement Earned: " + achievementId);
 			GameCenterManager.ShowGmaeKitNotification("Achievement Earned", achievementId);
 		}
 		// note: GameCenterManager.resetAchievements(); // will wipe progress

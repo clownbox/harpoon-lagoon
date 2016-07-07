@@ -204,6 +204,8 @@ public class HarpoonDrag : MonoBehaviour {
 			if(hpmScript.scoreValue != 0) {
 				ScoreManager.instance.ScorePop(hpmScript.gameObject,
 					this, -1);
+			} else {
+				ScoreManager.instance.TurtleStrike();
 			}
 
 			if(hpmScript.stopsHarpoon) {

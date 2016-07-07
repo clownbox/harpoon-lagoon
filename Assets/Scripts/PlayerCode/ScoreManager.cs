@@ -30,6 +30,7 @@ public class ScoreManager : MonoBehaviour {
 	private int spearsLeft;
 
 	public int spearsOut;
+	private int turtleHits = 0;
 
 	public bool waitingForGameOver = false;
 
@@ -47,6 +48,7 @@ public class ScoreManager : MonoBehaviour {
 
 	public void ResetScore() {
 		spearsOut = 0;
+		turtleHits = 0;
 		spearsLeft = startSpears;
 		totalScore = lastThrowScore = nextScore = 0;
 		extraHarpoonEarnedSinceLastThrow = false;
@@ -59,6 +61,7 @@ public class ScoreManager : MonoBehaviour {
 		if(FishSpawnInfinite.instance) {
 			FishSpawnInfinite.instance.ResetDay();
 		}
+
 		waitingForGameOver = false;
 	}
 
@@ -120,6 +123,13 @@ public class ScoreManager : MonoBehaviour {
 			FishTime.fishPacing = 1.0f; // restore in case previously using FishTime.useBulletTime
 		}
 		ShowGameOverIfNeeded();
+	}
+
+	public void TurtleStrike() {
+		turtleHits++;
+		if(turtleHits == 5) {
+			MenuStateMachine.instance.DidAchivement(MenuStateMachine.ACHIEVEMENT_ENUM.turtleSoup,100.0f);
+		}
 	}
 
 	public void TallyHookedScore() {
@@ -214,6 +224,9 @@ public class ScoreManager : MonoBehaviour {
 				FMODUnity.RuntimeManager.PlayOneShot("event:/new_harpoons");
 				if(MenuStateMachine.instance.tutStep == MenuStateMachine.TUTORIAL_PHASE.ExtraSpear) {
 					MenuStateMachine.instance.NextStep();
+				}
+				if(spearsLeft == 0) {
+					MenuStateMachine.instance.DidAchivement(MenuStateMachine.ACHIEVEMENT_ENUM.savingThrow,100.0f);
 				}
 				spearsLeft++;
 				if(MenuStateMachine.instance.notInTut()) {

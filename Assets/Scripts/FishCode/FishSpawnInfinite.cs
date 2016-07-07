@@ -41,6 +41,19 @@ public class FishSpawnInfinite : MonoBehaviour {
 	public void NextLevel() {
 		if(MenuStateMachine.instance.notInTut()) {
 			levelNow++;
+
+			switch(levelNow) {
+			case 10:
+				MenuStateMachine.instance.DidAchivement(MenuStateMachine.ACHIEVEMENT_ENUM.dayTen,100.0f);
+				break;
+			case 20:
+				MenuStateMachine.instance.DidAchivement(MenuStateMachine.ACHIEVEMENT_ENUM.dayTwenty,100.0f);
+				break;
+			case 30:
+				MenuStateMachine.instance.DidAchivement(MenuStateMachine.ACHIEVEMENT_ENUM.dayThirty,100.0f);
+				break;
+			}
+
 		} else {
 			if(MenuStateMachine.instance.tutStep < MenuStateMachine.TUTORIAL_PHASE.ExtraSpear) {
 				levelNow = 0;
