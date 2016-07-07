@@ -197,7 +197,7 @@ public class HarpoonDrag : MonoBehaviour {
 			return;
 		}
 
-		HarpoonablePassingMonster hpmScript = other.gameObject.GetComponentInParent<HarpoonablePassingMonster>();
+		HarpoonablePassingMonster hpmScript = other.gameObject.GetComponent<HarpoonablePassingMonster>();
 		if(hpmScript && hpmScript.IsAlive() && motion.magnitude >= MIN_KILL_MOTION &&
 		   fishStack.Count < MAX_FISH_PER_HARPOON) { // limiting to 3 fish on pole at a time
 
@@ -311,6 +311,7 @@ public class HarpoonDrag : MonoBehaviour {
 					}
 				}
 				if(rulePassed) {
+					MenuStateMachine.instance.DidAchivement(MenuStateMachine.ACHIEVEMENT_ENUM.matchThree,100.0f);
 					ComboMessage.instance.NewMessage(fishStack.Count+" all same!", 650, fmbScript, this);
 					anyCombo = true;
 				}

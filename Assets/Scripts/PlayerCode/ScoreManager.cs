@@ -184,12 +184,14 @@ public class ScoreManager : MonoBehaviour {
 	
 	public void ScorePop(GameObject enemyScored, HarpoonDrag thrownSpear, int scoreAmt = -1) {
 		FishMoverBasic fmbScript = enemyScored.GetComponent<FishMoverBasic>();
-		if(fmbScript == null) {
-			Debug.Log("fmbScript was null");
-			return;
-		}
-		Vector3 textPos = fmbScript.diedPos;
+		Vector3 textPos;
 		HarpoonablePassingMonster hpmScript = enemyScored.GetComponent<HarpoonablePassingMonster>();
+
+		if(fmbScript != null) {
+			textPos = fmbScript.diedPos;
+		} else {
+			textPos = hpmScript.transform.position;
+		}
 
 		int scoreAdded;
 

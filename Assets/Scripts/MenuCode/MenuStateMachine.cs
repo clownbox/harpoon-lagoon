@@ -35,7 +35,8 @@ public class MenuStateMachine : MonoBehaviour {
 	public enum ACHIEVEMENT_ENUM // these should match Achievement IDs in iTunes Connect
 	{
 		bigToSmall,
-		smallToBig
+		smallToBig,
+		matchThree
 	}
 
 	public void DidAchivement(ACHIEVEMENT_ENUM thisAchievement, float totalProgressAmt) {
