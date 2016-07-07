@@ -276,6 +276,7 @@ public class HarpoonDrag : MonoBehaviour {
 					}
 				}
 				if(rulePassed && sizeChanges>=MIN_DIFF_SIZES) {
+					MenuStateMachine.instance.DidAchivement(MenuStateMachine.ACHIEVEMENT_ENUM.smallToBig,100.0f);
 					ComboMessage.instance.NewMessage(fishStack.Count+" small to big!", 1000, fmbScript, this);
 					anyCombo = true;
 				}
@@ -296,6 +297,7 @@ public class HarpoonDrag : MonoBehaviour {
 					}
 				}
 				if(rulePassed && sizeChanges>=MIN_DIFF_SIZES) {
+					MenuStateMachine.instance.DidAchivement(MenuStateMachine.ACHIEVEMENT_ENUM.bigToSmall,100.0f);
 					ComboMessage.instance.NewMessage(fishStack.Count+" big to small!", 350, fmbScript, this);
 					anyCombo = true;
 				}

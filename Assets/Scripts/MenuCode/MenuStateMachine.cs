@@ -16,6 +16,8 @@ public class MenuStateMachine : MonoBehaviour {
 
 	private bool readyToAdvance = false;
 
+	private bool gameCenterWorking = false;
+
 	public enum TUTORIAL_PHASE
 	{
 		NormalPlay,
@@ -28,6 +30,27 @@ public class MenuStateMachine : MonoBehaviour {
 		ExtraSpear,
 		Monsters, 
 		TutorialDone
+	}
+
+	public enum ACHIEVEMENT_ENUM // these should match Achievement IDs in iTunes Connect
+	{
+		bigToSmall,
+		smallToBig
+	}
+
+	public void DidAchivement(ACHIEVEMENT_ENUM thisAchievement, float totalProgressAmt) {
+		string achievementId = ""+thisAchievement;
+
+		// note: GameCenterManager.getAchievementProgress(thisAchievement) gets last progress
+
+		bool isCompleteNotification = (totalProgressAmt >= 100.0f); 
+		GameCenterManager.SubmitAchievement(totalProgressAmt, achievementId, 
+			false // Game Center bug workaround
+			);
+		if(isCompleteNotification) {
+			GameCenterManager.ShowGmaeKitNotification("Achievement Earned", achievementId);
+		}
+		// note: GameCenterManager.resetAchievements(); // will wipe progress
 	}
 
 	public TUTORIAL_PHASE tutStep = TUTORIAL_PHASE.NormalPlay;
@@ -144,6 +167,14 @@ public class MenuStateMachine : MonoBehaviour {
 		inputAllowed = true;
 	}
 
+	public void ShowGameCenterIfAbleOtherwiseDisplayThisPanel(GameObject showThisOne) {
+		if(gameCenterWorking) {
+			GameCenterManager.ShowAchievements();
+		} else {
+			AllMenusOffExcept(showThisOne);
+		}
+	}
+
 	public void AllMenusOffExcept(GameObject showThisOne)
 	{
 		for(int i=0;i<screens.Length;i++) {
@@ -186,5 +217,29 @@ public class MenuStateMachine : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		AllMenusOffExcept(firstScreen);
+		GameCenterManager.OnAuthFinished += OnAuthFinished;
+		GameCenterManager.OnAchievementsLoaded += OnAchievementsLoaded;
+		GameCenterManager.Init();
+	}
+
+	void OnAchievementsLoaded(ISN_Result result) {
+
+		if(result.IsSucceeded) {
+			Debug.Log ("Achievemnts was loaded from IOS Game Center");
+
+			foreach(GK_AchievementTemplate tpl in GameCenterManager.Achievements) {
+				Debug.Log (tpl.Id + ":  " + tpl.Progress);
+			}
+		}
+	}
+
+	void OnAuthFinished (ISN_Result res) {
+		if (res.IsSucceeded) {
+			IOSNativePopUpManager.showMessage("Player Authored ", "ID: " + GameCenterManager.Player.Id + "\n" + "Alias: " + GameCenterManager.Player.Alias);
+			Debug.Log("Player logged in: " + GameCenterManager.Player.DisplayName);
+			gameCenterWorking = true;
+		} else {
+			IOSNativePopUpManager.showMessage("Game Center ", "Player auth failed");
+		}
 	}
 }
