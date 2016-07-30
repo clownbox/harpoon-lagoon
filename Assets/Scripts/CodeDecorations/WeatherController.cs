@@ -54,8 +54,11 @@ public class WeatherController : MonoBehaviour {
 		enforceWeatherMode();
 	}
 
-	public void WeatherSliderUpdated(Slider theSlider) {
-		weatherFade = theSlider.value;
+	public void NewWeatherValue(float newVal) {
+		if(stormSoundEvt==null) {
+			return;
+		}
+		weatherFade = newVal;
 		stormSoundEvt.setParameterValue("StormLevel", weatherFade);
 		weatherInteraction = (WEATHER_MODE)((int)weatherFade);
 		if((int)weatherInteraction >= (int)WEATHER_MODE.NotInitializedYet) {
@@ -64,11 +67,19 @@ public class WeatherController : MonoBehaviour {
 		enforceWeatherMode();
 	}
 
-	// Use this for initialization
-	void Start () {
+	public void WeatherSliderUpdated(Slider theSlider) {
+		NewWeatherValue(theSlider.value);
+	}
+
+	void InitStormSndEvt() {
 		stormSoundEvt = FMODUnity.RuntimeManager.CreateInstance("event:/ocean");
 		stormSoundEvt.setParameterValue("StormLevel", weatherFade);
 		stormSoundEvt.start();
+	}
+
+	// Use this for initialization
+	void Start () {
+		InitStormSndEvt();
 
 		playerDefBobDampen = playerBoat.dampen;
 		waterDefBobDampen = waterBob.dampen;

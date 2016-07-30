@@ -101,6 +101,7 @@ public class MenuStateMachine : MonoBehaviour {
 				FishSpawnInfinite.instance.AddOneFish();
 				break;
 			case TUTORIAL_PHASE.SpearThree:
+				FishSpawnInfinite.instance.whichFishSeq = 0;
 				FishSpawnInfinite.instance.AddOneFish(1);
 				FishSpawnInfinite.instance.AddOneFish(2);
 				FishSpawnInfinite.instance.AddOneFish(3);
@@ -124,7 +125,7 @@ public class MenuStateMachine : MonoBehaviour {
 		case TUTORIAL_PHASE.HoldToAim:
 			return "Hold finger on water to aim";
 		case TUTORIAL_PHASE.ReleaseToThrow:
-			return "Release over water to throw";
+			return "Release under water to throw";
 		case TUTORIAL_PHASE.CancelThrow:
 			return "Aim but release above water to cancel";
 		case TUTORIAL_PHASE.SpearFish:
@@ -203,7 +204,9 @@ public class MenuStateMachine : MonoBehaviour {
 		}
 	}
 
-	public void SetupTutorial(bool useTut) {
+	public void SetupTutorial(int levSequence) {
+		bool useTut = (levSequence == -1);
+
 		if(useTut) {
 			tutStep = (TUTORIAL_PHASE)( (int)TUTORIAL_PHASE.NormalPlay+1 );
 			FishSpawnInfinite.instance.RemoveAll();
@@ -211,6 +214,9 @@ public class MenuStateMachine : MonoBehaviour {
 		} else {
 			tutStep = TUTORIAL_PHASE.NormalPlay;
 			AllowBeasts(true);
+			FishSpawnInfinite.instance.whichFishSeq = levSequence;
+			FishSpawnInfinite.instance.RemoveAll();
+			FishSpawnInfinite.instance.SpawnForLevel();
 		}
 		FishSpawnInfinite.instance.UpdateText();
 		ScoreManager.instance.UpdateSpearCount();
