@@ -28,6 +28,19 @@
 [LOG] Thread::initThread                       : Initializing FMOD Studio bank load thread.  priority 0
 [LOG] Thread::initThread                       : - Stacksize 65536.  Stack pointer 0x0 : usesemaphore = 0 : sleeptime = 1
 [LOG] Thread::callback                         : * FMOD Studio bank load thread started
+[LOG] Manager::readBank                        : fileversion = 78, compatVersion = 70 (oldest = 44, newest = 78)
+[LOG] Manager::readBank                        : fileversion = 78, compatVersion = 70 (oldest = 44, newest = 78)
+[LOG] Manager::readBank                        : fileversion = 78, compatVersion = 70 (oldest = 44, newest = 78)
+[LOG] Manager::readBank                        : fileversion = 78, compatVersion = 70 (oldest = 44, newest = 78)
+[LOG] PlaybackSystem::acquireMasterBus         : Setting master channel group format to 6
+[WRN] Output::RingBuffer::read                 : Buffer starvation detected, requested 8192 bytes, only 0 bytes available.
+[WRN] Output::RingBuffer::read                 : Buffer starvation detected, requested 8192 bytes, only 0 bytes available.
+[WRN] Output::RingBuffer::read                 : Buffer starvation detected, requested 8192 bytes, only 0 bytes available.
+[WRN] Output::RingBuffer::read                 : Buffer starvation detected, requested 8192 bytes, only 0 bytes available.
+[WRN] Output::RingBuffer::read                 : Buffer starvation detected, requested 8192 bytes, only 0 bytes available.
+[WRN] Output::RingBuffer::read                 : Buffer starvation detected, requested 8192 bytes, only 0 bytes available.
+[WRN] Output::RingBuffer::read                 : Buffer starvation detected, requested 8192 bytes, only 0 bytes available.
+[WRN] Output::RingBuffer::read                 : Buffer starvation detected, requested 8192 bytes, only 0 bytes available.
 [LOG] Thread::callback                         : * FMOD Studio bank load thread finished
 [LOG] Thread::close                            : FMOD Studio bank load thread thread destroyed
 [LOG] Thread::callback                         : * FMOD Studio sample load thread finished
@@ -48,3 +61,4 @@
 [LOG] SystemI::close                           : Free channel pool.
 [LOG] SystemI::close                           : done.
 
+[LOG] System::create                           : Header version = 1.08.03. Current version = 1.08.03.

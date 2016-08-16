@@ -14,7 +14,7 @@ public class FishTypeAndBaseAndMult
 [Serializable]
 public class FishKindWithinLevel
 {
-	public FishTypeAndBaseAndMult[] fishKinds;
+	public List<FishTypeAndBaseAndMult> fishKinds;
 	public float weatherTarget = 0.0f;
 	public bool hasTurtle = true;
 	public bool hasOctopus = true;
@@ -23,7 +23,7 @@ public class FishKindWithinLevel
 [Serializable]
 public class FishLevelSeq
 {
-	public FishKindWithinLevel[] fishLevelSeq;
+	public List<FishKindWithinLevel> fishLevelSeq;
 }
 
 public class FishSpawnInfinite : MonoBehaviour {
@@ -35,12 +35,14 @@ public class FishSpawnInfinite : MonoBehaviour {
 		GOLD
 	};
 	public GameObject[] basicTypes;
-	public FishLevelSeq[] fishLevelOption;
+	public List<FishLevelSeq> fishLevelOption;
 	public int whichFishSeq = 0;
 	public static FishSpawnInfinite instance;
 	private int levelNow = 0;
 	public TextFadeOut showDayText;
 	public WeatherController weatherMaster;
+
+	public bool spreadsheetDataLoaded = false;
 
 	public runLaps turtle;
 	public runLaps octopus;
@@ -133,11 +135,11 @@ public class FishSpawnInfinite : MonoBehaviour {
 		RemoveAll();
 		totalFishTillRespawn = 0;
 		int levCapped = levelNow;
-		if(levCapped >= fishLevelOption[whichFishSeq].fishLevelSeq.Length) {
-			levCapped = fishLevelOption[whichFishSeq].fishLevelSeq.Length - 1;
+		if(levCapped >= fishLevelOption[whichFishSeq].fishLevelSeq.Count) {
+			levCapped = fishLevelOption[whichFishSeq].fishLevelSeq.Count - 1;
 			Debug.Log("LEVEL DEFINITION MISSING FOR seq " + whichFishSeq + " on levelNow: " + levelNow);
 		}
-		for(int i=0;i<fishLevelOption[whichFishSeq].fishLevelSeq[levCapped].fishKinds.Length;i++) {
+		for(int i=0;i<fishLevelOption[whichFishSeq].fishLevelSeq[levCapped].fishKinds.Count;i++) {
 			int howMany = fishLevelOption[whichFishSeq].fishLevelSeq[levCapped].fishKinds[i].howMany;
 			for(int ii=0;ii<howMany;ii++) {
 				GameObject whichPrefab = basicTypes[(int)(fishLevelOption[whichFishSeq].fishLevelSeq[levCapped].fishKinds[i].fishType)];
@@ -173,6 +175,74 @@ public class FishSpawnInfinite : MonoBehaviour {
 		weatherMaster.NewWeatherValue( fishLevelOption[whichFishSeq].fishLevelSeq[levCapped].weatherTarget );
 	}
 
+	void LoadLevelData() {
+		if (spreadsheetDataLoaded){
+			Debug.Log ("spreadsheet has already been loaded, keeping level data in memory");
+			return;
+		}
+
+		spreadsheetDataLoaded = true;
+
+		Debug.Log ("spreadsheet level data loading from file...");
+
+		TextAsset unitData = Resources.Load ("LevelSets") as TextAsset;
+		string [] unitRows = unitData.text.Split (new char[]{'\r'});
+
+		fishLevelOption = new List<FishLevelSeq>();
+
+		FishLevelSeq nextLev = new FishLevelSeq();
+		nextLev.fishLevelSeq = new List<FishKindWithinLevel>();
+
+		FishKindWithinLevel currentSeq = null;
+		FishTypeAndBaseAndMult tempFish;
+		for (int i=1; i < unitRows.Length; i++){//i=1 to skip column headers
+			string [] unitCols = unitRows[i].Split (',');
+
+			switch(unitCols[0]) {
+			case "NEXT_LEVEL_SET":
+				nextLev.fishLevelSeq.Add(currentSeq);
+				fishLevelOption.Add(nextLev);
+				nextLev = new FishLevelSeq();
+				nextLev.fishLevelSeq = new List<FishKindWithinLevel>();
+				currentSeq = null;
+				break;
+			case "levSettings":
+				if(currentSeq != null) {
+					nextLev.fishLevelSeq.Add(currentSeq);
+				}
+				currentSeq = new FishKindWithinLevel();
+				currentSeq.fishKinds = new List<FishTypeAndBaseAndMult>();
+				currentSeq.hasTurtle = bool.Parse(unitCols[1]);
+				currentSeq.hasOctopus = bool.Parse(unitCols[2]);
+				currentSeq.weatherTarget = float.Parse(unitCols[3]);
+				break;
+			case "addFish":
+				tempFish = new FishTypeAndBaseAndMult();
+				tempFish.fishType = (FishSpawnInfinite.FishSpecies)Enum.Parse(
+					typeof(FishSpawnInfinite.FishSpecies), unitCols[1] );
+				tempFish.howMany = int.Parse(unitCols[2]);
+				tempFish.moveStyle = (FishMoverBasic.FishMove)Enum.Parse(
+					typeof(FishMoverBasic.FishMove), unitCols[3] );
+				currentSeq.fishKinds.Add(tempFish);
+				break;
+			default:
+				Debug.Log("UNPARSED LINE: " + unitRows[0]);
+				break;
+			}
+
+			/* stringToUnitType(unitCols[0]), 
+				unitCols[1],
+				bool.Parse(unitCols[11]), 
+				int.Parse(unitCols[12]), */
+
+			// fishLevelOption.Add (nextCard);
+		}
+		if(currentSeq != null) {
+			nextLev.fishLevelSeq.Add(currentSeq);
+		}
+		fishLevelOption.Add(nextLev);
+	}
+
 	void Awake() {
 		instance = this;
 	}
@@ -182,11 +252,17 @@ public class FishSpawnInfinite : MonoBehaviour {
 		fishList = new List<GameObject>();
 		GameObject weatherObj = GameObject.Find("Environment");
 		weatherMaster = weatherObj.GetComponent<WeatherController>();
+
+		LoadLevelData();
+
 		SpawnForLevel();
 	}
 	
 	// Update is called once per frame
 	void Update () {
-	
+		if(Input.GetKeyDown(KeyCode.A)) {
+			Debug.Log("whichFishSeq: "+whichFishSeq);
+			NextLevel();
+		}
 	}
 }
