@@ -80,6 +80,12 @@ public class ScoreManager : MonoBehaviour {
 		StartCoroutine(ShowGameOverSoon());
 	}
 
+	public void InstantGameOver() {
+		if(gameOverPanel.activeSelf == false) {
+			StartCoroutine(ShowGameOverSoon());
+		}
+	}
+
 	public bool ShowGameOverIfNeeded() {
 		if(waitingForGameOver == false) {
 			if(spearsLeft <= 0) {

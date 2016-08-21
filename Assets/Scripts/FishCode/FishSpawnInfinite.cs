@@ -138,6 +138,7 @@ public class FishSpawnInfinite : MonoBehaviour {
 		if(levCapped >= fishLevelOption[whichFishSeq].fishLevelSeq.Count) {
 			levCapped = fishLevelOption[whichFishSeq].fishLevelSeq.Count - 1;
 			Debug.Log("LEVEL DEFINITION MISSING FOR seq " + whichFishSeq + " on levelNow: " + levelNow);
+			ScoreManager.instance.InstantGameOver();
 		}
 		for(int i=0;i<fishLevelOption[whichFishSeq].fishLevelSeq[levCapped].fishKinds.Count;i++) {
 			int howMany = fishLevelOption[whichFishSeq].fishLevelSeq[levCapped].fishKinds[i].howMany;

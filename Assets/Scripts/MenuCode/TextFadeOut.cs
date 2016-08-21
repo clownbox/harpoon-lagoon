@@ -19,7 +19,10 @@ public class TextFadeOut : MonoBehaviour {
 	public void showDay(int forLevel) { // reminder: levels start at zero
 		if(MenuStateMachine.instance.tutStep == MenuStateMachine.TUTORIAL_PHASE.NormalPlay) {
 			// Debug.Log("problem from: " + name);
-			myText.text = "Day " + (forLevel + 1);
+			myText.text = "Day " + (forLevel + 1) + " / " +
+				(FishSpawnInfinite.instance.fishLevelOption[
+					FishSpawnInfinite.instance.whichFishSeq].fishLevelSeq.Count) + " (" +
+				(char)('a'+FishSpawnInfinite.instance.whichFishSeq) + ")";
 		} else {
 			myText.text = "";//"Tip "+(int)MenuStateMachine.instance.tutStep;
 

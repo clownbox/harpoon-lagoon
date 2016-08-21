@@ -59,6 +59,14 @@ public class WeatherController : MonoBehaviour {
 			return;
 		}
 		weatherFade = newVal;
+		float songFloat = 0.0f;
+		if(weatherFade <= 1.0f) {
+			weatherFade = 1.0f;
+		} else if(weatherFade < 2.0f) {
+			weatherFade = 2.0f;
+		} else {
+			weatherFade = 3.0f;
+		}
 		stormSoundEvt.setParameterValue("StormLevel", weatherFade);
 		weatherInteraction = (WEATHER_MODE)((int)weatherFade);
 		if((int)weatherInteraction >= (int)WEATHER_MODE.NotInitializedYet) {
