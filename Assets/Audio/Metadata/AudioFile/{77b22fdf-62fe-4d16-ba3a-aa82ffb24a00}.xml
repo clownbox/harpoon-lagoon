@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.01.08.00">
+    <object class="AudioFile" id="{77b22fdf-62fe-4d16-ba3a-aa82ffb24a00}">
+        <property name="assetPath">
+            <value>Storm Var7.ogg</value>
+        </property>
+        <property name="isStreaming">
+            <value>true</value>
+        </property>
+        <property name="frequencyInKHz">
+            <value>44.0999985</value>
+        </property>
+        <property name="channelCount">
+            <value>2</value>
+        </property>
+        <property name="length">
+            <value>14.666689342403629</value>
+        </property>
+        <relationship name="masterAssetFolder">
+            <destination>{e8f9f7c6-6a3a-4ff1-945d-e19802b9118d}</destination>
+        </relationship>
+    </object>
+</objects>
