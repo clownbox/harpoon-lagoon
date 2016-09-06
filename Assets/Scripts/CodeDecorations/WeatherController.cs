@@ -60,7 +60,7 @@ public class WeatherController : MonoBehaviour {
 		}
 		weatherFade = newVal;
 		float songFloat = 0.0f;
-		if(weatherFade <= 1.0f) {
+		if(weatherFade < 1.0f) {
 			weatherFade = 1.0f;
 		} else if(weatherFade < 2.0f) {
 			weatherFade = 2.0f;

@@ -21,8 +21,7 @@ public class TextFadeOut : MonoBehaviour {
 			// Debug.Log("problem from: " + name);
 			myText.text = "Day " + (forLevel + 1) + " / " +
 				(FishSpawnInfinite.instance.fishLevelOption[
-					FishSpawnInfinite.instance.whichFishSeq].fishLevelSeq.Count) + " (" +
-				(char)('a'+FishSpawnInfinite.instance.whichFishSeq) + ")";
+					FishSpawnInfinite.instance.whichFishSeq].fishLevelSeq.Count);
 		} else {
 			myText.text = "";//"Tip "+(int)MenuStateMachine.instance.tutStep;
 

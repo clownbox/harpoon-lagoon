@@ -69,11 +69,11 @@ public class ScoreManager : MonoBehaviour {
 		if(spearsLeftText == null || MenuStateMachine.instance==null) {
 			return;
 		}
-		if(MenuStateMachine.instance && MenuStateMachine.instance.notInTut()) {
+		/*if(MenuStateMachine.instance && MenuStateMachine.instance.notInTut()) {
 			spearsLeftText.text = "Harpoon" + (spearsLeft == 1 ? "" : "s") + ": " + spearsLeft;
 		} else {
 			spearsLeftText.text = "";//"Tutorial Step " + (int)MenuStateMachine.instance.tutStep;
-		}
+		}*/
 	}
 
 	public void EndOfTutorialMessage() {
@@ -155,9 +155,9 @@ public class ScoreManager : MonoBehaviour {
 			nextScoreText.text = "";
 			lastThrowScore = 0;
 			extraHarpoonEarnedSinceLastThrow = false;
-			if(MenuStateMachine.instance.notInTut()) {
+			/* if(MenuStateMachine.instance.notInTut()) {
 				spearsLeft--;
-			}
+			} */
 			ClearSpearText();
 			UpdateSpearCount();
 			return true;
@@ -234,10 +234,10 @@ public class ScoreManager : MonoBehaviour {
 				if(spearsLeft == 0) {
 					MenuStateMachine.instance.DidAchivement(MenuStateMachine.ACHIEVEMENT_ENUM.savingThrow,100.0f);
 				}
-				spearsLeft++;
+				/* spearsLeft++;
 				if(MenuStateMachine.instance.notInTut()) {
 					harpoonAwardMessage.text = "You earned an extra harpoon!";
-				}
+				} */
 				extraHarpoonEarnedSinceLastThrow = true;
 				UpdateSpearCount();
 			}

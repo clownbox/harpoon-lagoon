@@ -8,7 +8,7 @@ public class FishTypeAndBaseAndMult
 {
 	public FishSpawnInfinite.FishSpecies fishType;
 	public int howMany;
-	public FishMoverBasic.FishMove moveStyle;
+	// public FishMoverBasic.FishMove moveStyle;
 }
 
 [Serializable]
@@ -143,7 +143,8 @@ public class FishSpawnInfinite : MonoBehaviour {
 		for(int i=0;i<fishLevelOption[whichFishSeq].fishLevelSeq[levCapped].fishKinds.Count;i++) {
 			int howMany = fishLevelOption[whichFishSeq].fishLevelSeq[levCapped].fishKinds[i].howMany;
 			for(int ii=0;ii<howMany;ii++) {
-				GameObject whichPrefab = basicTypes[(int)(fishLevelOption[whichFishSeq].fishLevelSeq[levCapped].fishKinds[i].fishType)];
+				FishSpecies whichKind = fishLevelOption[whichFishSeq].fishLevelSeq[levCapped].fishKinds[i].fishType;
+				GameObject whichPrefab = basicTypes[(int)(whichKind)];
 				GameObject GOFish = (GameObject)GameObject.Instantiate(whichPrefab);
 				FishMoverBasic fmbScript = GOFish.GetComponent<FishMoverBasic>();
 				GOFish.transform.position =
@@ -152,7 +153,25 @@ public class FishSpawnInfinite : MonoBehaviour {
 					                                   fmbScript.deepPerc);
 				GOFish.name = "Fish"+ whichPrefab.name +" " + (ii+1);
 				fishList.Add(GOFish);
-				fmbScript.aiMode = fishLevelOption[whichFishSeq].fishLevelSeq[levCapped].fishKinds[i].moveStyle;
+				// fmbScript.aiMode = fishLevelOption[whichFishSeq].fishLevelSeq[levCapped].fishKinds[i].moveStyle;
+				switch(whichKind) {
+				case FishSpecies.STANDARD:
+					if(UnityEngine.Random.Range(0.0f, 1.0f) < 0.5f) {
+						fmbScript.aiMode = FishMoverBasic.FishMove.CIRCLE_CW;
+					} else {
+						fmbScript.aiMode = FishMoverBasic.FishMove.CIRCLE_CCW;
+					}
+					break;
+				case FishSpecies.TINY:
+					fmbScript.aiMode = FishMoverBasic.FishMove.VERTICAL_LINE;
+					break;
+				case FishSpecies.SHIFTY:
+					fmbScript.aiMode = FishMoverBasic.FishMove.HORIZONTAL_LINE;
+					break;
+				case FishSpecies.GOLD:
+					fmbScript.aiMode = FishMoverBasic.FishMove.STANDARD_SPREAD;
+					break;
+				}
 				totalFishTillRespawn++;
 			}
 		}
@@ -222,8 +241,8 @@ public class FishSpawnInfinite : MonoBehaviour {
 				tempFish.fishType = (FishSpawnInfinite.FishSpecies)Enum.Parse(
 					typeof(FishSpawnInfinite.FishSpecies), unitCols[1] );
 				tempFish.howMany = int.Parse(unitCols[2]);
-				tempFish.moveStyle = (FishMoverBasic.FishMove)Enum.Parse(
-					typeof(FishMoverBasic.FishMove), unitCols[3] );
+				/* tempFish.moveStyle = (FishMoverBasic.FishMove)Enum.Parse(
+					typeof(FishMoverBasic.FishMove), unitCols[3] );*/
 				currentSeq.fishKinds.Add(tempFish);
 				break;
 			default:
