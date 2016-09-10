@@ -18,6 +18,9 @@ public class FishKindWithinLevel
 	public float weatherTarget = 0.0f;
 	public bool hasTurtle = true;
 	public bool hasOctopus = true;
+	public int bronze;
+	public int silver;
+	public int gold;
 }
 
 [Serializable]
@@ -61,6 +64,28 @@ public class FishSpawnInfinite : MonoBehaviour {
 		totalFishTillRespawn = 0;
 		SpawnForLevel();
 	}*/
+
+	public int BronzeGoal() {
+		if(spreadsheetDataLoaded) {
+			return fishLevelOption[whichFishSeq].fishLevelSeq[levelNow].bronze;
+		} else {
+			return 0;
+		}
+	}
+	public int SilverGoal() {
+		if(spreadsheetDataLoaded) {
+			return fishLevelOption[whichFishSeq].fishLevelSeq[levelNow].silver;
+		} else {
+			return 0;
+		}
+	}
+	public int GoldGoal() {
+		if(spreadsheetDataLoaded) {
+			return fishLevelOption[whichFishSeq].fishLevelSeq[levelNow].gold;
+		} else {
+			return 0;
+		}
+	}
 
 	public void ResetDay() {
 		levelNow = 0;
@@ -235,6 +260,9 @@ public class FishSpawnInfinite : MonoBehaviour {
 				currentSeq.hasTurtle = bool.Parse(unitCols[1]);
 				currentSeq.hasOctopus = bool.Parse(unitCols[2]);
 				currentSeq.weatherTarget = float.Parse(unitCols[3]);
+				currentSeq.bronze = int.Parse(unitCols[4]);
+				currentSeq.silver = int.Parse(unitCols[5]);
+				currentSeq.gold = int.Parse(unitCols[6]);
 				break;
 			case "addFish":
 				tempFish = new FishTypeAndBaseAndMult();

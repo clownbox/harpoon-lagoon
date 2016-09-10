@@ -69,6 +69,13 @@ public class ScoreManager : MonoBehaviour {
 		if(spearsLeftText == null || MenuStateMachine.instance==null) {
 			return;
 		}
+		spearsLeftText.text = "bronze: " +
+		FishSpawnInfinite.instance.BronzeGoal()
+			+" / silver: "+
+		FishSpawnInfinite.instance.SilverGoal()
+		+" / gold: " +
+		FishSpawnInfinite.instance.GoldGoal();
+
 		/*if(MenuStateMachine.instance && MenuStateMachine.instance.notInTut()) {
 			spearsLeftText.text = "Harpoon" + (spearsLeft == 1 ? "" : "s") + ": " + spearsLeft;
 		} else {
