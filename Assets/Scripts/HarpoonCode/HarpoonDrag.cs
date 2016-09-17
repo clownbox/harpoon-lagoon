@@ -30,8 +30,12 @@ public class HarpoonDrag : MonoBehaviour {
 	bool hitTarget = false;
 	private bool forceStop = false;
 
+	private GameObject tempGOPos;
+
 	// Use this for initialization
 	void Start () {
+		tempGOPos = new GameObject();
+
 		fishStack = new List<GameObject>();
 		stackOffsets = new List<Vector3>();
 
@@ -365,6 +369,16 @@ public class HarpoonDrag : MonoBehaviour {
 
 		foreach(GameObject GOScript in fishStack) {
 			ScoreManager.instance.ScorePop(GOScript, this);
+		}
+		if(fishStack.Count == 2) {
+			tempGOPos.transform.position = (fishStack[0].GetComponent<FishMoverBasic>().diedPos
+				+ fishStack[1].GetComponent<FishMoverBasic>().diedPos)/2.0f;
+			ScoreManager.instance.ScorePop(tempGOPos, this, 50);
+		}
+		if(fishStack.Count == 3) {
+			tempGOPos.transform.position = (fishStack[1].GetComponent<FishMoverBasic>().diedPos
+				+ fishStack[2].GetComponent<FishMoverBasic>().diedPos)/2.0f;
+			ScoreManager.instance.ScorePop(tempGOPos, this, 50);
 		}
 
 		if(remIdx >= 0) {

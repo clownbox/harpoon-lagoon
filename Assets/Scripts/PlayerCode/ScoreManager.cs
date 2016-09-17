@@ -212,8 +212,10 @@ public class ScoreManager : MonoBehaviour {
 
 		if(fmbScript != null) {
 			textPos = fmbScript.diedPos;
-		} else {
+		} else if(hpmScript != null) {
 			textPos = hpmScript.transform.position;
+		} else {
+			textPos = enemyScored.transform.position;
 		}
 
 		int scoreAdded;
@@ -263,8 +265,8 @@ public class ScoreManager : MonoBehaviour {
 		scoreGO.transform.localScale = Vector3.one * 0.8f;
 		textPos.z = Camera.main.transform.position.z + 0.35f;
 		if(scoreAmt != -1) {
-			scoreGO.transform.localScale *= 2.0f;
-			textPos.y += 1.5f;
+			scoreGO.transform.localScale *= 0.7f;
+			// textPos.y += 1.5f;
 		}
 		scoreGO.transform.position = textPos;
 	}
