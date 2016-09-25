@@ -16,6 +16,10 @@ public class ScoreManager : MonoBehaviour {
 	public Text lastThrowScoreText;
 	public Text spearsLeftText;
 
+	public Text bronzeGoalText,
+				silverGoalText,
+				goldGoalText;
+
 	public Text nextScoreText;
 
 	public GameObject gameOverPanel;
@@ -42,7 +46,7 @@ public class ScoreManager : MonoBehaviour {
 
 	public void ClearSpearText() {
 		if(MenuStateMachine.instance==null || MenuStateMachine.instance.notInTut()) {
-			harpoonAwardMessage.text = extraHarpoonThreshold + " pt throw to gain harpoon";
+			harpoonAwardMessage.text = "";//extraHarpoonThreshold + " pt throw to gain harpoon";
 		}
 	}
 
@@ -69,12 +73,14 @@ public class ScoreManager : MonoBehaviour {
 		if(spearsLeftText == null || MenuStateMachine.instance==null) {
 			return;
 		}
-		spearsLeftText.text = "bronze: " +
-		FishSpawnInfinite.instance.BronzeGoal()
-			+" / silver: "+
-		FishSpawnInfinite.instance.SilverGoal()
-		+" / gold: " +
-		FishSpawnInfinite.instance.GoldGoal();
+
+		if(MenuStateMachine.instance && MenuStateMachine.instance.notInTut()) {
+			bronzeGoalText.text = ""+FishSpawnInfinite.instance.BronzeGoal();
+			silverGoalText.text = ""+FishSpawnInfinite.instance.SilverGoal();
+			goldGoalText.text = ""+FishSpawnInfinite.instance.GoldGoal();
+		} else {
+			// spearsLeftText.text = "";//"Tutorial Step " + (int)MenuStateMachine.instance.tutStep;
+		}
 
 		/*if(MenuStateMachine.instance && MenuStateMachine.instance.notInTut()) {
 			spearsLeftText.text = "Harpoon" + (spearsLeft == 1 ? "" : "s") + ": " + spearsLeft;
