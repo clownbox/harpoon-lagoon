@@ -116,6 +116,7 @@ public class FishSpawnInfinite : MonoBehaviour {
 				levelNow = 2;
 			}
 		}
+		ScoreManager.instance.ResetScore(false);
 		SpawnForLevel();
 	}
 

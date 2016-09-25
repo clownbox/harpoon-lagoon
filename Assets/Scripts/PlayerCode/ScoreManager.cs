@@ -50,7 +50,7 @@ public class ScoreManager : MonoBehaviour {
 		}
 	}
 
-	public void ResetScore() {
+	public void ResetScore(bool resetDayAlso = true) {
 		spearsOut = 0;
 		turtleHits = 0;
 		spearsLeft = startSpears;
@@ -62,7 +62,7 @@ public class ScoreManager : MonoBehaviour {
 		lastThrowScoreText.text = "0";
 		UpdateSpearCount();
 		//Debug.Log("ResetScore");
-		if(FishSpawnInfinite.instance) {
+		if(resetDayAlso && FishSpawnInfinite.instance) {
 			FishSpawnInfinite.instance.ResetDay();
 		}
 
