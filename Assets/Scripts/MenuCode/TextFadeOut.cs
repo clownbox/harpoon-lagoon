@@ -16,6 +16,11 @@ public class TextFadeOut : MonoBehaviour {
 		textBaseColor = myText.color;
 	}
 
+	public void showMedalMessage(string msg) {
+		myText.text = msg;
+		fadeTime = 2.5f;
+	}
+
 	public void showDay(int forLevel) { // reminder: levels start at zero
 		if(MenuStateMachine.instance.tutStep == MenuStateMachine.TUTORIAL_PHASE.NormalPlay) {
 			// Debug.Log("problem from: " + name);

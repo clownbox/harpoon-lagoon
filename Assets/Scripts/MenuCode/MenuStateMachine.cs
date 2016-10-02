@@ -217,6 +217,7 @@ public class MenuStateMachine : MonoBehaviour {
 			FishSpawnInfinite.instance.whichFishSeq = levSequence;
 			FishSpawnInfinite.instance.RemoveAll();
 			FishSpawnInfinite.instance.SpawnForLevel();
+			ScoreManager.instance.ResetScore();
 		}
 		FishSpawnInfinite.instance.UpdateText();
 		ScoreManager.instance.UpdateSpearCount();

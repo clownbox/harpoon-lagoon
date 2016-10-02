@@ -20,6 +20,14 @@ public class ScoreManager : MonoBehaviour {
 				silverGoalText,
 				goldGoalText;
 
+	public enum Medal
+	{
+		Fail,
+		Bronze,
+		Silver,
+		Gold
+	};
+
 	public Text nextScoreText;
 
 	public GameObject gameOverPanel;
@@ -39,6 +47,18 @@ public class ScoreManager : MonoBehaviour {
 	public bool waitingForGameOver = false;
 
 	public Canvas uiCanvas;
+
+	public Medal scoreMedalMeasure() {
+		if(totalScore >= FishSpawnInfinite.instance.GoldGoal()) {
+			return Medal.Gold;
+		} else if(totalScore >= FishSpawnInfinite.instance.SilverGoal()) {
+			return Medal.Silver;
+		} else if(totalScore >= FishSpawnInfinite.instance.BronzeGoal()) {
+			return Medal.Bronze;
+		} else {
+			return Medal.Fail;
+		}
+	}
 
 	public void PostTutMessage(string setTo) {
 		harpoonAwardMessage.text = setTo;
@@ -99,6 +119,11 @@ public class ScoreManager : MonoBehaviour {
 		}
 	}
 
+	public void ForceGameOver() {
+		spearsLeft = 0;
+		ShowGameOverIfNeeded();
+	}
+
 	public bool ShowGameOverIfNeeded() {
 		if(waitingForGameOver == false) {
 			if(spearsLeft <= 0) {
@@ -115,8 +140,9 @@ public class ScoreManager : MonoBehaviour {
 		yield return new WaitForSeconds(0.5f);
 		MenuStateMachine.instance.AllMenusOffExcept(gameOverPanel);
 		if(MenuStateMachine.instance.notInTut()) {
-			endScoreHeader.text = "out of spears!";
-			endScoreText.text = "congrats you earned " + totalScore;
+			endScoreHeader.text = "going home early";
+			endScoreText.text = "your score: "+totalScore + "\nbronze goal: " + 
+				FishSpawnInfinite.instance.BronzeGoal();
 			FMODUnity.RuntimeManager.PlayOneShot("event:/game_over");
 		} else {
 			endScoreHeader.text = "end of tutorial";

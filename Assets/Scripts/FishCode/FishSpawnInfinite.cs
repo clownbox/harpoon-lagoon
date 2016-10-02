@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System;
 using System.Reflection;
+using System.Collections;
 using System.Collections.Generic;
 
 [Serializable]
@@ -93,31 +94,49 @@ public class FishSpawnInfinite : MonoBehaviour {
 		Debug.Log("ResetDay");
 	}
 
+	IEnumerator DelayBetweenStages() {
+		Debug.Log("DelayBetweenStages started " + Time.time);
+
+		ScoreManager.Medal medalWon = ScoreManager.instance.scoreMedalMeasure();
+
+		showDayText.showMedalMessage("" + medalWon);
+
+		yield return new WaitForSeconds(2.5f);
+
+		if(medalWon == ScoreManager.Medal.Fail) {
+			ScoreManager.instance.ForceGameOver();
+			yield break;
+		}
+
+		levelNow++;
+
+		switch(levelNow) {
+		case 10:
+			MenuStateMachine.instance.DidAchivement(MenuStateMachine.ACHIEVEMENT_ENUM.dayTen,100.0f);
+			break;
+		case 20:
+			MenuStateMachine.instance.DidAchivement(MenuStateMachine.ACHIEVEMENT_ENUM.dayTwenty,100.0f);
+			break;
+		case 30:
+			MenuStateMachine.instance.DidAchivement(MenuStateMachine.ACHIEVEMENT_ENUM.dayThirty,100.0f);
+			break;
+		}
+		ScoreManager.instance.ResetScore(false);
+		SpawnForLevel();
+	}
+
 	public void NextLevel() {
 		if(MenuStateMachine.instance.notInTut()) {
-			levelNow++;
-
-			switch(levelNow) {
-			case 10:
-				MenuStateMachine.instance.DidAchivement(MenuStateMachine.ACHIEVEMENT_ENUM.dayTen,100.0f);
-				break;
-			case 20:
-				MenuStateMachine.instance.DidAchivement(MenuStateMachine.ACHIEVEMENT_ENUM.dayTwenty,100.0f);
-				break;
-			case 30:
-				MenuStateMachine.instance.DidAchivement(MenuStateMachine.ACHIEVEMENT_ENUM.dayThirty,100.0f);
-				break;
-			}
-
+			StartCoroutine(DelayBetweenStages());
 		} else {
 			if(MenuStateMachine.instance.tutStep < MenuStateMachine.TUTORIAL_PHASE.ExtraSpear) {
 				levelNow = 0;
 			} else {
 				levelNow = 2;
 			}
+			ScoreManager.instance.ResetScore(false);
+			SpawnForLevel();
 		}
-		ScoreManager.instance.ResetScore(false);
-		SpawnForLevel();
 	}
 
 	public void FishKilledAndOffScreen(GameObject whichFish) {
