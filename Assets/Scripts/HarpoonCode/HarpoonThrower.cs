@@ -199,7 +199,7 @@ public class HarpoonThrower : MonoBehaviour {
 			HarpoonDrag.throwForce = HarpoonDrag.MAX_FORCE * bowPull;
 		} else {
 			if(throwNinjaMode == THROW_NINJAMODE.FastLine) {
-				HarpoonDrag.throwForce = HarpoonDrag.MAX_FORCE * 2.0f;
+				HarpoonDrag.throwForce = HarpoonDrag.MAX_FORCE * 1.75f; // 2.0f
 			} else {
 				HarpoonDrag.throwForce = HarpoonDrag.MAX_FORCE;
 			}

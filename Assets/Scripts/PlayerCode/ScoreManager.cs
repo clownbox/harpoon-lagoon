@@ -11,6 +11,12 @@ public class ScoreManager : MonoBehaviour {
 	public static ScoreManager instance;
 	public GameObject scorePopPrefab;
 
+	public static int SCORE_PER_EXTRA_FISH_ON_POLE = 50;
+	public static int SCORE_PER_EXTRA_FISH_ON_POLE_THIRD = 75; // + the above
+	public static int SCORE_PER_EXTRA_FISH_ON_POLE_PAIR = 100;
+	public static int SCORE_PER_SERIES = 1000;
+	public static int SCORE_PER_TRIPLE = 500;
+
 	public Text harpoonAwardMessage;
 	public Text totalScoreText;
 	public Text lastThrowScoreText;

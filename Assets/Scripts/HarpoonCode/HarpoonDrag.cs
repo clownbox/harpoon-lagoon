@@ -283,10 +283,10 @@ public class HarpoonDrag : MonoBehaviour {
 				}
 				if(rulePassed && sizeChanges>=MIN_DIFF_SIZES) {
 					MenuStateMachine.instance.DidAchivement(MenuStateMachine.ACHIEVEMENT_ENUM.smallToBig,100.0f);
-					ComboMessage.instance.NewMessage(fishStack.Count+" small to big!", 1000, fmbScript, this);
+					ComboMessage.instance.NewMessage(fishStack.Count+" small to big!", 
+						ScoreManager.SCORE_PER_SERIES, fmbScript, this);
 					anyCombo = true;
 				}
-
 
 				scaleWas = 1000.0f;
 				rulePassed = true;
@@ -304,7 +304,8 @@ public class HarpoonDrag : MonoBehaviour {
 				}
 				if(rulePassed && sizeChanges>=MIN_DIFF_SIZES) {
 					MenuStateMachine.instance.DidAchivement(MenuStateMachine.ACHIEVEMENT_ENUM.bigToSmall,100.0f);
-					ComboMessage.instance.NewMessage(fishStack.Count+" big to small!", 350, fmbScript, this);
+					ComboMessage.instance.NewMessage(fishStack.Count+" big to small!", 
+						ScoreManager.SCORE_PER_SERIES, fmbScript, this);
 					anyCombo = true;
 				}
 
@@ -318,7 +319,8 @@ public class HarpoonDrag : MonoBehaviour {
 				}
 				if(rulePassed) {
 					MenuStateMachine.instance.DidAchivement(MenuStateMachine.ACHIEVEMENT_ENUM.matchThree,100.0f);
-					ComboMessage.instance.NewMessage(fishStack.Count+" all same!", 650, fmbScript, this);
+					ComboMessage.instance.NewMessage(fishStack.Count+" all same!", 
+						ScoreManager.SCORE_PER_TRIPLE, fmbScript, this);
 					anyCombo = true;
 				}
 				// OK: AAAAA
@@ -370,15 +372,20 @@ public class HarpoonDrag : MonoBehaviour {
 		foreach(GameObject GOScript in fishStack) {
 			ScoreManager.instance.ScorePop(GOScript, this);
 		}
-		if(fishStack.Count == 2) {
+		if(fishStack.Count == 2 && fishStack[0].GetComponent<FishMoverBasic>().myKind ==
+									fishStack[1].GetComponent<FishMoverBasic>().myKind) {
 			tempGOPos.transform.position = (fishStack[0].GetComponent<FishMoverBasic>().diedPos
 				+ fishStack[1].GetComponent<FishMoverBasic>().diedPos)/2.0f;
-			ScoreManager.instance.ScorePop(tempGOPos, this, 50);
+			ScoreManager.instance.ScorePop(tempGOPos, this, ScoreManager.SCORE_PER_EXTRA_FISH_ON_POLE_PAIR);
+		} else if(fishStack.Count >= 2) {
+			tempGOPos.transform.position = (fishStack[0].GetComponent<FishMoverBasic>().diedPos
+				+ fishStack[1].GetComponent<FishMoverBasic>().diedPos)/2.0f;
+			ScoreManager.instance.ScorePop(tempGOPos, this, ScoreManager.SCORE_PER_EXTRA_FISH_ON_POLE);
 		}
 		if(fishStack.Count == 3) {
 			tempGOPos.transform.position = (fishStack[1].GetComponent<FishMoverBasic>().diedPos
 				+ fishStack[2].GetComponent<FishMoverBasic>().diedPos)/2.0f;
-			ScoreManager.instance.ScorePop(tempGOPos, this, 50);
+			ScoreManager.instance.ScorePop(tempGOPos, this, ScoreManager.SCORE_PER_EXTRA_FISH_ON_POLE_THIRD);
 		}
 
 		if(remIdx >= 0) {

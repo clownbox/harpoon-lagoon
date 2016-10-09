@@ -240,7 +240,160 @@ public class FishSpawnInfinite : MonoBehaviour {
 		weatherMaster.NewWeatherValue( fishLevelOption[whichFishSeq].fishLevelSeq[levCapped].weatherTarget );
 	}
 
+	void CalcLevScoreGoals(int wasLevNum, out int levNum, out int minScore,
+		FishKindWithinLevel currentSeq) {
+		levNum = wasLevNum+1;
+		minScore = 0;
+		Debug.Log("Min score tally for level " + levNum);
+
+		int totalFish = 0;
+
+		int [] fishTally = new int[Enum.GetNames(typeof(FishSpecies)).Length];
+		int fishTalliedComboTemp = 0;
+
+		for(int i = 0; i < fishTally.Length; i++) {
+			fishTally[i] = 0;
+		}
+
+		for(int ii = 0; ii < currentSeq.fishKinds.Count; ii++) {
+			FishMoverBasic fmbScript =
+				basicTypes[(int)(currentSeq.fishKinds[ii].fishType)].GetComponent<FishMoverBasic>();
+
+			/* Debug.Log(fmbScript.scoreValue + " pt X " +
+				currentSeq.fishKinds[ii].howMany); */
+			totalFish += currentSeq.fishKinds[ii].howMany;
+			minScore += fmbScript.scoreValue *
+				currentSeq.fishKinds[ii].howMany;
+			fishTally[(int)currentSeq.fishKinds[ii].fishType] += currentSeq.fishKinds[ii].howMany;
+		}
+		fishTalliedComboTemp = totalFish;
+
+		int seriesCombos = 0;
+		bool anyFoundSoTryAgain = true;
+		while(anyFoundSoTryAgain) {
+			anyFoundSoTryAgain = false;
+			if(fishTally[0] > 0 && fishTally[1] > 0 && fishTally[2] > 0) { // without 3
+				fishTally[0]--;
+				fishTally[1]--;
+				fishTally[2]--;
+				seriesCombos++;
+				fishTalliedComboTemp -= 3;
+				anyFoundSoTryAgain = true;
+			}
+			if(fishTally[0] > 0 && fishTally[1] > 0 && fishTally[3] > 0) { // without 2
+				fishTally[0]--;
+				fishTally[1]--;
+				fishTally[3]--;
+				seriesCombos++;
+				fishTalliedComboTemp -= 3;
+				anyFoundSoTryAgain = true;
+			}
+			if(fishTally[0] > 0 && fishTally[2] > 0 && fishTally[3] > 0) { // without 1
+				fishTally[0]--;
+				fishTally[2]--;
+				fishTally[3]--;
+				seriesCombos++;
+				fishTalliedComboTemp -= 3;
+				anyFoundSoTryAgain = true;
+			}
+			if(fishTally[1] > 0 && fishTally[2] > 0 && fishTally[3] > 0) { // without 0
+				fishTally[1]--;
+				fishTally[2]--;
+				fishTally[3]--;
+				seriesCombos++;
+				fishTalliedComboTemp -= 3;
+				anyFoundSoTryAgain = true;
+			}
+		}
+
+		int tripleCombos = 0;
+		anyFoundSoTryAgain = true;
+		while(anyFoundSoTryAgain) {
+			anyFoundSoTryAgain = false;
+			if(fishTally[0] >= 3) {
+				fishTally[0]-=3;
+				tripleCombos++;
+				fishTalliedComboTemp -= 3;
+				anyFoundSoTryAgain = true;
+			}
+			if(fishTally[1] >= 3) {
+				fishTally[1]-=3;
+				tripleCombos++;
+				fishTalliedComboTemp -= 3;
+				anyFoundSoTryAgain = true;
+			}
+			if(fishTally[2] >= 3) {
+				fishTally[2]-=3;
+				tripleCombos++;
+				fishTalliedComboTemp -= 3;
+				anyFoundSoTryAgain = true;
+			}
+			if(fishTally[3] >= 3) {
+				fishTally[3]-=3;
+				tripleCombos++;
+				fishTalliedComboTemp -= 3;
+				anyFoundSoTryAgain = true;
+			}
+		}
+
+		int setsOfThreeEveryThrow = (int)(totalFish / 3.0f);
+		int fishLeftOver = totalFish-setsOfThreeEveryThrow*3;
+		int setsPoints = setsOfThreeEveryThrow * (ScoreManager.SCORE_PER_EXTRA_FISH_ON_POLE+
+			ScoreManager.SCORE_PER_EXTRA_FISH_ON_POLE_THIRD);
+
+		var lastPairFound = 
+			(fishTally[0] >= 2 || fishTally[1] >= 2 ||
+				fishTally[2] >= 2 || fishTally[3] >= 2);
+
+		if(fishTalliedComboTemp == 2) {
+			if(lastPairFound) {
+				setsPoints += ScoreManager.SCORE_PER_EXTRA_FISH_ON_POLE_PAIR;
+			} else {
+				setsPoints += ScoreManager.SCORE_PER_EXTRA_FISH_ON_POLE;
+			}
+		}
+
+		int seriesPoints = seriesCombos * ScoreManager.SCORE_PER_SERIES;
+		int triplePoints = tripleCombos * ScoreManager.SCORE_PER_TRIPLE;
+		Debug.Log("Series Combos: " + seriesCombos);
+		Debug.Log("Series Score: " + seriesPoints);
+		Debug.Log("Triple Combos: " + tripleCombos);
+		Debug.Log("Triple Score: " + triplePoints);
+		Debug.Log("Min Score: " + minScore);
+		Debug.Log("Possible Sets Points: " + setsPoints);
+
+		int maxPossibleScoreAboveMin = setsPoints +
+			seriesPoints +
+			triplePoints;
+
+		int midPoints;
+
+		midPoints = maxPossibleScoreAboveMin;
+		if(seriesCombos > 0) {
+			midPoints -= ScoreManager.SCORE_PER_SERIES;
+		} else if(tripleCombos > 0) {
+			midPoints -= ScoreManager.SCORE_PER_TRIPLE;
+		} else if(lastPairFound) {
+			var anyNonPair = (fishTally[0] == 1 || fishTally[1] == 1 ||
+				fishTally[2] == 1 || fishTally[3] == 1);
+			if(anyNonPair && lastPairFound) {
+				midPoints -= (ScoreManager.SCORE_PER_EXTRA_FISH_ON_POLE_PAIR -
+								ScoreManager.SCORE_PER_EXTRA_FISH_ON_POLE);
+			} else {
+				midPoints -= ScoreManager.SCORE_PER_EXTRA_FISH_ON_POLE_PAIR;
+			}
+		} else {
+			midPoints -= ScoreManager.SCORE_PER_EXTRA_FISH_ON_POLE_THIRD;
+		}
+
+		currentSeq.bronze = minScore+ScoreManager.SCORE_PER_EXTRA_FISH_ON_POLE;
+		currentSeq.silver = minScore+midPoints;
+		currentSeq.gold = minScore+maxPossibleScoreAboveMin;
+	}
+
 	void LoadLevelData() {
+		int minScore = 0;
+
 		if (spreadsheetDataLoaded){
 			Debug.Log ("spreadsheet has already been loaded, keeping level data in memory");
 			return;
@@ -260,11 +413,14 @@ public class FishSpawnInfinite : MonoBehaviour {
 
 		FishKindWithinLevel currentSeq = null;
 		FishTypeAndBaseAndMult tempFish;
+		int levNum = 0;
 		for (int i=1; i < unitRows.Length; i++){//i=1 to skip column headers
 			string [] unitCols = unitRows[i].Split (',');
 
 			switch(unitCols[0]) {
 			case "NEXT_LEVEL_SET":
+				CalcLevScoreGoals(levNum, out levNum, out minScore, currentSeq);
+
 				nextLev.fishLevelSeq.Add(currentSeq);
 				fishLevelOption.Add(nextLev);
 				nextLev = new FishLevelSeq();
@@ -273,6 +429,7 @@ public class FishSpawnInfinite : MonoBehaviour {
 				break;
 			case "levSettings":
 				if(currentSeq != null) {
+					CalcLevScoreGoals(levNum, out levNum, out minScore, currentSeq);
 					nextLev.fishLevelSeq.Add(currentSeq);
 				}
 				currentSeq = new FishKindWithinLevel();
@@ -280,9 +437,9 @@ public class FishSpawnInfinite : MonoBehaviour {
 				currentSeq.hasTurtle = bool.Parse(unitCols[1]);
 				currentSeq.hasOctopus = bool.Parse(unitCols[2]);
 				currentSeq.weatherTarget = float.Parse(unitCols[3]);
-				currentSeq.bronze = int.Parse(unitCols[4]);
-				currentSeq.silver = int.Parse(unitCols[5]);
-				currentSeq.gold = int.Parse(unitCols[6]);
+				//currentSeq.bronze = int.Parse(unitCols[4]);
+				//currentSeq.silver = int.Parse(unitCols[5]);
+				//currentSeq.gold = int.Parse(unitCols[6]);
 				break;
 			case "addFish":
 				tempFish = new FishTypeAndBaseAndMult();
@@ -305,6 +462,10 @@ public class FishSpawnInfinite : MonoBehaviour {
 
 			// fishLevelOption.Add (nextCard);
 		}
+
+		Debug.Log("=== Final level tally");
+		CalcLevScoreGoals(levNum, out levNum, out minScore, currentSeq);
+
 		if(currentSeq != null) {
 			nextLev.fishLevelSeq.Add(currentSeq);
 		}
