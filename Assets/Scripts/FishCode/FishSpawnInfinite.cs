@@ -280,7 +280,7 @@ public class FishSpawnInfinite : MonoBehaviour {
 		FishKindWithinLevel currentSeq) {
 		levNum = wasLevNum+1;
 		minScore = 0;
-		Debug.Log("Min score tally for level " + levNum);
+		Debug.Log("Setting up score goals for level " + levNum);
 
 		int totalFish = 0;
 
@@ -303,6 +303,18 @@ public class FishSpawnInfinite : MonoBehaviour {
 			fishTally[(int)currentSeq.fishKinds[ii].fishType] += currentSeq.fishKinds[ii].howMany;
 		}
 		fishTalliedComboTemp = totalFish;
+
+		for(int i=0;i<fishTally.Length;i++) {
+			if(fishTally[i] > 5) {
+				Debug.LogWarning("MIX FISH: MORE THAN 5 OF A KIND HERE");
+			}
+		}
+		if(fishTalliedComboTemp < 3) {
+			Debug.LogWarning("ADD FISH: UNDER 3 FISH HERE");
+		}
+		if(fishTalliedComboTemp > 8) {
+			Debug.LogWarning("REDUCE FISH: OVER 8 HERE");
+		}
 
 		int seriesCombos = 0;
 		bool anyFoundSoTryAgain = true;
@@ -391,12 +403,12 @@ public class FishSpawnInfinite : MonoBehaviour {
 
 		int seriesPoints = seriesCombos * ScoreManager.SCORE_PER_SERIES;
 		int triplePoints = tripleCombos * ScoreManager.SCORE_PER_TRIPLE;
-		Debug.Log("Series Combos: " + seriesCombos);
+		/*Debug.Log("Series Combos: " + seriesCombos);
 		Debug.Log("Series Score: " + seriesPoints);
 		Debug.Log("Triple Combos: " + tripleCombos);
 		Debug.Log("Triple Score: " + triplePoints);
 		Debug.Log("Min Score: " + minScore);
-		Debug.Log("Possible Sets Points: " + setsPoints);
+		Debug.Log("Possible Sets Points: " + setsPoints);*/
 
 		int maxPossibleScoreAboveMin = setsPoints +
 			seriesPoints +
@@ -460,11 +472,15 @@ public class FishSpawnInfinite : MonoBehaviour {
 		FishKindWithinLevel currentSeq = null;
 		FishTypeAndBaseAndMult tempFish;
 		int levNum = 0;
+		int levSet = 1;
 		for (int i=1; i < unitRows.Length; i++){//i=1 to skip column headers
 			string [] unitCols = unitRows[i].Split (',');
 
 			switch(unitCols[0]) {
 			case "NEXT_LEVEL_SET":
+				levNum = 0;
+				Debug.Log("DIFFERENT LEVEL SET " + levSet);
+				levSet++;
 				CalcLevScoreGoals(levNum, out levNum, out minScore, currentSeq);
 
 				nextLev.fishLevelSeq.Add(currentSeq);
