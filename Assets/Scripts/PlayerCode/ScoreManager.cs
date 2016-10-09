@@ -76,6 +76,22 @@ public class ScoreManager : MonoBehaviour {
 		}
 	}
 
+	public void WinLevel(Medal winLevel) {
+		switch(winLevel) {
+		case Medal.Gold:
+			totalScore = FishSpawnInfinite.instance.GoldGoal();
+			break;
+		case Medal.Silver:
+			totalScore = FishSpawnInfinite.instance.SilverGoal();
+			break;
+		case Medal.Bronze:
+			totalScore = FishSpawnInfinite.instance.BronzeGoal();
+			break;
+		}
+		FishSpawnInfinite.instance.RemoveAll();
+		FishSpawnInfinite.instance.NextLevel();
+	}
+
 	public void ResetScore(bool resetDayAlso = true) {
 		spearsOut = 0;
 		turtleHits = 0;

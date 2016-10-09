@@ -161,6 +161,15 @@ public class HarpoonThrower : MonoBehaviour {
 	}
 
 	void Update() {
+		if(Input.GetKeyDown(KeyCode.T)) {
+			ScoreManager.instance.WinLevel(ScoreManager.Medal.Gold);
+		}
+		if(Input.GetKeyDown(KeyCode.Y)) {
+			ScoreManager.instance.WinLevel(ScoreManager.Medal.Silver);
+		}
+		if(Input.GetKeyDown(KeyCode.U)) {
+			ScoreManager.instance.WinLevel(ScoreManager.Medal.Bronze);
+		}
 		enforceThrowInteraction(false);
 		enforceNinjaThrowMode(false);
 		enforceYankInteraction(true);

@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System;
 using System.Reflection;
 using System.Collections;
@@ -22,6 +23,7 @@ public class FishKindWithinLevel
 	public int bronze;
 	public int silver;
 	public int gold;
+	public ScoreManager.Medal medalEarned;
 }
 
 [Serializable]
@@ -38,6 +40,9 @@ public class FishSpawnInfinite : MonoBehaviour {
 		STANDARD,
 		GOLD
 	};
+	public GameObject showEndScreen;
+	public Text endScreenText;
+
 	public GameObject[] basicTypes;
 	public List<FishLevelSeq> fishLevelOption;
 	public int whichFishSeq = 0;
@@ -67,6 +72,11 @@ public class FishSpawnInfinite : MonoBehaviour {
 	}*/
 
 	public int BronzeGoal() {
+		if(fishLevelOption.Count <= whichFishSeq || 
+			fishLevelOption[whichFishSeq].fishLevelSeq.Count <= levelNow) {
+			return 0;
+		}
+
 		if(spreadsheetDataLoaded) {
 			return fishLevelOption[whichFishSeq].fishLevelSeq[levelNow].bronze;
 		} else {
@@ -74,6 +84,11 @@ public class FishSpawnInfinite : MonoBehaviour {
 		}
 	}
 	public int SilverGoal() {
+		if(fishLevelOption.Count <= whichFishSeq || 
+			fishLevelOption[whichFishSeq].fishLevelSeq.Count <= levelNow) {
+			return 0;
+		}
+
 		if(spreadsheetDataLoaded) {
 			return fishLevelOption[whichFishSeq].fishLevelSeq[levelNow].silver;
 		} else {
@@ -81,6 +96,11 @@ public class FishSpawnInfinite : MonoBehaviour {
 		}
 	}
 	public int GoldGoal() {
+		if(fishLevelOption.Count <= whichFishSeq || 
+			fishLevelOption[whichFishSeq].fishLevelSeq.Count <= levelNow) {
+			return 0;
+		}
+
 		if(spreadsheetDataLoaded) {
 			return fishLevelOption[whichFishSeq].fishLevelSeq[levelNow].gold;
 		} else {
@@ -95,10 +115,11 @@ public class FishSpawnInfinite : MonoBehaviour {
 	}
 
 	IEnumerator DelayBetweenStages() {
-		Debug.Log("DelayBetweenStages started " + Time.time);
+		// Debug.Log("DelayBetweenStages started " + Time.time);
 
 		ScoreManager.Medal medalWon = ScoreManager.instance.scoreMedalMeasure();
 
+		fishLevelOption[whichFishSeq].fishLevelSeq[levelNow].medalEarned = medalWon;
 		showDayText.showMedalMessage("" + medalWon);
 
 		yield return new WaitForSeconds(2.5f);
@@ -109,6 +130,21 @@ public class FishSpawnInfinite : MonoBehaviour {
 		}
 
 		levelNow++;
+
+		if(levelNow >= fishLevelOption[whichFishSeq].fishLevelSeq.Count) {
+			showEndScreen.SetActive(true);
+			string medalSummary = "";
+			for(int i=0;i<fishLevelOption[whichFishSeq].fishLevelSeq.Count; i++) {
+				medalSummary +=
+					(i+1)+". "+fishLevelOption[whichFishSeq].fishLevelSeq[i].medalEarned;
+				if(i < fishLevelOption[whichFishSeq].fishLevelSeq.Count - 1) {
+					medalSummary += "\n";
+				}
+			}
+
+			endScreenText.text = medalSummary;
+			yield break;
+		}
 
 		switch(levelNow) {
 		case 10:
@@ -388,7 +424,17 @@ public class FishSpawnInfinite : MonoBehaviour {
 
 		currentSeq.bronze = minScore+ScoreManager.SCORE_PER_EXTRA_FISH_ON_POLE;
 		currentSeq.silver = minScore+midPoints;
+
+		if(currentSeq.bronze > currentSeq.silver) {
+			int swapVal = currentSeq.bronze;
+			currentSeq.bronze = currentSeq.silver;
+			currentSeq.silver = swapVal;
+		}
 		currentSeq.gold = minScore+maxPossibleScoreAboveMin;
+
+		if(currentSeq.bronze == currentSeq.silver) {
+			currentSeq.silver = (int)( (currentSeq.bronze+currentSeq.gold)/2 );
+		}
 	}
 
 	void LoadLevelData() {
