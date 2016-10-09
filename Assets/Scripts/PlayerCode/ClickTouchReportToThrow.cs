@@ -22,6 +22,7 @@ public class ClickTouchReportToThrow : MonoBehaviour {
 			}
 
 			if(rhInfo.collider.gameObject != gameObject) {
+				DashedLine.startVertex = DashedLine.endVertex;
 				if(Input.GetButtonUp("Fire1")) {
 					if(MenuStateMachine.instance.tutStep == MenuStateMachine.TUTORIAL_PHASE.CancelThrow) {
 						MenuStateMachine.instance.NextStep(true);
