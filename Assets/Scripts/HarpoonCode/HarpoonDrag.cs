@@ -234,6 +234,11 @@ public class HarpoonDrag : MonoBehaviour {
 			/* ScoreManager.instance.ScorePop(fmbScript.gameObject,
 			                               this); */
 
+			if(fmbScript.stopsHarpoon) {
+				forceStop = true;
+				FMODUnity.RuntimeManager.PlayOneShot("event:/wrong_fish");
+			}
+
 			if(fishTorquesSpear) {
 				motion *= 0.9f;
 				float wiggleRand = 4.0f;

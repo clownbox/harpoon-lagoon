@@ -2,7 +2,7 @@
 using System.Collections;
 
 public class FishMoverBasic : MonoBehaviour {
-	public enum FishBreed {STANDARD,SHIFTY,TINYFAST,GOLDEN,FISH_KINDS,NONE};
+	public enum FishBreed {STANDARD,SHIFTY,TINYFAST,GOLDEN,BLOWFISH,SWORDFISH,FISH_KINDS,NONE};
 
 	public enum FishMove
 	{
@@ -30,6 +30,8 @@ public class FishMoverBasic : MonoBehaviour {
 	float swimTimeEnd;
 	bool seekingGoal;
 	bool isDead;
+
+	public bool stopsHarpoon = false; // used by blowfish
 
 	Transform[] modelVis;
 
