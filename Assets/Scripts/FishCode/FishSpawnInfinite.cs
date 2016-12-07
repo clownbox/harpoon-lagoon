@@ -38,7 +38,9 @@ public class FishSpawnInfinite : MonoBehaviour {
 		SHIFTY,
 		TINY,
 		STANDARD,
-		GOLD
+		GOLD,
+		BLOWFISH,
+		SWORDFISH
 	};
 	public GameObject showEndScreen;
 	public Text endScreenText;
@@ -237,6 +239,7 @@ public class FishSpawnInfinite : MonoBehaviour {
 				// fmbScript.aiMode = fishLevelOption[whichFishSeq].fishLevelSeq[levCapped].fishKinds[i].moveStyle;
 				switch(whichKind) {
 				case FishSpecies.STANDARD:
+				case FishSpecies.BLOWFISH:
 					if(UnityEngine.Random.Range(0.0f, 1.0f) < 0.5f) {
 						fmbScript.aiMode = FishMoverBasic.FishMove.CIRCLE_CW;
 					} else {
@@ -247,6 +250,7 @@ public class FishSpawnInfinite : MonoBehaviour {
 					fmbScript.aiMode = FishMoverBasic.FishMove.VERTICAL_LINE;
 					break;
 				case FishSpecies.SHIFTY:
+				case FishSpecies.SWORDFISH:
 					fmbScript.aiMode = FishMoverBasic.FishMove.HORIZONTAL_LINE;
 					break;
 				case FishSpecies.GOLD:
