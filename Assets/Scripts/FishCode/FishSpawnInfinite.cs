@@ -35,9 +35,9 @@ public class FishLevelSeq
 public class FishSpawnInfinite : MonoBehaviour {
 	public enum FishSpecies
 	{
+		STANDARD,
 		SHIFTY,
 		TINY,
-		STANDARD,
 		GOLD,
 		BLOWFISH,
 		SWORDFISH
@@ -235,7 +235,6 @@ public class FishSpawnInfinite : MonoBehaviour {
 					                                   fmbScript.shallowPerc,
 					                                   fmbScript.deepPerc);
 				GOFish.name = "Fish"+ whichPrefab.name +" " + (ii+1);
-				fishList.Add(GOFish);
 				// fmbScript.aiMode = fishLevelOption[whichFishSeq].fishLevelSeq[levCapped].fishKinds[i].moveStyle;
 				switch(whichKind) {
 				case FishSpecies.STANDARD:
@@ -250,13 +249,16 @@ public class FishSpawnInfinite : MonoBehaviour {
 					fmbScript.aiMode = FishMoverBasic.FishMove.VERTICAL_LINE;
 					break;
 				case FishSpecies.SHIFTY:
-				case FishSpecies.SWORDFISH:
 					fmbScript.aiMode = FishMoverBasic.FishMove.HORIZONTAL_LINE;
 					break;
 				case FishSpecies.GOLD:
 					fmbScript.aiMode = FishMoverBasic.FishMove.STANDARD_SPREAD;
 					break;
+				case FishSpecies.SWORDFISH:
+					fmbScript.aiMode = FishMoverBasic.FishMove.SWORDFISH_HOP;
+					break;
 				}
+				fishList.Add(GOFish);
 				totalFishTillRespawn++;
 			}
 		}

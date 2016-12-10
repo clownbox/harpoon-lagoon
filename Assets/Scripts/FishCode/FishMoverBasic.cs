@@ -11,6 +11,7 @@ public class FishMoverBasic : MonoBehaviour {
 		VERTICAL_LINE,
 		CIRCLE_CW,
 		CIRCLE_CCW,
+		SWORDFISH_HOP,
 		FISH_AI_TYPES
 	};
 
@@ -60,10 +61,10 @@ public class FishMoverBasic : MonoBehaviour {
 	Vector3 recentPushTo;
 
 	IEnumerator WaitBeforeNewGoal() {
-		if(aiMode == FishMove.STANDARD_SPREAD) {
+		if(aiMode == FishMove.STANDARD_SPREAD || aiMode == FishMove.SWORDFISH_HOP) {
 			yield return new WaitForSeconds(Random.Range(minDriftTime, maxDriftTime));
 		} else {
-			yield return new WaitForSeconds(0.1f);
+			yield return new WaitForSeconds(0.15f);
 		}
 		PickNewGoal();
 	}
@@ -89,9 +90,10 @@ public class FishMoverBasic : MonoBehaviour {
 			swimmingTo = SeaBounds.instance.randPosWithinMinMaxRange(swimmingFrom,
 				1.3f*WeatherController.weatherSprintDistMult,
 				2.9f*WeatherController.weatherSprintDistMult);
-			PutSwimToOnTargetLine();
+			// PutSwimToOnTargetLine();
 			break;
 		case FishMove.HORIZONTAL_LINE:
+		case FishMove.SWORDFISH_HOP:
 			swimmingTo = rootPos;
 			if(swimmingFrom.x > SeaBounds.instance.middleX) {
 				swimmingTo.x = SeaBounds.instance.left;
@@ -139,7 +141,6 @@ public class FishMoverBasic : MonoBehaviour {
 				}
 			}
 			break;
-
 		}
 
 		if(MenuStateMachine.instance.tutStep == MenuStateMachine.TUTORIAL_PHASE.SpearThree) {
@@ -198,7 +199,7 @@ public class FishMoverBasic : MonoBehaviour {
 		modelVis = new Transform[rendChild.Length];
 
 		// aiMode = FishSpawnRefillTank.defaultAI;
-		setAIMode( (FishMove)Mathf.Floor( Random.Range(0,(int)FishMove.FISH_AI_TYPES)) );
+		// setAIMode( (FishMove)Mathf.Floor( Random.Range(0,(int)FishMove.FISH_AI_TYPES)) );
 
 		for(int i = 0; i < rendChild.Length; i++) {
 			modelVis[i] = rendChild[i].transform;
