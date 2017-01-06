@@ -55,6 +55,20 @@ public class ScoreManager : MonoBehaviour {
 	public Canvas uiCanvas;
 
 	public Medal scoreMedalMeasure() {
+		/*
+		 * Medal winning score cheat, handy if skipping levels to test trip summary medals screen
+		switch(Random.Range(0,3)) {
+		case 0:
+			totalScore = FishSpawnInfinite.instance.GoldGoal();
+			break;
+		case 1:
+			totalScore = FishSpawnInfinite.instance.SilverGoal();
+			break;
+		case 2:
+			totalScore = FishSpawnInfinite.instance.BronzeGoal();
+			break;
+		}*/
+
 		if(totalScore >= FishSpawnInfinite.instance.GoldGoal()) {
 			return Medal.Gold;
 		} else if(totalScore >= FishSpawnInfinite.instance.SilverGoal()) {

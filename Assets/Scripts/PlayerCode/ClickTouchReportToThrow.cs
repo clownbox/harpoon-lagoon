@@ -12,6 +12,11 @@ public class ClickTouchReportToThrow : MonoBehaviour {
 		   MenuStateMachine.instance.MenuBlocksAction()) {
 			return;
 		}
+
+		if(FishSpawnInfinite.instance.showEndScreen.activeSelf) {
+			return;
+		}
+
 		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
 		RaycastHit rhInfo;

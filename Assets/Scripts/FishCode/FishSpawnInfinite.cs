@@ -44,6 +44,7 @@ public class FishSpawnInfinite : MonoBehaviour {
 	};
 	public GameObject showEndScreen;
 	public Text endScreenText;
+	public MedalSwitch[] endMedals;
 
 	public GameObject[] basicTypes;
 	public List<FishLevelSeq> fishLevelOption;
@@ -131,20 +132,28 @@ public class FishSpawnInfinite : MonoBehaviour {
 			yield break;
 		}
 
-		levelNow++;
+		levelNow++; 
 
 		if(levelNow >= fishLevelOption[whichFishSeq].fishLevelSeq.Count) {
 			showEndScreen.SetActive(true);
 			string medalSummary = "";
+			for(int i = 0; i < endMedals.Length; i++) {
+				endMedals[i].SetMedal(ScoreManager.Medal.Fail);
+			}
 			for(int i=0;i<fishLevelOption[whichFishSeq].fishLevelSeq.Count; i++) {
 				medalSummary +=
 					(i+1)+". "+fishLevelOption[whichFishSeq].fishLevelSeq[i].medalEarned;
+				
 				if(i < fishLevelOption[whichFishSeq].fishLevelSeq.Count - 1) {
 					medalSummary += "\n";
 				}
+
+				endMedals[i].SetMedal(
+					fishLevelOption[whichFishSeq].fishLevelSeq[i].medalEarned
+				);
 			}
 
-			endScreenText.text = medalSummary;
+			endScreenText.text = "";//medalSummary;
 			yield break;
 		}
 
