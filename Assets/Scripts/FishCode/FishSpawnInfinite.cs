@@ -125,7 +125,7 @@ public class FishSpawnInfinite : MonoBehaviour {
 		fishLevelOption[whichFishSeq].fishLevelSeq[levelNow].medalEarned = medalWon;
 		showDayText.showMedalMessage("" + medalWon);
 
-		yield return new WaitForSeconds(2.5f);
+		yield return new WaitForSeconds(Input.GetKey(KeyCode.A) == false ? 2.5f : 0.1f);
 
 		if(medalWon == ScoreManager.Medal.Fail) {
 			ScoreManager.instance.ForceGameOver();
@@ -567,7 +567,8 @@ public class FishSpawnInfinite : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		if(Input.GetKeyDown(KeyCode.A)) {
-			Debug.Log("whichFishSeq: "+whichFishSeq);
+			Debug.Log("day set (whichFishSeq): "+whichFishSeq);
+			Debug.Log("also uncomment score cheat at top of scoreMedalMeasure() in ScoreManager.cs");
 			NextLevel();
 		}
 	}
