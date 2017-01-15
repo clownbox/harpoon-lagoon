@@ -10,7 +10,7 @@ public class MedalSwitch : MonoBehaviour {
 	private Image myImg;
 
 	void Start() {
-		SetMedal( ScoreManager.Medal.Fail );
+		// SetMedal( ScoreManager.Medal.Fail );
 	}
 
 	public void SetMedal( ScoreManager.Medal whichMedal ) {
