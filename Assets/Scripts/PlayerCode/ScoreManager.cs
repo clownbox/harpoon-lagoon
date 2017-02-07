@@ -55,7 +55,7 @@ public class ScoreManager : MonoBehaviour {
 	public Canvas uiCanvas;
 
 	public Medal scoreMedalMeasure() {
-		if(Input.GetKey(KeyCode.A)) {
+		if(Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.B)) {
 			switch(Random.Range(0, 3)) {
 			case 0:
 				totalScore = FishSpawnInfinite.instance.GoldGoal();

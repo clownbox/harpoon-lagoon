@@ -17,6 +17,8 @@ public class FishMoverBasic : MonoBehaviour {
 
 	public FishMove aiMode = FishMove.CIRCLE_CCW;
 
+	public static bool fishHalted = false;
+
 	public FishBreed myKind; // simpler test for uniqueness when matching
 	Vector3 swimmingFrom;
 	Vector3 swimmingTo;
@@ -235,6 +237,10 @@ public class FishMoverBasic : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		if(MenuStateMachine.instance.MenuBlocksAction() || isDead) {
+			return;
+		}
+
+		if(fishHalted) {
 			return;
 		}
 

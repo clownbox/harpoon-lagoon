@@ -117,6 +117,7 @@ public class FishSpawnInfinite : MonoBehaviour {
 		Debug.Log("ResetDay");
 	}
 
+	bool blockLevelAdvance = false;
 	IEnumerator DelayBetweenStages() {
 		// Debug.Log("DelayBetweenStages started " + Time.time);
 
@@ -125,14 +126,19 @@ public class FishSpawnInfinite : MonoBehaviour {
 		fishLevelOption[whichFishSeq].fishLevelSeq[levelNow].medalEarned = medalWon;
 		showDayText.showMedalMessage("" + medalWon);
 
-		yield return new WaitForSeconds(Input.GetKey(KeyCode.A) == false ? 2.5f : 0.1f);
+		yield return new WaitForSeconds(Input.GetKey(KeyCode.A) == false &&
+			Input.GetKey(KeyCode.B) == false ? 2.5f : 0.1f);
 
 		if(medalWon == ScoreManager.Medal.Fail) {
 			ScoreManager.instance.ForceGameOver();
 			yield break;
 		}
 
-		levelNow++; 
+		if(blockLevelAdvance == false) { 
+			levelNow++; 
+		} else {
+			blockLevelAdvance = false;
+		}
 
 		if(levelNow >= fishLevelOption[whichFishSeq].fishLevelSeq.Count) {
 			showEndScreen.SetActive(true);
@@ -333,8 +339,37 @@ public class FishSpawnInfinite : MonoBehaviour {
 
 		int seriesCombos = 0;
 		bool anyFoundSoTryAgain = true;
+		bool [] whichCounted = new bool[fishTally.Length];
+		int breedsFound = 0;
 		while(anyFoundSoTryAgain) {
 			anyFoundSoTryAgain = false;
+
+			breedsFound = 0;
+			for(var i = 0; i < whichCounted.Length; i++) {
+				whichCounted[i] = false;
+			}
+
+			for(var eachFish = 0; eachFish < fishTally.Length; eachFish++) {
+				if(fishTally[eachFish] > 0) {
+					breedsFound++;
+					whichCounted[eachFish] = true;
+				}
+				if(breedsFound>=3) {
+					break;
+				}
+			}
+				
+			if(breedsFound>=3) {
+				for(var eachFish = 0; eachFish < whichCounted.Length; eachFish++) {
+					if(whichCounted[eachFish]) {
+						fishTally[eachFish]--;
+					}
+				}
+				seriesCombos++;
+				fishTalliedComboTemp -= 3;
+				anyFoundSoTryAgain = true;
+			}
+			/*
 			if(fishTally[0] > 0 && fishTally[1] > 0 && fishTally[2] > 0) { // without 3
 				fishTally[0]--;
 				fishTally[1]--;
@@ -366,7 +401,7 @@ public class FishSpawnInfinite : MonoBehaviour {
 				seriesCombos++;
 				fishTalliedComboTemp -= 3;
 				anyFoundSoTryAgain = true;
-			}
+			}*/
 		}
 
 		int tripleCombos = 0;
@@ -566,6 +601,15 @@ public class FishSpawnInfinite : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+		if(Input.GetKeyDown(KeyCode.C)) {
+			FishMoverBasic.fishHalted = !FishMoverBasic.fishHalted;
+		}
+
+		if(Input.GetKeyDown(KeyCode.B)) {
+			blockLevelAdvance = true;
+			NextLevel();
+		}
+
 		if(Input.GetKeyDown(KeyCode.A)) {
 			Debug.Log("day set (whichFishSeq): "+whichFishSeq);
 			Debug.Log("also uncomment score cheat at top of scoreMedalMeasure() in ScoreManager.cs");
