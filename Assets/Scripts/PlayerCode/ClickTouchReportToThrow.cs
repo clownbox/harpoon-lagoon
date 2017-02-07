@@ -53,7 +53,7 @@ public class ClickTouchReportToThrow : MonoBehaviour {
 			Vector3 mousePos = Input.mousePosition;
 			Vector3 atPt = new Vector3(mousePos.x / Screen.width, mousePos.y / Screen.height, 0);
 
-			float boatTilt = htScript.transform.rotation.eulerAngles.z;
+			float boatTilt = (FishMoverBasic.fishHalted ? 0.0f : htScript.transform.rotation.eulerAngles.z);
 			if(boatTilt > 180.0f) {
 				boatTilt = 360.0f + boatTilt; // turn high positive into negative, so that...
 			}

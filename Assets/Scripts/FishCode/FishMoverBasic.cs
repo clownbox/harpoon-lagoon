@@ -2,7 +2,13 @@
 using System.Collections;
 
 public class FishMoverBasic : MonoBehaviour {
-	public enum FishBreed {STANDARD,SHIFTY,TINYFAST,GOLDEN,BLOWFISH,SWORDFISH,FISH_KINDS,NONE};
+	public enum FishBreed {STANDARD, // match to FishSpawnInfinite enum
+		SHIFTY,
+		TINYFAST,
+		GOLDEN,
+		BLOWFISH,
+		SWORDFISH,
+		FISH_KINDS,NONE};
 
 	public enum FishMove
 	{

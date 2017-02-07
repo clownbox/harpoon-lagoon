@@ -304,6 +304,7 @@ public class FishSpawnInfinite : MonoBehaviour {
 		Debug.Log("Setting up score goals for level " + levNum);
 
 		int totalFish = 0;
+		int totalFishWithoutBlowfish = 0;
 
 		int [] fishTally = new int[Enum.GetNames(typeof(FishSpecies)).Length];
 		int fishTalliedComboTemp = 0;
@@ -319,23 +320,26 @@ public class FishSpawnInfinite : MonoBehaviour {
 			/* Debug.Log(fmbScript.scoreValue + " pt X " +
 				currentSeq.fishKinds[ii].howMany); */
 			totalFish += currentSeq.fishKinds[ii].howMany;
+			if(currentSeq.fishKinds[ii].fishType != (FishSpecies)FishMoverBasic.FishBreed.BLOWFISH) {
+				totalFishWithoutBlowfish += currentSeq.fishKinds[ii].howMany;
+			}
 			minScore += fmbScript.scoreValue *
 				currentSeq.fishKinds[ii].howMany;
 			fishTally[(int)currentSeq.fishKinds[ii].fishType] += currentSeq.fishKinds[ii].howMany;
 		}
-		fishTalliedComboTemp = totalFish;
+		fishTalliedComboTemp = totalFishWithoutBlowfish; // WAS TOTALFISH, does it need blowfish? for pair calc.
 
-		for(int i=0;i<fishTally.Length;i++) {
+		/*for(int i=0;i<fishTally.Length;i++) {
 			if(fishTally[i] > 5) {
-				Debug.LogWarning("MIX FISH: MORE THAN 5 OF A KIND HERE");
+				Debug.LogWarning("MIX FISH: MORE THAN 5 OF A KIND IN LEV: "+levNum);
 			}
 		}
 		if(fishTalliedComboTemp < 3) {
-			Debug.LogWarning("ADD FISH: UNDER 3 FISH HERE");
+			Debug.LogWarning("ADD FISH: UNDER 3 FISH IN LEV: \"+levNum);
 		}
 		if(fishTalliedComboTemp > 8) {
-			Debug.LogWarning("REDUCE FISH: OVER 8 HERE");
-		}
+			Debug.LogWarning("REDUCE FISH: OVER 8 IN LEV: "+levNum);
+		}*/
 
 		int seriesCombos = 0;
 		bool anyFoundSoTryAgain = true;
@@ -370,32 +374,8 @@ public class FishSpawnInfinite : MonoBehaviour {
 				anyFoundSoTryAgain = true;
 			}
 			/*
-			if(fishTally[0] > 0 && fishTally[1] > 0 && fishTally[2] > 0) { // without 3
-				fishTally[0]--;
-				fishTally[1]--;
-				fishTally[2]--;
-				seriesCombos++;
-				fishTalliedComboTemp -= 3;
-				anyFoundSoTryAgain = true;
-			}
-			if(fishTally[0] > 0 && fishTally[1] > 0 && fishTally[3] > 0) { // without 2
-				fishTally[0]--;
-				fishTally[1]--;
-				fishTally[3]--;
-				seriesCombos++;
-				fishTalliedComboTemp -= 3;
-				anyFoundSoTryAgain = true;
-			}
 			if(fishTally[0] > 0 && fishTally[2] > 0 && fishTally[3] > 0) { // without 1
 				fishTally[0]--;
-				fishTally[2]--;
-				fishTally[3]--;
-				seriesCombos++;
-				fishTalliedComboTemp -= 3;
-				anyFoundSoTryAgain = true;
-			}
-			if(fishTally[1] > 0 && fishTally[2] > 0 && fishTally[3] > 0) { // without 0
-				fishTally[1]--;
 				fishTally[2]--;
 				fishTally[3]--;
 				seriesCombos++;
@@ -408,40 +388,39 @@ public class FishSpawnInfinite : MonoBehaviour {
 		anyFoundSoTryAgain = true;
 		while(anyFoundSoTryAgain) {
 			anyFoundSoTryAgain = false;
-			if(fishTally[0] >= 3) {
-				fishTally[0]-=3;
-				tripleCombos++;
-				fishTalliedComboTemp -= 3;
-				anyFoundSoTryAgain = true;
+			for(var eachBreed = 0; eachBreed < fishTally.Length; eachBreed++) {
+				if(fishTally[eachBreed] >= 3 &&
+					eachBreed != (int)FishMoverBasic.FishBreed.BLOWFISH) { // cannot triple hit
+					fishTally[eachBreed] -= 3;
+					tripleCombos++;
+					fishTalliedComboTemp -= 3;
+					anyFoundSoTryAgain = true;
+				}
 			}
+				/*
 			if(fishTally[1] >= 3) {
 				fishTally[1]-=3;
 				tripleCombos++;
 				fishTalliedComboTemp -= 3;
 				anyFoundSoTryAgain = true;
-			}
-			if(fishTally[2] >= 3) {
-				fishTally[2]-=3;
-				tripleCombos++;
-				fishTalliedComboTemp -= 3;
-				anyFoundSoTryAgain = true;
-			}
-			if(fishTally[3] >= 3) {
-				fishTally[3]-=3;
-				tripleCombos++;
-				fishTalliedComboTemp -= 3;
-				anyFoundSoTryAgain = true;
-			}
+			}*/
 		}
 
-		int setsOfThreeEveryThrow = (int)(totalFish / 3.0f);
-		int fishLeftOver = totalFish-setsOfThreeEveryThrow*3;
+		int setsOfThreeEveryThrow = (int)(totalFishWithoutBlowfish / 3.0f); // was totalFish
+		int fishLeftOver = totalFishWithoutBlowfish-setsOfThreeEveryThrow*3;
 		int setsPoints = setsOfThreeEveryThrow * (ScoreManager.SCORE_PER_EXTRA_FISH_ON_POLE+
 			ScoreManager.SCORE_PER_EXTRA_FISH_ON_POLE_THIRD);
 
-		var lastPairFound = 
+		var lastPairFound = false;
+		for(var i = 0; i < fishTally.Length; i++) {
+			if(i != (int) FishMoverBasic.FishBreed.BLOWFISH) {
+				lastPairFound = (lastPairFound || fishTally[i] >= 2);
+			}
+		}
+		/*
 			(fishTally[0] >= 2 || fishTally[1] >= 2 ||
-				fishTally[2] >= 2 || fishTally[3] >= 2);
+				fishTally[2] >= 2 || fishTally[3] >= 2 ||
+				fishTally[5] >= 2); */
 
 		if(fishTalliedComboTemp == 2) {
 			if(lastPairFound) {
@@ -472,8 +451,15 @@ public class FishSpawnInfinite : MonoBehaviour {
 		} else if(tripleCombos > 0) {
 			midPoints -= ScoreManager.SCORE_PER_TRIPLE;
 		} else if(lastPairFound) {
-			var anyNonPair = (fishTally[0] == 1 || fishTally[1] == 1 ||
+			var anyNonPair = false;
+			for(var i = 0; i < fishTally.Length; i++) {
+				if(i != (int) FishMoverBasic.FishBreed.BLOWFISH) {
+					anyNonPair = (lastPairFound || fishTally[i] == 1);
+				}
+			}
+			/*(fishTally[0] == 1 || fishTally[1] == 1 ||
 				fishTally[2] == 1 || fishTally[3] == 1);
+			*/
 			if(anyNonPair && lastPairFound) {
 				midPoints -= (ScoreManager.SCORE_PER_EXTRA_FISH_ON_POLE_PAIR -
 								ScoreManager.SCORE_PER_EXTRA_FISH_ON_POLE);
