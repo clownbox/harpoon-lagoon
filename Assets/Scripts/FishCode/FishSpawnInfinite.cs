@@ -46,6 +46,8 @@ public class FishSpawnInfinite : MonoBehaviour {
 	public Text endScreenText;
 	public MedalSwitch[] endMedals;
 
+	public Text scoreSummaryText;
+
 	public GameObject[] basicTypes;
 	public List<FishLevelSeq> fishLevelOption;
 	public int whichFishSeq = 0;
@@ -143,13 +145,27 @@ public class FishSpawnInfinite : MonoBehaviour {
 		if(levelNow >= fishLevelOption[whichFishSeq].fishLevelSeq.Count) {
 			showEndScreen.SetActive(true);
 			string medalSummary = "";
+
 			for(int i = 0; i < endMedals.Length; i++) {
 				endMedals[i].SetMedal(ScoreManager.Medal.Fail);
 			}
+			int bronzeFound = 0, silverFound = 0, goldFound = 0; 
 			for(int i=0;i<fishLevelOption[whichFishSeq].fishLevelSeq.Count; i++) {
 				medalSummary +=
 					(i+1)+". "+fishLevelOption[whichFishSeq].fishLevelSeq[i].medalEarned;
-				
+
+				switch(fishLevelOption[whichFishSeq].fishLevelSeq[i].medalEarned) {
+				case ScoreManager.Medal.Bronze:
+					bronzeFound++;
+					break;
+				case ScoreManager.Medal.Silver:
+					silverFound++;
+					break;
+				case ScoreManager.Medal.Gold:
+					goldFound++;
+					break;
+				}
+
 				if(i < fishLevelOption[whichFishSeq].fishLevelSeq.Count - 1) {
 					medalSummary += "\n";
 				}
@@ -158,6 +174,31 @@ public class FishSpawnInfinite : MonoBehaviour {
 					fishLevelOption[whichFishSeq].fishLevelSeq[i].medalEarned
 				);
 			}
+
+			int perBronze = 100;
+			int perSilver = 250;
+			int perGold = 500;
+			int allBronze = perBronze * bronzeFound;
+			int allSilver = perSilver * silverFound;
+			int allGold = perGold * goldFound;
+			int allTotal = allBronze+allSilver+allGold;
+			int totalDays = bronzeFound+silverFound+goldFound;
+
+			int bestYet = PlayerPrefs.GetInt("BestScore"+totalDays, 0);
+			string endText = " points";
+			if(bestYet < allTotal) {
+				bestYet = allTotal;
+				endText = " (new!)";
+				PlayerPrefs.SetInt("BestScore" + totalDays, bestYet);
+			} else if(bestYet == allTotal) {
+				endText = " (tie!)";
+			}
+
+			scoreSummaryText.text = "Bronze "+perBronze+" x "+bronzeFound+" = "+allBronze+" points\n"+
+				"Silver "+perSilver+" x "+silverFound+" = "+allSilver+" points\n"+
+				"Gold "+perGold+" x "+goldFound+" = "+allGold+" points\n"+
+				"Your Trip Total: "+allTotal+" points\n"+
+				"Your "+totalDays+"-Day Best: "+bestYet+endText;
 
 			endScreenText.text = "";//medalSummary;
 			yield break;
