@@ -306,12 +306,9 @@ public class ScoreManager : MonoBehaviour {
 			if(lastThrowScore >= extraHarpoonThreshold &&
 			   extraHarpoonEarnedSinceLastThrow == false) {
 				FMODUnity.RuntimeManager.PlayOneShot("event:/new_harpoons");
-				if(MenuStateMachine.instance.tutStep == MenuStateMachine.TUTORIAL_PHASE.ExtraSpear) {
-					MenuStateMachine.instance.NextStep();
-				}
-				if(spearsLeft == 0) {
+				/*if(spearsLeft == 0) {
 					MenuStateMachine.instance.DidAchivement(MenuStateMachine.ACHIEVEMENT_ENUM.savingThrow,100.0f);
-				}
+				}*/
 				/* spearsLeft++;
 				if(MenuStateMachine.instance.notInTut()) {
 					harpoonAwardMessage.text = "You earned an extra harpoon!";

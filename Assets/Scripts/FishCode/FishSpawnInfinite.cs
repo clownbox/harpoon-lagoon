@@ -223,11 +223,11 @@ public class FishSpawnInfinite : MonoBehaviour {
 		if(MenuStateMachine.instance.notInTut()) {
 			StartCoroutine(DelayBetweenStages());
 		} else {
-			if(MenuStateMachine.instance.tutStep < MenuStateMachine.TUTORIAL_PHASE.ExtraSpear) {
+			//if(MenuStateMachine.instance.tutStep < MenuStateMachine.TUTORIAL_PHASE.Blowfish) {
 				levelNow = 0;
-			} else {
+			/*} else {
 				levelNow = 2;
-			}
+			}*/
 			ScoreManager.instance.ResetScore(false);
 			SpawnForLevel();
 		}
@@ -266,6 +266,7 @@ public class FishSpawnInfinite : MonoBehaviour {
 			SeaBounds.instance.randPosBandBias(fmbScript.depthBiasOdds,
 				fmbScript.shallowPerc,
 				fmbScript.deepPerc);
+		fishList.Add(GOFish);
 	}
 
 	public void SpawnForLevel() {

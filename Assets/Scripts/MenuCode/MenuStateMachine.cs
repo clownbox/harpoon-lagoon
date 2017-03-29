@@ -27,8 +27,9 @@ public class MenuStateMachine : MonoBehaviour {
 		CancelThrow,
 		SpearFish,
 		SpearThree,
-		ExtraSpear,
+		Blowfish,
 		Monsters, 
+		Shark, 
 		TutorialDone
 	}
 
@@ -91,10 +92,13 @@ public class MenuStateMachine : MonoBehaviour {
 		tutStep = (TUTORIAL_PHASE)( (int)tutStep+1 );
 		if(tutStep == TUTORIAL_PHASE.TutorialDone) {
 			ScoreManager.instance.EndOfTutorialMessage();
+			FishSpawnInfinite.instance.RemoveAll();
 		} else {
 			FishSpawnInfinite.instance.UpdateText();
 
 			AllowBeasts( (int)tutStep >= (int)TUTORIAL_PHASE.Monsters );
+
+			FishSpawnInfinite.instance.RemoveAll();
 
 			switch(tutStep) {
 			case TUTORIAL_PHASE.SpearFish:
@@ -106,8 +110,18 @@ public class MenuStateMachine : MonoBehaviour {
 				FishSpawnInfinite.instance.AddOneFish(2);
 				FishSpawnInfinite.instance.AddOneFish(3);
 				break;
-			case TUTORIAL_PHASE.ExtraSpear:
-				FishSpawnInfinite.instance.NextLevel();
+			case TUTORIAL_PHASE.Blowfish:
+				// FishSpawnInfinite.instance.NextLevel();
+				FishSpawnInfinite.instance.RemoveAll();
+				FishSpawnInfinite.instance.whichFishSeq = 0;
+				FishSpawnInfinite.instance.AddOneFish(4);
+				FishSpawnInfinite.instance.AddOneFish(4);
+				FishSpawnInfinite.instance.AddOneFish(4);
+				break;
+			case TUTORIAL_PHASE.Shark:
+				FishSpawnInfinite.instance.RemoveAll();
+				FishSpawnInfinite.instance.whichFishSeq = 0;
+				FishSpawnInfinite.instance.AddOneFish(1);
 				break;
 			}
 
@@ -132,10 +146,12 @@ public class MenuStateMachine : MonoBehaviour {
 			return "Spear the fish!";
 		case TUTORIAL_PHASE.SpearThree:
 			return "Hit up to 3 fish at once!";
-		case TUTORIAL_PHASE.ExtraSpear:
-			return "Get "+ScoreManager.instance.extraHarpoonThreshold+"+ pt in a throw for an extra spear!";
+		case TUTORIAL_PHASE.Blowfish:
+			return "Your spear can't go past a blowfish!";
 		case TUTORIAL_PHASE.Monsters:
 			return "Turtles block throws, octopus costs points!";
+		case TUTORIAL_PHASE.Shark:
+			return "A shark will steal if you wait. Scare it off!";
 		case TUTORIAL_PHASE.TutorialDone:
 		default:
 			return "";
@@ -211,6 +227,7 @@ public class MenuStateMachine : MonoBehaviour {
 			tutStep = (TUTORIAL_PHASE)( (int)TUTORIAL_PHASE.NormalPlay+1 );
 			FishSpawnInfinite.instance.RemoveAll();
 			AllowBeasts(false);
+			Debug.Log("Removing Beast and all fish");
 		} else {
 			tutStep = TUTORIAL_PHASE.NormalPlay;
 			AllowBeasts(true);

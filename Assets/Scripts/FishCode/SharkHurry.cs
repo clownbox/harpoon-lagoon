@@ -44,7 +44,11 @@ public class SharkHurry : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if(MenuStateMachine.instance.notInTut()==false) { // no shark step yet
+		if(MenuStateMachine.instance.tutStep == MenuStateMachine.TUTORIAL_PHASE.Shark) {
+			if(timeUntilPeek > 0.2f) {
+				timeUntilPeek = 0.2f;
+			}
+		} else if(MenuStateMachine.instance.notInTut()==false) { // no shark step yet
 			retreating = true;
 		}
 

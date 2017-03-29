@@ -254,7 +254,9 @@ public class HarpoonDrag : MonoBehaviour {
 			stackOffsets.Add ( tempVect );
 			fishStack.Add(fmbScript.gameObject);
 
-			if(MenuStateMachine.instance.tutStep == MenuStateMachine.TUTORIAL_PHASE.SpearFish) {
+			if(MenuStateMachine.instance.tutStep == MenuStateMachine.TUTORIAL_PHASE.SpearFish ||
+				MenuStateMachine.instance.tutStep == MenuStateMachine.TUTORIAL_PHASE.Shark ||
+				MenuStateMachine.instance.tutStep == MenuStateMachine.TUTORIAL_PHASE.Blowfish) {
 				MenuStateMachine.instance.NextStep();
 			}
 
