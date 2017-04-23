@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
+using UnityEngine.Analytics;
 using UnityEngine.UI;
 using System.Collections;
+using System.Collections.Generic;
 
 public class ScoreManager : MonoBehaviour {
 	public int startSpears = 12;
@@ -55,6 +57,7 @@ public class ScoreManager : MonoBehaviour {
 	public Canvas uiCanvas;
 
 	public Medal scoreMedalMeasure() {
+		Medal medalEarned;
 		if(Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.B)) {
 			// PlayerPrefs.DeleteAll();
 			switch(Random.Range(0, 3)) {
@@ -71,14 +74,25 @@ public class ScoreManager : MonoBehaviour {
 		}
 
 		if(totalScore >= FishSpawnInfinite.instance.GoldGoal()) {
-			return Medal.Gold;
+			medalEarned = Medal.Gold;
 		} else if(totalScore >= FishSpawnInfinite.instance.SilverGoal()) {
-			return Medal.Silver;
+			medalEarned = Medal.Silver;
 		} else if(totalScore >= FishSpawnInfinite.instance.BronzeGoal()) {
-			return Medal.Bronze;
+			medalEarned = Medal.Bronze;
 		} else {
-			return Medal.Fail;
+			medalEarned = Medal.Fail;
 		}
+
+		AnalyticsResult arReturn = Analytics.CustomEvent("levelWon", new Dictionary<string, object>
+			{
+				{ "daysSet", FishSpawnInfinite.instance.whichFishSeq },
+				{ "scoreDay", FishSpawnInfinite.instance.levelNow },
+				{ "score", totalScore },
+				{ "medalGot", ""+medalEarned }
+			});
+		Debug.Log("levelWon analytics worked: " + arReturn);
+
+		return medalEarned;
 	}
 
 	public void PostTutMessage(string setTo) {

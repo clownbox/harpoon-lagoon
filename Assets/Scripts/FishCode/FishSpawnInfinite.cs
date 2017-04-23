@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Analytics;
 using UnityEngine.UI;
 using System;
 using System.Reflection;
@@ -52,7 +53,7 @@ public class FishSpawnInfinite : MonoBehaviour {
 	public List<FishLevelSeq> fishLevelOption;
 	public int whichFishSeq = 0;
 	public static FishSpawnInfinite instance;
-	private int levelNow = 0;
+	public int levelNow = 0;
 	public TextFadeOut showDayText;
 	public WeatherController weatherMaster;
 
@@ -199,6 +200,16 @@ public class FishSpawnInfinite : MonoBehaviour {
 				"Gold "+perGold+" x "+goldFound+" = "+allGold+" points\n"+
 				"Your Trip Total: "+allTotal+" points\n"+
 				"Your "+totalDays+"-Day Best: "+bestYet+endText;
+
+			AnalyticsResult arReturn = Analytics.CustomEvent("gameWon", new Dictionary<string, object>
+				{
+					{ "daysPlayed", totalDays },
+					{ "bronze", bronzeFound },
+					{ "silver", silverFound },
+					{ "gold", goldFound },
+					{ "tripScore", allTotal }
+				});
+			Debug.Log("gameWon analytics worked: " + arReturn);
 
 			endScreenText.text = "";//medalSummary;
 			yield break;
