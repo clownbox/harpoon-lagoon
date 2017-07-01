@@ -55,6 +55,7 @@ public class FishSpawnInfinite : MonoBehaviour {
 	public static FishSpawnInfinite instance;
 	public int levelNow = 0;
 	public TextFadeOut showDayText;
+	public TextFadeOut showMedalText;
 	public WeatherController weatherMaster;
 
 	public bool spreadsheetDataLoaded = false;
@@ -127,10 +128,12 @@ public class FishSpawnInfinite : MonoBehaviour {
 		ScoreManager.Medal medalWon = ScoreManager.instance.scoreMedalMeasure();
 
 		fishLevelOption[whichFishSeq].fishLevelSeq[levelNow].medalEarned = medalWon;
-		showDayText.showMedalMessage("" + medalWon);
+		if(medalWon != ScoreManager.Medal.Fail) {
+			showMedalText.showMedalMessage("" + medalWon);
 
-		yield return new WaitForSeconds(Input.GetKey(KeyCode.A) == false &&
-			Input.GetKey(KeyCode.B) == false ? 2.5f : 0.1f);
+			yield return new WaitForSeconds(Input.GetKey(KeyCode.A) == false &&
+				Input.GetKey(KeyCode.B) == false ? 2.5f : 0.1f);
+		}
 
 		if(medalWon == ScoreManager.Medal.Fail) {
 			ScoreManager.instance.ForceGameOver();

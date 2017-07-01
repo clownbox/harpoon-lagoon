@@ -39,7 +39,6 @@ public class ScoreManager : MonoBehaviour {
 	public Text nextScoreText;
 
 	public GameObject gameOverPanel;
-	public Text endScoreHeader;
 	public Text endScoreText;
 
 	public HarpoonDrag lastThrownSpear;
@@ -191,12 +190,9 @@ public class ScoreManager : MonoBehaviour {
 		yield return new WaitForSeconds(0.5f);
 		MenuStateMachine.instance.AllMenusOffExcept(gameOverPanel);
 		if(MenuStateMachine.instance.notInTut()) {
-			endScoreHeader.text = "going home early";
-			endScoreText.text = "your score: "+totalScore + "\nbronze goal: " + 
-				FishSpawnInfinite.instance.BronzeGoal();
+			endScoreText.text = ""+totalScore;
 			FMODUnity.RuntimeManager.PlayOneShot("event:/game_over");
 		} else {
-			endScoreHeader.text = "end of tutorial";
 			endScoreText.text = "you're ready to fish!";
 			FMODUnity.RuntimeManager.PlayOneShot("event:/round_end");
 		}

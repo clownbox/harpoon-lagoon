@@ -1,0 +1,21 @@
+fileFormatVersion: 2
+guid: 3b71eeddd7f4e4e4e905245c46f0a85e
+timeCreated: 1498875758
+licenseType: Free
+TrueTypeFontImporter:
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Vogue-Normal
+  fontNames:
+  - Vogue-Normal
+  fallbackFontReferences: []
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
