@@ -31,3 +31,8 @@ $RECYCLE.BIN/
 Desktop.ini
 
 *.apk
+Assets/FMODStudioCache.asset
+Assets/Models/fmod-sounds/harpoonsfxfmod2.meta
+Assets/Resources/FMODStudioSettings.asset
+fmod.log
+fmod_editor.log
